@@ -53,6 +53,7 @@
 #detail { padding: 1 2; }
 #terminal-view { height: 1fr; margin: 1 0; }
 #terminal-view:focus { border: solid #4ec9b0; }
+#bottom-nav { height: 3; content-align: center middle; gap: 1; }
 #control { height: 3; align-horizontal: left; content-align: center middle; }
 #control-input { width: 1fr; height: 3; }
 #actions-log { height: 6; }

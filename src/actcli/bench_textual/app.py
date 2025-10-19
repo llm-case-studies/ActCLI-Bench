@@ -295,6 +295,8 @@ class BenchTextualApp(App):
                 else:
                     self._handle_broadcast(text)
                 self.control_input.value = ""
+        elif bid in ("tab-terminal", "tab-events", "tab-errors", "tab-output", "tab-debug"):
+            self._switch_view(bid)
 
     def on_list_view_selected(self, event: ListView.Selected) -> None:  # type: ignore[attr-defined]
         # Activate selected terminal by index mapping first
@@ -414,6 +416,31 @@ class BenchTextualApp(App):
         self._refresh_nav()
         self._set_terminal_text(f"Added terminal '{name}' → {' '.join(cmd)}  [muted]")
         self._log_action(f"Added: {name} cmd={' '.join(cmd)} [muted]")
+
+    # --- View switching -------------------------------------------------
+    def _switch_view(self, tab_id: str) -> None:
+        if tab_id == "tab-terminal":
+            self.active_view = "terminal"
+            name = self.active_terminal
+            text = ""
+            if name and name in self.emulators:
+                text = self.emulators[name].text()
+            self._set_terminal_text(text)
+            self.terminal_view.set_writer(self._write_to_active)
+            self.terminal_view.focus()
+            return
+
+        # Logs view
+        self.terminal_view.set_writer(None)
+        mapping = {
+            "tab-events": "events",
+            "tab-errors": "errors",
+            "tab-output": "output",
+            "tab-debug": "debug",
+        }
+        cat = mapping.get(tab_id, "events")
+        self.active_view = f"log:{cat}"
+        self._set_terminal_text(self.log_manager.text(cat) or f"(no {cat})")
 
     # Write bytes/strings to the active terminal's PTY
     def _write_to_active(self, data: str) -> None:
