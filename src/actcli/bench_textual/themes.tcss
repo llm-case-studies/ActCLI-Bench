@@ -1,0 +1,57 @@
+/* Textual CSS for theme switching experiment.
+   We scope colors under top-level classes so switching is just
+   toggling a single class on the App. */
+
+/* --- Theme 1: The Actuary's Ledger --- */
+.theme-ledger Screen {
+    background: #1E2A3A;
+    color: #E0E0E0;
+}
+.theme-ledger #header { background: #0D639C; }
+.theme-ledger #footer { background: #0D639C; }
+.theme-ledger #sidebar { background: #213245; }
+.theme-ledger #detail { background: #1B2736; }
+.theme-ledger #brand { color: #66C2FF; }
+.theme-ledger #title { color: #66C2FF; }
+.theme-ledger #hint { color: #9FB7C8; }
+.theme-ledger #log { border: solid #2E8540; }
+.theme-ledger #input { border: solid #2E8540; }
+
+/* --- Theme 2: Modern Analyst --- */
+.theme-analyst Screen {
+    background: #282C34;
+    color: #F8F8F2;
+}
+.theme-analyst #header { background: #00A6A6; }
+.theme-analyst #footer { background: #00A6A6; }
+.theme-analyst #sidebar { background: #22303A; }
+.theme-analyst #detail { background: #1F242B; }
+.theme-analyst #brand { color: #00D1D1; }
+.theme-analyst #title { color: #00D1D1; }
+.theme-analyst #hint { color: #C0C8CF; }
+.theme-analyst #log { border: solid #9B59B6; }
+.theme-analyst #input { border: solid #9B59B6; }
+
+/* --- Theme 3: Seminar Slate --- */
+.theme-seminar Screen {
+    background: #3C3C3C;
+    color: #F3F3F3;
+}
+.theme-seminar #header { background: #6A829B; }
+.theme-seminar #footer { background: #6A829B; }
+.theme-seminar #sidebar { background: #323232; }
+.theme-seminar #detail { background: #2C2C2C; }
+.theme-seminar #brand { color: #D4AC87; }
+.theme-seminar #title { color: #D4AC87; }
+.theme-seminar #hint { color: #D0D0D0; }
+.theme-seminar #log { border: solid #D4AC87; }
+.theme-seminar #input { border: solid #D4AC87; }
+
+/* Layout & spacing */
+#body { height: 1fr; }
+#sidebar { width: 30; padding: 1 1; }
+#detail { padding: 1 2; }
+#terminal-view { height: 1fr; margin: 1 0; }
+#control { height: 3; align-horizontal: left; content-align: center middle; }
+#control-input { width: 1fr; height: 3; }
+#actions-log { height: 6; }
