@@ -114,8 +114,9 @@ class TerminalRunner:
             pass
 
     def inject(self, text: str) -> None:
-        """Inject a line (adds trailing newline)."""
-        self.write(text + "\n")
+        """Inject a line (presses Enter)."""
+        # Use carriage return to simulate Enter reliably across TUIs
+        self.write(text + "\r")
 
     def close(self) -> None:
         # Stop reader loop
