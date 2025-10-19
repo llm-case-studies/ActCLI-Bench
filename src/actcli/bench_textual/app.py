@@ -72,6 +72,7 @@ class BenchTextualApp(App):
         self.mirror_to_facilitator: bool = False
         self.last_broadcast: Optional[str] = None
         self.adding_mode: bool = False
+        self.connect_mode: bool = False
         self._nav_items: Dict[int, str] = {}
         self.action_lines: List[str] = []
         # Kick off session bootstrap
@@ -86,6 +87,7 @@ class BenchTextualApp(App):
             with Vertical(id="sidebar"):
                 yield Static("ActCLI • Bench", id="brand")
                 yield Button("+ Add Terminal", id="btn-add")
+                yield Button("Connect Session", id="btn-connect")
                 yield Button("Mute All", id="btn-mute-all")
                 yield Button("Unmute All", id="btn-unmute-all")
                 self.nav = ListView(id="nav")
@@ -129,6 +131,8 @@ class BenchTextualApp(App):
                 return
             if self.adding_mode:
                 self._handle_add_from_text(text)
+            elif self.connect_mode:
+                self._handle_connect_from_text(text)
             else:
                 self._handle_broadcast(text)
             event.input.value = ""
@@ -261,7 +265,15 @@ class BenchTextualApp(App):
         if bid == "btn-add":
             # Toggle add mode: next Enter/Broadcast parses as add spec
             self.adding_mode = True
+            self.connect_mode = False
             self.control_input.placeholder = "Add terminal: <name> <command...>  (e.g., CO codex)"
+            self.control_input.value = ""
+            self.control_input.focus()
+        elif bid == "btn-connect":
+            # Toggle connect mode: join existing session
+            self.connect_mode = True
+            self.adding_mode = False
+            self.control_input.placeholder = "Connect: <session_id>"
             self.control_input.value = ""
             self.control_input.focus()
         elif bid == "btn-mute-all":
@@ -277,6 +289,8 @@ class BenchTextualApp(App):
             if text:
                 if self.adding_mode:
                     self._handle_add_from_text(text)
+                elif self.connect_mode:
+                    self._handle_connect_from_text(text)
                 else:
                     self._handle_broadcast(text)
                 self.control_input.value = ""
@@ -345,6 +359,36 @@ class BenchTextualApp(App):
         # Exit add mode
         self.adding_mode = False
         self.control_input.placeholder = "Broadcast to all unmuted…"
+
+    def _handle_connect_from_text(self, text: str) -> None:
+        session_id = text.strip()
+        if not session_id:
+            return
+        import asyncio
+        asyncio.create_task(self._connect_session_async(session_id))
+        # Exit connect mode
+        self.connect_mode = False
+        self.control_input.placeholder = "Broadcast to all unmuted…"
+
+    async def _connect_session_async(self, session_id: str) -> None:
+        try:
+            ok = await self.session_manager.join_session(session_id, "moderator")
+            if ok:
+                self.viewer_url = f"{self.session_manager.facilitator_url}/viewer/{session_id}"
+                self._set_title_status(session_id)
+                self._log_action(f"Connected to session: {session_id}")
+                # Ensure facilitator_client is connected for mirror
+                if not self.facilitator_client:
+                    self.facilitator_client = FacilitatorClient(self.session_manager.facilitator_url)
+                try:
+                    await self.facilitator_client.join_session(session_id, "moderator", participant_type="human")
+                    await self.facilitator_client.connect_websocket()
+                except Exception:
+                    pass
+            else:
+                self._log_action(f"Failed to connect session: {session_id}")
+        except Exception as e:
+            self._log_action(f"Connect error for {session_id}: {e}")
 
     def _add_terminal(self, name: str, cmd: List[str]) -> None:
         if name in self.terminals:
