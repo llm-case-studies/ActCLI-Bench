@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Optional
+import wcwidth
 
 
 @dataclass
@@ -71,12 +72,31 @@ class EmulatedTerminal:
         else:
             return self._screen.display_text()  # type: ignore
 
-    def text_with_cursor(self, cursor_char: str = "▌") -> str:
+    def _index_from_column(self, line: str, column: int) -> int:
+        """Return string index that corresponds to a visual column.
+
+        Uses wcwidth to account for wide/combining characters.
+        """
+        if column <= 0:
+            return 0
+        width = 0
+        for i, ch in enumerate(line):
+            w = wcwidth.wcwidth(ch)
+            if w < 0:
+                w = 0
+            if width + w >= column:
+                return i + 1
+            width += w
+        return len(line)
+
+    def text_with_cursor(self, cursor_char: str = "▌", show: bool = True) -> str:
         """Return screen text with a visual caret at the current cursor.
 
         When pyte is active, uses screen.cursor (x,y). Otherwise, appends
         a caret at end of the last line.
         """
+        if not show:
+            return self.text()
         if not self._use_pyte:
             base = self._screen.display_text()  # type: ignore
             if not base:
@@ -93,10 +113,12 @@ class EmulatedTerminal:
             cy = getattr(self._screen, "cursor").y  # type: ignore[attr-defined]
             if 0 <= cy < len(lines):
                 line = lines[cy]
-                # Pad line if needed
-                if cx >= len(line):
-                    line = line + (" " * (cx - len(line)))
-                lines[cy] = line[:cx] + cursor_char + line[cx:]
+                # Map column to string index
+                idx = self._index_from_column(line, cx)
+                if idx >= len(line):
+                    line = line + " "
+                    idx = len(line) - 1
+                lines[cy] = line[:idx] + cursor_char + line[idx:]
             return "\n".join(lines)
         except Exception:
             return self.text()

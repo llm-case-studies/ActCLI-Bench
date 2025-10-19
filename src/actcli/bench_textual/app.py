@@ -79,6 +79,11 @@ class BenchTextualApp(App):
         # Kick off session bootstrap
         await self._bootstrap_session_async()
         self.emulators: Dict[str, EmulatedTerminal] = {}
+        # Log module path to help verify running code
+        try:
+            self._log_action(f"Bench module: {__file__}")
+        except Exception:
+            pass
 
     def compose(self) -> ComposeResult:
         yield Header(id="header")
