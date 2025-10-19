@@ -71,6 +71,36 @@ class EmulatedTerminal:
         else:
             return self._screen.display_text()  # type: ignore
 
+    def text_with_cursor(self, cursor_char: str = "▌") -> str:
+        """Return screen text with a visual caret at the current cursor.
+
+        When pyte is active, uses screen.cursor (x,y). Otherwise, appends
+        a caret at end of the last line.
+        """
+        if not self._use_pyte:
+            base = self._screen.display_text()  # type: ignore
+            if not base:
+                return cursor_char
+            lines = base.splitlines()
+            if lines:
+                lines[-1] = f"{lines[-1]}{cursor_char}"
+            return "\n".join(lines)
+
+        try:
+            # Obtain current display and cursor position
+            lines = list(self._screen.display)  # type: ignore[attr-defined]
+            cx = getattr(self._screen, "cursor").x  # type: ignore[attr-defined]
+            cy = getattr(self._screen, "cursor").y  # type: ignore[attr-defined]
+            if 0 <= cy < len(lines):
+                line = lines[cy]
+                # Pad line if needed
+                if cx >= len(line):
+                    line = line + (" " * (cx - len(line)))
+                lines[cy] = line[:cx] + cursor_char + line[cx:]
+            return "\n".join(lines)
+        except Exception:
+            return self.text()
+
     def resize(self, cols: int, rows: int) -> None:
         self.cols = cols
         self.rows = rows

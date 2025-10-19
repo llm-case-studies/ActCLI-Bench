@@ -181,7 +181,8 @@ class BenchTextualApp(App):
             self.emulators[name] = emu
         emu.feed(text)
         if self.active_terminal == name:
-            self._set_terminal_text(emu.text())
+            # Show cursor when in terminal view
+            self._set_terminal_text(emu.text_with_cursor())
 
     # ANSI/control filtering adapted from wrapper.pty_wrapper
     def _strip_ansi(self, s: str) -> str:
@@ -320,7 +321,7 @@ class BenchTextualApp(App):
             self.active_terminal = name
             emu = self.emulators.get(name) or EmulatedTerminal()
             self.emulators[name] = emu
-            self._set_terminal_text(f"→ Active: {name}\n" + emu.text())
+            self._set_terminal_text(f"→ Active: {name}\n" + emu.text_with_cursor())
             # Focus terminal view and wire writer to active runner
             self.terminal_view.set_writer(self._write_to_active)
             self.terminal_view.focus()
@@ -342,7 +343,7 @@ class BenchTextualApp(App):
             self.active_terminal = name
             emu = self.emulators.get(name) or EmulatedTerminal()
             self.emulators[name] = emu
-            self._set_terminal_text(f"→ Active: {name}\n" + emu.text())
+            self._set_terminal_text(f"→ Active: {name}\n" + emu.text_with_cursor())
             self.terminal_view.set_writer(self._write_to_active)
             self._log_action(f"Highlighted terminal: {name}")
 
@@ -424,7 +425,7 @@ class BenchTextualApp(App):
             name = self.active_terminal
             text = ""
             if name and name in self.emulators:
-                text = self.emulators[name].text()
+                text = self.emulators[name].text_with_cursor()
             self._set_terminal_text(text)
             self.terminal_view.set_writer(self._write_to_active)
             self.terminal_view.focus()
