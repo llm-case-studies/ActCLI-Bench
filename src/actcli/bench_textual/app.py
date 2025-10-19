@@ -37,6 +37,7 @@ from ..wrapper_tui.session_manager import SessionManager
 from ..wrapper.client import FacilitatorClient
 from .terminal_runner import TerminalRunner
 from .term_emulator import EmulatedTerminal
+from .term_view import TermView
 
 
 THEME_CLASSES = ("theme-ledger", "theme-analyst", "theme-seminar")
@@ -102,8 +103,8 @@ class BenchTextualApp(App):
                 # Right: Title / status line
                 self.status_line = Static("Terminal", id="title")
                 yield self.status_line
-                # Active terminal output view (emulated)
-                self.terminal_view = Static(id="terminal-view")
+                # Active terminal output view (emulated, focusable)
+                self.terminal_view = TermView(id="terminal-view")
                 yield self.terminal_view
                 # Control pad
                 with Horizontal(id="control"):
@@ -318,6 +319,9 @@ class BenchTextualApp(App):
             emu = self.emulators.get(name) or EmulatedTerminal()
             self.emulators[name] = emu
             self._set_terminal_text(f"→ Active: {name}\n" + emu.text())
+            # Focus terminal view and wire writer to active runner
+            self.terminal_view.set_writer(self._write_to_active)
+            self.terminal_view.focus()
             self._log_action(f"Selected terminal: {name}")
 
     def on_list_view_highlighted(self, event: ListView.Highlighted) -> None:  # type: ignore[attr-defined]
@@ -337,6 +341,7 @@ class BenchTextualApp(App):
             emu = self.emulators.get(name) or EmulatedTerminal()
             self.emulators[name] = emu
             self._set_terminal_text(f"→ Active: {name}\n" + emu.text())
+            self.terminal_view.set_writer(self._write_to_active)
             self._log_action(f"Highlighted terminal: {name}")
 
     # --- UI helpers -------------------------------------------------------
@@ -409,6 +414,19 @@ class BenchTextualApp(App):
         self._refresh_nav()
         self._set_terminal_text(f"Added terminal '{name}' → {' '.join(cmd)}  [muted]")
         self._log_action(f"Added: {name} cmd={' '.join(cmd)} [muted]")
+
+    # Write bytes/strings to the active terminal's PTY
+    def _write_to_active(self, data: str) -> None:
+        name = self.active_terminal
+        if not name or name == "__logs__":
+            return
+        item = self.terminals.get(name)
+        if not item:
+            return
+        try:
+            item.runner.write(data)
+        except Exception:
+            pass
 
     def _refresh_nav(self) -> None:
         self.nav.clear()
