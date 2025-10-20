@@ -84,6 +84,11 @@ class BenchTextualApp(App):
         self.scroll_buffers: Dict[str, list[str]] = {}
         self.scroll_offsets: Dict[str, int] = {}
         self.max_scrollback_lines: int = 2000
+        # Build nav tree after state is ready
+        try:
+            self._rebuild_nav_tree()
+        except Exception:
+            pass
         # Log module path to help verify running code
         try:
             self._log_action(f"Bench module: {__file__}")
@@ -100,7 +105,6 @@ class BenchTextualApp(App):
                 # Tree navigation
                 self.nav_tree = Tree("Navigation", id="nav-tree")
                 yield self.nav_tree
-                self._rebuild_nav_tree()
                 yield Static("F1: Ledger • F2: Analyst • F3: Seminar", id="hint")
 
             with Vertical(id="detail"):
