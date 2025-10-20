@@ -492,6 +492,9 @@ class BenchTextualApp(App):
         except Exception:
             pass
         terminals_node = self.nav_tree.root.add("Terminals")
+        # Add action
+        add_node = terminals_node.add("+ Add…")
+        add_node.data = {"type": "add_terminal"}
         for name, item in self.terminals.items():
             mark = "[M]" if item.muted else "[U]"
             node = terminals_node.add(f"{name} {mark}")
@@ -528,7 +531,14 @@ class BenchTextualApp(App):
     def on_tree_node_selected(self, event: Tree.NodeSelected) -> None:  # type: ignore[attr-defined]
         data = getattr(event.node, "data", None) or {}
         t = data.get("type")
-        if t == "terminal":
+        if t == "add_terminal":
+            # Switch control input into Add mode
+            self.adding_mode = True
+            self.connect_mode = False
+            self.control_input.placeholder = "Add terminal: <name> <command...>  (e.g., CO gemini)"
+            self.control_input.value = ""
+            self.control_input.focus()
+        elif t == "terminal":
             name = data.get("name")
             if name in self.terminals:
                 self.active_terminal = name
