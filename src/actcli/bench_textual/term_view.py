@@ -39,63 +39,64 @@ class TermView(Static):
     # --- Key handling -------------------------------------------------
 
     def on_key(self, event: Key) -> None:  # type: ignore[override]
-        # Scrollback with Ctrl+PageUp/PageDown/Home/End
-        if self._navigator and event.key:
-            k = event.key.lower()
-            mods = set(event.modifiers or [])
-            if 'ctrl' in mods and k in ('pageup','pagedown','home','end'):
-                mapping = {
-                    'pageup': ('pageup', -20),
-                    'pagedown': ('pagedown', 20),
-                    'home': ('home', 0),
-                    'end': ('end', 0),
-                }
-                action, amount = mapping[k]
-                if self._navigator(action, amount):
+        try:
+            # Scrollback with Ctrl+PageUp/PageDown/Home/End
+            if self._navigator and getattr(event, 'key', None):
+                k = (event.key or '').lower()
+                mods = set(getattr(event, 'modifiers', []) or [])
+                if 'ctrl' in mods and k in ('pageup','pagedown','home','end'):
+                    mapping = {
+                        'pageup': ('pageup', -20),
+                        'pagedown': ('pagedown', 20),
+                        'home': ('home', 0),
+                        'end': ('end', 0),
+                    }
+                    action, amount = mapping[k]
+                    if self._navigator(action, amount):
+                        event.stop()
+                        return
+            if not self._writer:
+                return
+
+            seq: Optional[str] = None
+            k = (event.key or '').lower()
+
+            # Printable characters
+            ch = getattr(event, 'character', None)
+            if ch and len(ch) == 1:
+                seq = ch
+
+            # Control keys
+            mapping = {
+                "enter": "\r",
+                "return": "\r",
+                "backspace": "\x7f",
+                "tab": "\t",
+                "escape": "\x1b",
+                "left": "\x1b[D",
+                "right": "\x1b[C",
+                "up": "\x1b[A",
+                "down": "\x1b[B",
+                "home": "\x1b[H",
+                "end": "\x1b[F",
+                "pageup": "\x1b[5~",
+                "pagedown": "\x1b[6~",
+                "delete": "\x1b[3~",
+                "insert": "\x1b[2~",
+            }
+
+            if seq is None:
+                seq = mapping.get(k)
+
+            if seq is not None:
+                try:
+                    self._writer(seq)
                     event.stop()
-                    return
-        if not self._writer:
-            return
-
-        seq: Optional[str] = None
-        k = event.key.lower() if event.key else ""
-
-        # Printable characters
-        if event.character and len(event.character) == 1:
-            seq = event.character
-
-        # Control keys
-        mapping = {
-            "enter": "\r",
-            "return": "\r",
-            "backspace": "\x7f",
-            "tab": "\t",
-            "escape": "\x1b",
-            "left": "\x1b[D",
-            "right": "\x1b[C",
-            "up": "\x1b[A",
-            "down": "\x1b[B",
-            "home": "\x1b[H",
-            "end": "\x1b[F",
-            "pageup": "\x1b[5~",
-            "pagedown": "\x1b[6~",
-            "delete": "\x1b[3~",
-            "insert": "\x1b[2~",
-            "ctrl+c": "\x03",
-            "ctrl+d": "\x04",
-            "ctrl+z": "\x1a",
-            "ctrl+l": "\x0c",
-        }
-
-        if seq is None:
-            seq = mapping.get(k)
-
-        if seq is not None:
-            try:
-                self._writer(seq)
-                event.stop()
-            except Exception:
-                pass
+                except Exception:
+                    pass
+        except Exception:
+            # Swallow any unexpected key handling issues to avoid crashing the app
+            pass
 
     def on_mouse_scroll_up(self, event) -> None:  # type: ignore[override]
         # Fallback for Textual versions without MouseScroll
