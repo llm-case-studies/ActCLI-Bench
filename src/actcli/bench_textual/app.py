@@ -129,6 +129,13 @@ class BenchTextualApp(App):
         self.add_class(f"theme-{theme}")
         self._log(f"Switched theme → {theme}")
 
+    def on_resize(self, event) -> None:  # type: ignore[override]
+        try:
+            if self.active_view == "terminal" and self.active_terminal:
+                self._sync_terminal_size(self.active_terminal)
+        except Exception:
+            pass
+
     def on_input_submitted(self, event: Input.Submitted) -> None:  # type: ignore[attr-defined]
         # Only the control pad input triggers submission here
         if event.input is self.control_input:
