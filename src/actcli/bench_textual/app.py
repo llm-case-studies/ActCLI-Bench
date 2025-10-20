@@ -583,6 +583,11 @@ class BenchTextualApp(App):
                 self.terminal_view.focus()
                 # Sync terminal size to both emulator and PTY
                 self._sync_terminal_size(name)
+                # Also sync again after first render to capture final content size
+                try:
+                    self.call_after_refresh(lambda n=name: self._sync_terminal_size(n))
+                except Exception:
+                    pass
                 self._set_terminal_text(emu.text_with_cursor(show=True))
                 self._log_action(f"Selected terminal: {name}")
         elif t == "connect":
