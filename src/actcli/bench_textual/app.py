@@ -335,10 +335,10 @@ class BenchTextualApp(App):
             self.emulators[name] = emu
             self._set_terminal_text(f"→ Active: {name}\n" + emu.text_with_cursor())
             # Focus terminal view and wire writer to active runner
-                self.terminal_view.set_writer(self._write_to_active)
-                self.terminal_view.set_navigator(self._on_navigate)
-                self.terminal_view.focus()
-                self._log_action(f"Selected terminal: {name}")
+            self.terminal_view.set_writer(self._write_to_active)
+            self.terminal_view.set_navigator(self._on_navigate)
+            self.terminal_view.focus()
+            self._log_action(f"Selected terminal: {name}")
 
     def on_list_view_highlighted(self, event: ListView.Highlighted) -> None:  # type: ignore[attr-defined]
         # Also switch on highlight change for mouse/keyboard navigation
@@ -493,7 +493,14 @@ class BenchTextualApp(App):
         m_all.data = {"type": "action", "id": "mute_all"}
         u_all = settings_node.add("Unmute All")
         u_all.data = {"type": "action", "id": "unmute_all"}
-        mirror = settings_node.add(f"Mirror to viewer {'[X]' if self.chk_mirror.value if hasattr(self,'chk_mirror') else False else ''}")
+        # Build mirror toggle label safely even if chk_mirror isn't created yet
+        mirror_checked = False
+        try:
+            mirror_checked = bool(self.chk_mirror.value)
+        except Exception:
+            mirror_checked = False
+        mirror_label = f"Mirror to viewer {'[X]' if mirror_checked else '[ ]'}"
+        mirror = settings_node.add(mirror_label)
         mirror.data = {"type": "action", "id": "toggle_mirror"}
         logs_node = self.nav_tree.root.add("Logs")
         for cat in ("Events", "Errors", "Output", "Debug"):

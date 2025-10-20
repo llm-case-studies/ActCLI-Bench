@@ -3,7 +3,13 @@ from __future__ import annotations
 from typing import Callable, Optional
 
 from textual.widgets import Static
-from textual.events import Key, MouseScroll
+from textual.events import Key
+try:
+    # Older Textual has MouseScrollUp/MouseScrollDown
+    from textual.events import MouseScroll  # type: ignore
+except Exception:  # pragma: no cover
+    MouseScroll = None  # type: ignore
+    from textual.events import MouseScrollUp, MouseScrollDown  # type: ignore
 
 
 class TermView(Static):
@@ -91,8 +97,21 @@ class TermView(Static):
             except Exception:
                 pass
 
-    def on_mouse_scroll(self, event: MouseScroll) -> None:  # type: ignore[override]
+    def on_mouse_scroll_up(self, event) -> None:  # type: ignore[override]
+        # Fallback for Textual versions without MouseScroll
         if self._navigator:
-            amount = 3 if event.delta_y > 0 else -3
-            if self._navigator('wheel', amount):
+            if self._navigator('wheel', -3):
                 event.stop()
+
+    def on_mouse_scroll_down(self, event) -> None:  # type: ignore[override]
+        if self._navigator:
+            if self._navigator('wheel', 3):
+                event.stop()
+
+    # Newer Textual unified event
+    if MouseScroll is not None:  # type: ignore
+        def on_mouse_scroll(self, event: MouseScroll) -> None:  # type: ignore[override]
+            if self._navigator:
+                amount = 3 if getattr(event, 'delta_y', 0) > 0 else -3
+                if self._navigator('wheel', amount):
+                    event.stop()
