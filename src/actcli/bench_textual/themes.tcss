@@ -14,8 +14,6 @@
 .theme-ledger #brand { color: #66C2FF; }
 .theme-ledger #title { color: #66C2FF; }
 .theme-ledger #hint { color: #9FB7C8; }
-.theme-ledger #log { border: solid #2E8540; }
-.theme-ledger #input { border: solid #2E8540; }
 
 /* --- Theme 2: Modern Analyst --- */
 .theme-analyst Screen {
@@ -29,8 +27,6 @@
 .theme-analyst #brand { color: #00D1D1; }
 .theme-analyst #title { color: #00D1D1; }
 .theme-analyst #hint { color: #C0C8CF; }
-.theme-analyst #log { border: solid #9B59B6; }
-.theme-analyst #input { border: solid #9B59B6; }
 
 /* --- Theme 3: Seminar Slate --- */
 .theme-seminar Screen {
@@ -44,16 +40,20 @@
 .theme-seminar #brand { color: #D4AC87; }
 .theme-seminar #title { color: #D4AC87; }
 .theme-seminar #hint { color: #D0D0D0; }
-.theme-seminar #log { border: solid #D4AC87; }
-.theme-seminar #input { border: solid #D4AC87; }
 
 /* Layout & spacing */
 #body { height: 1fr; }
 #sidebar { width: 30; padding: 1 1; }
 #detail { padding: 1 2; }
-#terminal-view { height: 1fr; margin: 1 0; }
-#terminal-view:focus { border: solid #4ec9b0; }
-#bottom-nav { height: 3; content-align: center middle; }
+#terminal-view {
+    width: 1fr;
+    height: 1fr;
+    margin: 1 0;
+    border: solid #555;
+    text-style: none;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+#terminal-view:focus { border: thick #4ec9b0; }
 #control { height: 3; align-horizontal: left; content-align: center middle; }
 #control-input { width: 1fr; height: 3; }
-#actions-log { height: 6; }

@@ -18,6 +18,10 @@ import pty
 import select
 import sys
 import threading
+import fcntl
+import termios
+import struct
+import signal
 from dataclasses import dataclass, field
 from typing import Callable, List, Optional
 import shlex
@@ -25,6 +29,7 @@ import time
 
 
 OutputCallback = Callable[[str], None]
+ExitCallback = Callable[[int], None]
 
 
 @dataclass
@@ -37,9 +42,31 @@ class TerminalRunner:
     _reader_thread: Optional[threading.Thread] = None
     _stop_event: threading.Event = field(default_factory=threading.Event)
     _on_output: Optional[OutputCallback] = None
+    _on_exit: Optional[ExitCallback] = None
 
     def on_output(self, cb: OutputCallback) -> None:
         self._on_output = cb
+
+    def on_exit(self, cb: ExitCallback) -> None:
+        """Set callback for process exit (receives exit code)."""
+        self._on_exit = cb
+
+    def set_winsize(self, rows: int, cols: int) -> None:
+        """Set PTY window size and notify child process via SIGWINCH."""
+        if self.master_fd is None:
+            return
+        try:
+            # Pack window size as: rows, cols, xpixel (0), ypixel (0)
+            winsize = struct.pack('HHHH', rows, cols, 0, 0)
+            fcntl.ioctl(self.master_fd, termios.TIOCSWINSZ, winsize)
+        except Exception:
+            pass
+        # Notify child process that window size changed
+        if self.pid:
+            try:
+                os.kill(self.pid, signal.SIGWINCH)
+            except Exception:
+                pass
 
     def start(self) -> bool:
         """Fork process in PTY and begin background read loop."""
@@ -67,15 +94,21 @@ class TerminalRunner:
         self._stop_event.clear()
         self._reader_thread = threading.Thread(target=self._reader_loop, daemon=True)
         self._reader_thread.start()
-
-        # Best-effort: disable mouse tracking, bracketed paste, focus reporting
-        # to reduce control-sequence noise from chatty TUIs.
+        # Initialize default window size so child doesn't assume 80x24.
         try:
-            if self.master_fd is not None:
-                os.write(self.master_fd, b"\x1B[?9l\x1B[?1000l\x1B[?1001l\x1B[?1002l\x1B[?1003l\x1B[?1006l\x1B[?1015l")
-                os.write(self.master_fd, b"\x1B[?2004l\x1B[?1004l")
+            self.set_winsize(rows=40, cols=120)
         except Exception:
             pass
+
+        # Disabled: these sequences can cause issues with some programs
+        # that echo them back, creating garbled output at startup.
+        # The emulator (pyte) handles mouse tracking sequences fine anyway.
+        # try:
+        #     if self.master_fd is not None:
+        #         os.write(self.master_fd, b"\x1B[?9l\x1B[?1000l\x1B[?1001l\x1B[?1002l\x1B[?1003l\x1B[?1006l\x1B[?1015l")
+        #         os.write(self.master_fd, b"\x1B[?2004l\x1B[?1004l")
+        # except Exception:
+        #     pass
         # Quick sanity: detect immediate child exit
         for _ in range(10):
             if not self.is_alive():
@@ -103,6 +136,14 @@ class TerminalRunner:
                         break
             except Exception:
                 break
+        # Process exited - get exit status and call callback
+        if self.pid is not None and self._on_exit:
+            try:
+                _, status = os.waitpid(self.pid, os.WNOHANG)
+                exit_code = os.WEXITSTATUS(status) if os.WIFEXITED(status) else -1
+                self._on_exit(exit_code)
+            except Exception:
+                pass
 
     def write(self, data: str) -> None:
         """Write text to the child's stdin (via PTY)."""

@@ -25,6 +25,14 @@ class TermView(Static):
         super().__init__(*args, **kwargs)
         self._writer: Optional[Callable[[str], None]] = None
         self._navigator: Optional[Callable[[str, int], bool]] = None
+        self._on_focus_callback: Optional[Callable[[], None]] = None
+
+        # Try to disable text wrapping - Static widget might be auto-wrapping
+        # Check if these attributes exist and set them
+        if hasattr(self, 'wrap'):
+            self.wrap = False
+        if hasattr(self, 'auto_wrap'):
+            self.auto_wrap = False
 
     def set_writer(self, writer: Callable[[str], None]) -> None:
         self._writer = writer
@@ -35,6 +43,15 @@ class TermView(Static):
         action in {'pageup','pagedown','home','end','wheel'}; amount is lines.
         """
         self._navigator = handler
+
+    def set_on_focus(self, callback: Callable[[], None]) -> None:
+        """Set callback to call when view gains focus."""
+        self._on_focus_callback = callback
+
+    def on_focus(self) -> None:
+        """Called when the view gains focus."""
+        if self._on_focus_callback:
+            self._on_focus_callback()
 
     # --- Key handling -------------------------------------------------
 

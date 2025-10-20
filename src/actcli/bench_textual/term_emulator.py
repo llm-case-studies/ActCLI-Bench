@@ -7,7 +7,7 @@ just accumulates plain text lines.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Callable
 import wcwidth
 
 
@@ -35,10 +35,16 @@ class _NoopScreen:
 
 
 class EmulatedTerminal:
-    def __init__(self, cols: int = 120, rows: int = 32) -> None:
+    def __init__(
+        self,
+        cols: int = 120,
+        rows: int = 32,
+        debug_logger: Optional[Callable[[str], None]] = None
+    ) -> None:
         self.cols = cols
         self.rows = rows
         self._use_pyte = False
+        self._debug_logger = debug_logger
         try:
             import pyte  # type: ignore
 
@@ -113,6 +119,9 @@ class EmulatedTerminal:
             cy = getattr(self._screen, "cursor").y  # type: ignore[attr-defined]
             if 0 <= cy < len(lines):
                 line = lines[cy]
+                # Debug: log cursor position
+                if self._debug_logger:
+                    self._debug_logger(f"cursor at (x={cx}, y={cy}), line={repr(line[:50])}")
                 # Map column to string index
                 idx = self._index_from_column(line, cx)
                 if idx >= len(line):

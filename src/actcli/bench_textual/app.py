@@ -21,8 +21,6 @@ from textual.widgets import (
     Static,
     Input,
     Button,
-    ListView,
-    ListItem,
     Log,
     Checkbox,
     Label,
@@ -39,6 +37,7 @@ from ..wrapper.client import FacilitatorClient
 from .terminal_runner import TerminalRunner
 from .term_emulator import EmulatedTerminal
 from .term_view import TermView
+from .log_manager import LogManager
 
 
 THEME_CLASSES = ("theme-ledger", "theme-analyst", "theme-seminar")
@@ -67,15 +66,16 @@ class BenchTextualApp(App):
         self.add_class("theme-ledger")
         # App state
         self.session_manager = SessionManager()
+        self.log_manager = LogManager()
         self.viewer_url: Optional[str] = None
         self.facilitator_client: Optional[FacilitatorClient] = None
         self.terminals: Dict[str, TerminalItem] = {}
         self.active_terminal: Optional[str] = None
+        self.active_view: str = "terminal"
         self.mirror_to_facilitator: bool = False
         self.last_broadcast: Optional[str] = None
         self.adding_mode: bool = False
         self.connect_mode: bool = False
-        self._nav_items: Dict[int, str] = {}
         self.action_lines: List[str] = []
         # Kick off session bootstrap
         await self._bootstrap_session_async()
@@ -89,11 +89,8 @@ class BenchTextualApp(App):
             self._rebuild_nav_tree()
         except Exception:
             pass
-        # Log module path to help verify running code
-        try:
-            self._log_action(f"Bench module: {__file__}")
-        except Exception:
-            pass
+        # Set up terminal view focus callback to refresh cursor display
+        self.terminal_view.set_on_focus(self._on_terminal_view_focused)
 
     def compose(self) -> ComposeResult:
         yield Header(id="header")
@@ -112,7 +109,7 @@ class BenchTextualApp(App):
                 self.status_line = Static("Terminal", id="title")
                 yield self.status_line
                 # Active terminal output view (emulated, focusable)
-                self.terminal_view = TermView(id="terminal-view")
+                self.terminal_view = TermView(id="terminal-view", expand=True, shrink=False)
                 yield self.terminal_view
                 # Control pad
                 with Horizontal(id="control"):
@@ -151,13 +148,94 @@ class BenchTextualApp(App):
         # Route general bench messages to the actions log
         self._log_action(message)
 
+    def _debug_logger(self, message: str) -> None:
+        """Logger callback for terminal emulator debug output."""
+        self.log_manager.add("debug", message)
+
+    def _sync_terminal_size(self, name: str) -> None:
+        """Sync terminal view size to both emulator and PTY child process."""
+        if name not in self.terminals or name not in self.emulators:
+            return
+
+        view = getattr(self, "terminal_view", None)
+        if not view:
+            return
+
+        # Get pane size from Textual
+        content_region = getattr(view, "content_region", None)
+        if content_region is not None:
+            cols = content_region.width
+            rows = content_region.height
+        else:
+            cols = view.content_size.width
+            rows = view.content_size.height
+
+        if cols <= 0 or rows <= 0:
+            return
+
+        # Resize emulator
+        emu = self.emulators[name]
+        if emu.cols != cols or emu.rows != rows:
+            emu.resize(cols, rows)
+            self._debug_logger(f"Synced emulator size: {cols}x{rows}")
+
+        # Set PTY window size (this is the KEY fix!)
+        runner = self.terminals[name].runner
+        runner.set_winsize(rows, cols)
+        self._debug_logger(f"Synced PTY winsize: {rows}x{cols}")
+
+    def _resize_emulator_if_needed(self, emu: EmulatedTerminal) -> None:
+        """Resize emulator to match terminal view content area."""
+        view = getattr(self, "terminal_view", None)
+        if not view:
+            self._debug_logger("Resize skipped: no terminal_view")
+            return
+
+        # Debug: log all available size attributes
+        attrs_to_check = ["size", "region", "content_size", "container_size", "virtual_size"]
+        for attr in attrs_to_check:
+            if hasattr(view, attr):
+                val = getattr(view, attr)
+                self._debug_logger(f"view.{attr} = {val}")
+
+        # Textual's layout already accounts for borders and padding in content_size.
+        # If content_region is available (newer Textual), prefer that so we always
+        # operate on the actual renderable cell area.
+        content_region = getattr(view, "content_region", None)
+        if content_region is not None:
+            content_width = content_region.width
+            content_height = content_region.height
+            self._debug_logger(
+                f"Using content_region: {content_width}x{content_height}"
+            )
+        else:
+            content_width = view.content_size.width
+            content_height = view.content_size.height
+            self._debug_logger(
+                f"Using content_size: {content_width}x{content_height}"
+            )
+
+        if content_width <= 0 or content_height <= 0:
+            self._debug_logger(f"Resize skipped: invalid content size {content_width}x{content_height}")
+            return
+
+        if emu.cols != content_width or emu.rows != content_height:
+            old_size = f"{emu.cols}x{emu.rows}"
+            emu.resize(content_width, content_height)
+            self._debug_logger(f"Resized emulator from {old_size} to {content_width}x{content_height}")
+
     def _set_terminal_text(self, text: str) -> None:
         view = getattr(self, "terminal_view", None)
         if view:
             try:
+                # Debug: log what we're about to display
+                lines = text.split('\n')
+                if lines:
+                    first_line = lines[0] if lines else ""
+                    self._debug_logger(f"Setting text: {len(lines)} lines, first line len={len(first_line)}, preview={repr(first_line[:100])}")
                 view.update(text)
-            except Exception:
-                pass
+            except Exception as e:
+                self._debug_logger(f"Error updating view: {e}")
 
     def _log_action(self, message: str) -> None:
         # Always mirror to events category; compact sidebar writer is optional
@@ -182,14 +260,29 @@ class BenchTextualApp(App):
 
     # --- Internal helpers -------------------------------------------------
 
+    def _on_terminal_exit(self, name: str, exit_code: int) -> None:
+        """Log terminal exit status to Events."""
+        msg = f"Terminal '{name}' exited (code {exit_code})"
+        self._log_action(msg)
+
+    def _on_terminal_view_focused(self) -> None:
+        """Called when terminal view gains focus - refresh display with cursor."""
+        if self.active_terminal and self.active_terminal in self.emulators:
+            emu = self.emulators[self.active_terminal]
+            # Resize emulator to match terminal view if needed
+            self._resize_emulator_if_needed(emu)
+            self._set_terminal_text(emu.text_with_cursor(show=True))
+
     def _append_terminal_output(self, name: str, text: str) -> None:
         """Feed emulator for terminal 'name' and refresh view if active."""
         emu = self.emulators.get(name)
         if not emu:
-            emu = EmulatedTerminal()
+            emu = EmulatedTerminal(debug_logger=self._debug_logger)
             self.emulators[name] = emu
+        # Resize emulator to match view before feeding data
+        self._resize_emulator_if_needed(emu)
         emu.feed(text)
-        # Append to scrollback buffer (plain lines)
+        # Append to scrollback buffer (plain lines) and log to Output category
         sb = self.scroll_buffers.setdefault(name, [])
         for line in text.splitlines():
             clean = self._strip_ansi(line)
@@ -197,9 +290,11 @@ class BenchTextualApp(App):
                 sb.append(clean)
                 if len(sb) > self.max_scrollback_lines:
                     del sb[: len(sb) - self.max_scrollback_lines]
+                # Log plain output to Output category
+                self.log_manager.add("output", f"[{name}] {clean}")
         if self.active_terminal == name and self.active_view == "terminal" and self.scroll_offsets.get(name, 0) == 0:
             # Show cursor when in terminal view and not scrolled away
-            self._set_terminal_text(emu.text_with_cursor(show=self.terminal_view.focused))
+            self._set_terminal_text(emu.text_with_cursor(show=self.terminal_view.has_focus))
 
     # ANSI/control filtering adapted from wrapper.pty_wrapper
     def _strip_ansi(self, s: str) -> str:
@@ -281,29 +376,7 @@ class BenchTextualApp(App):
 
     def on_button_pressed(self, event: Button.Pressed) -> None:  # type: ignore[attr-defined]
         bid = event.button.id or ""
-        if bid == "btn-add":
-            # Toggle add mode: next Enter/Broadcast parses as add spec
-            self.adding_mode = True
-            self.connect_mode = False
-            self.control_input.placeholder = "Add terminal: <name> <command...>  (e.g., CO codex)"
-            self.control_input.value = ""
-            self.control_input.focus()
-        elif bid == "btn-connect":
-            # Toggle connect mode: join existing session
-            self.connect_mode = True
-            self.adding_mode = False
-            self.control_input.placeholder = "Connect: <session_id>"
-            self.control_input.value = ""
-            self.control_input.focus()
-        elif bid == "btn-mute-all":
-            for item in self.terminals.values():
-                item.muted = True
-            self._refresh_nav()
-        elif bid == "btn-unmute-all":
-            for item in self.terminals.values():
-                item.muted = False
-            self._refresh_nav()
-        elif bid == "btn-broadcast":
+        if bid == "btn-broadcast":
             text = self.control_input.value.strip()
             if text:
                 if self.adding_mode:
@@ -313,57 +386,6 @@ class BenchTextualApp(App):
                 else:
                     self._handle_broadcast(text)
                 self.control_input.value = ""
-        elif bid in ("tab-terminal", "tab-events", "tab-errors", "tab-output", "tab-debug"):
-            self._switch_view(bid)
-
-    def on_list_view_selected(self, event: ListView.Selected) -> None:  # type: ignore[attr-defined]
-        # Activate selected terminal by index mapping first
-        idx = getattr(event, "index", None)
-        name: Optional[str] = None
-        if isinstance(idx, int):
-            name = self._nav_items.get(idx)
-        if not name:
-            # Fallback to label parsing
-            try:
-                label = event.item.renderable  # Static or Label
-                name = str(getattr(label, "text", getattr(label, "renderable", label)))
-            except Exception:
-                name = str(event.item)
-            name = name.split(" ", 1)[0] if name else None
-        if name == "__logs__":
-            self.active_terminal = "__logs__"
-            self._set_terminal_text("\n".join(self.action_lines[-500:]) or "(no logs)" )
-            self._log_action("Opened Logs view")
-        elif name and name in self.terminals:
-            self.active_terminal = name
-            emu = self.emulators.get(name) or EmulatedTerminal()
-            self.emulators[name] = emu
-            self._set_terminal_text(f"→ Active: {name}\n" + emu.text_with_cursor())
-            # Focus terminal view and wire writer to active runner
-            self.terminal_view.set_writer(self._write_to_active)
-            self.terminal_view.set_navigator(self._on_navigate)
-            self.terminal_view.focus()
-            self._log_action(f"Selected terminal: {name}")
-
-    def on_list_view_highlighted(self, event: ListView.Highlighted) -> None:  # type: ignore[attr-defined]
-        # Also switch on highlight change for mouse/keyboard navigation
-        try:
-            label = event.item.renderable
-            name = str(getattr(label, "text", getattr(label, "renderable", label)))
-        except Exception:
-            name = str(event.item)
-        name = name.split(" ", 1)[0]
-        if name == "__logs__" and name != self.active_terminal:
-            self.active_terminal = "__logs__"
-            self._set_terminal_text("\n".join(self.action_lines[-500:]) or "(no logs)")
-            self._log_action("Highlighted Logs view")
-        elif name in self.terminals and name != self.active_terminal:
-            self.active_terminal = name
-            emu = self.emulators.get(name) or EmulatedTerminal()
-            self.emulators[name] = emu
-            self._set_terminal_text(f"→ Active: {name}\n" + emu.text_with_cursor())
-            self.terminal_view.set_writer(self._write_to_active)
-            self._log_action(f"Highlighted terminal: {name}")
 
     # --- UI helpers -------------------------------------------------------
 
@@ -422,6 +444,7 @@ class BenchTextualApp(App):
             return
         runner = TerminalRunner(name=name, command=cmd, muted=True)
         runner.on_output(lambda text, n=name: self.call_from_thread(self._append_terminal_output, n, text))
+        runner.on_exit(lambda code, n=name: self.call_from_thread(self._on_terminal_exit, n, code))
         ok = runner.start()
         if not ok:
             self._log(f"Failed to start: {' '.join(cmd)}")
@@ -429,7 +452,9 @@ class BenchTextualApp(App):
             return
         self.terminals[name] = TerminalItem(name=name, command=cmd, runner=runner, muted=True)
         # init emulator buffer
-        self.emulators[name] = EmulatedTerminal()
+        self.emulators[name] = EmulatedTerminal(debug_logger=self._debug_logger)
+        # Set initial PTY size (critical - do this right after starting!)
+        self._sync_terminal_size(name)
         if not self.active_terminal:
             self.active_terminal = name
         self._refresh_nav()
@@ -443,13 +468,14 @@ class BenchTextualApp(App):
     def _switch_view(self, tab_id: str) -> None:
         if tab_id == "tab-terminal":
             self.active_view = "terminal"
+            self.terminal_view.set_writer(self._write_to_active)
+            self.terminal_view.focus()
             name = self.active_terminal
             text = ""
             if name and name in self.emulators:
-                text = self.emulators[name].text_with_cursor()
+                # Show cursor immediately since we just focused
+                text = self.emulators[name].text_with_cursor(show=True)
             self._set_terminal_text(text)
-            self.terminal_view.set_writer(self._write_to_active)
-            self.terminal_view.focus()
             return
 
         # Logs view
@@ -542,13 +568,15 @@ class BenchTextualApp(App):
             name = data.get("name")
             if name in self.terminals:
                 self.active_terminal = name
-                emu = self.emulators.get(name) or EmulatedTerminal()
+                emu = self.emulators.get(name) or EmulatedTerminal(debug_logger=self._debug_logger)
                 self.emulators[name] = emu
                 self.active_view = "terminal"
-                self._set_terminal_text(emu.text_with_cursor(show=True))
                 self.terminal_view.set_writer(self._write_to_active)
                 self.terminal_view.set_navigator(self._on_navigate)
                 self.terminal_view.focus()
+                # Sync terminal size to both emulator and PTY
+                self._sync_terminal_size(name)
+                self._set_terminal_text(emu.text_with_cursor(show=True))
                 self._log_action(f"Selected terminal: {name}")
         elif t == "connect":
             # Inline connect prompt using control input
