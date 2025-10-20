@@ -156,23 +156,24 @@ class BenchTextualApp(App):
                 pass
 
     def _log_action(self, message: str) -> None:
-        alog = getattr(self, "actions_log", None)
-        if not alog:
-            return
+        # Always mirror to events category; compact sidebar writer is optional
         self.action_lines.append(message)
-        if hasattr(alog, "write"):
-            try:
-                alog.write(message)
-                return
-            except Exception:
-                pass
         try:
-            alog.write_line(message)
+            self.log_manager.add("events", message)
         except Exception:
             pass
-        # If user is viewing the special Logs item, mirror to terminal view
-        if self.active_terminal == "__logs__":
-            self._set_terminal_text("\n".join(self.action_lines[-500:]))
+        alog = getattr(self, "actions_log", None)
+        if alog:
+            try:
+                if hasattr(alog, "write"):
+                    alog.write(message)
+                else:
+                    alog.write_line(message)
+            except Exception:
+                pass
+        # If viewing Events in right pane, refresh it
+        if getattr(self, "active_view", "") == "log:events":
+            self._set_terminal_text(self.log_manager.text("events"))
 
 
     # --- Internal helpers -------------------------------------------------
@@ -477,7 +478,15 @@ class BenchTextualApp(App):
 
     # --- Tree nav ------------------------------------------------------
     def _rebuild_nav_tree(self) -> None:
-        self.nav_tree.root.children.clear()
+        # Clear existing children in a way compatible with Textual 6.x
+        try:
+            for child in list(self.nav_tree.root.children):
+                try:
+                    child.remove()
+                except Exception:
+                    pass
+        except Exception:
+            pass
         terminals_node = self.nav_tree.root.add("Terminals")
         for name, item in self.terminals.items():
             mark = "[M]" if item.muted else "[U]"
