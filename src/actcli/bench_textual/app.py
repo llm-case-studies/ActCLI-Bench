@@ -26,6 +26,7 @@ from textual.widgets import (
     Log,
     Checkbox,
     Label,
+    Tree,
 )
 
 from dataclasses import dataclass
@@ -79,6 +80,10 @@ class BenchTextualApp(App):
         # Kick off session bootstrap
         await self._bootstrap_session_async()
         self.emulators: Dict[str, EmulatedTerminal] = {}
+        # Scrollback state
+        self.scroll_buffers: Dict[str, list[str]] = {}
+        self.scroll_offsets: Dict[str, int] = {}
+        self.max_scrollback_lines: int = 2000
         # Log module path to help verify running code
         try:
             self._log_action(f"Bench module: {__file__}")
@@ -92,16 +97,10 @@ class BenchTextualApp(App):
         with Horizontal(id="body"):
             with Vertical(id="sidebar"):
                 yield Static("ActCLI • Bench", id="brand")
-                yield Button("+ Add Terminal", id="btn-add")
-                yield Button("Connect Session", id="btn-connect")
-                yield Button("Mute All", id="btn-mute-all")
-                yield Button("Unmute All", id="btn-unmute-all")
-                self.nav = ListView(id="nav")
-                yield self.nav
-                # Logs widget remains for quick, compact view
-                yield Static("Logs", id="logs-label")
-                self.actions_log = Log(id="actions-log")
-                yield self.actions_log
+                # Tree navigation
+                self.nav_tree = Tree("Navigation", id="nav-tree")
+                yield self.nav_tree
+                self._rebuild_nav_tree()
                 yield Static("F1: Ledger • F2: Analyst • F3: Seminar", id="hint")
 
             with Vertical(id="detail"):
@@ -185,9 +184,17 @@ class BenchTextualApp(App):
             emu = EmulatedTerminal()
             self.emulators[name] = emu
         emu.feed(text)
-        if self.active_terminal == name:
-            # Show cursor when in terminal view
-            self._set_terminal_text(emu.text_with_cursor())
+        # Append to scrollback buffer (plain lines)
+        sb = self.scroll_buffers.setdefault(name, [])
+        for line in text.splitlines():
+            clean = self._strip_ansi(line)
+            if clean:
+                sb.append(clean)
+                if len(sb) > self.max_scrollback_lines:
+                    del sb[: len(sb) - self.max_scrollback_lines]
+        if self.active_terminal == name and self.active_view == "terminal" and self.scroll_offsets.get(name, 0) == 0:
+            # Show cursor when in terminal view and not scrolled away
+            self._set_terminal_text(emu.text_with_cursor(show=self.terminal_view.focused))
 
     # ANSI/control filtering adapted from wrapper.pty_wrapper
     def _strip_ansi(self, s: str) -> str:
@@ -328,9 +335,10 @@ class BenchTextualApp(App):
             self.emulators[name] = emu
             self._set_terminal_text(f"→ Active: {name}\n" + emu.text_with_cursor())
             # Focus terminal view and wire writer to active runner
-            self.terminal_view.set_writer(self._write_to_active)
-            self.terminal_view.focus()
-            self._log_action(f"Selected terminal: {name}")
+                self.terminal_view.set_writer(self._write_to_active)
+                self.terminal_view.set_navigator(self._on_navigate)
+                self.terminal_view.focus()
+                self._log_action(f"Selected terminal: {name}")
 
     def on_list_view_highlighted(self, event: ListView.Highlighted) -> None:  # type: ignore[attr-defined]
         # Also switch on highlight change for mouse/keyboard navigation
@@ -422,6 +430,9 @@ class BenchTextualApp(App):
         self._refresh_nav()
         self._set_terminal_text(f"Added terminal '{name}' → {' '.join(cmd)}  [muted]")
         self._log_action(f"Added: {name} cmd={' '.join(cmd)} [muted]")
+        # Prepare scrollback structures
+        self.scroll_buffers[name] = []
+        self.scroll_offsets[name] = 0
 
     # --- View switching -------------------------------------------------
     def _switch_view(self, tab_id: str) -> None:
@@ -462,18 +473,121 @@ class BenchTextualApp(App):
             pass
 
     def _refresh_nav(self) -> None:
-        self.nav.clear()
-        # Always insert a Logs item at the top
-        self.nav.append(ListItem(Label("Logs")))
-        self._nav_items[0] = "__logs__"
-        # Display terminals with mute marker
-        if not self.terminals:
-            return
-        for idx, (name, item) in enumerate(self.terminals.items(), start=1):
+        self._rebuild_nav_tree()
+
+    # --- Tree nav ------------------------------------------------------
+    def _rebuild_nav_tree(self) -> None:
+        self.nav_tree.root.children.clear()
+        terminals_node = self.nav_tree.root.add("Terminals")
+        for name, item in self.terminals.items():
             mark = "[M]" if item.muted else "[U]"
-            lbl = Label(f"{name}  {mark}")
-            self.nav.append(ListItem(lbl))
-            self._nav_items[idx] = name
+            node = terminals_node.add(f"{name} {mark}")
+            node.data = {"type": "terminal", "name": name}
+        sessions_node = self.nav_tree.root.add("Sessions")
+        cur = sessions_node.add("Current session")
+        cur.data = {"type": "session_info"}
+        connect = sessions_node.add("Connect…")
+        connect.data = {"type": "connect"}
+        settings_node = self.nav_tree.root.add("Settings")
+        m_all = settings_node.add("Mute All")
+        m_all.data = {"type": "action", "id": "mute_all"}
+        u_all = settings_node.add("Unmute All")
+        u_all.data = {"type": "action", "id": "unmute_all"}
+        mirror = settings_node.add(f"Mirror to viewer {'[X]' if self.chk_mirror.value if hasattr(self,'chk_mirror') else False else ''}")
+        mirror.data = {"type": "action", "id": "toggle_mirror"}
+        logs_node = self.nav_tree.root.add("Logs")
+        for cat in ("Events", "Errors", "Output", "Debug"):
+            n = logs_node.add(cat)
+            n.data = {"type": "log", "cat": cat.lower()}
+        self.nav_tree.root.expand()
+        terminals_node.expand()
+        sessions_node.expand()
+        settings_node.expand()
+        logs_node.expand()
+
+    def on_tree_node_selected(self, event: Tree.NodeSelected) -> None:  # type: ignore[attr-defined]
+        data = getattr(event.node, "data", None) or {}
+        t = data.get("type")
+        if t == "terminal":
+            name = data.get("name")
+            if name in self.terminals:
+                self.active_terminal = name
+                emu = self.emulators.get(name) or EmulatedTerminal()
+                self.emulators[name] = emu
+                self.active_view = "terminal"
+                self._set_terminal_text(emu.text_with_cursor(show=True))
+                self.terminal_view.set_writer(self._write_to_active)
+                self.terminal_view.set_navigator(self._on_navigate)
+                self.terminal_view.focus()
+                self._log_action(f"Selected terminal: {name}")
+        elif t == "connect":
+            # Inline connect prompt using control input
+            self.connect_mode = True
+            self.adding_mode = False
+            self.control_input.placeholder = "Connect: <session_id>"
+            self.control_input.value = ""
+            self.control_input.focus()
+        elif t == "action":
+            aid = data.get("id")
+            if aid == "mute_all":
+                for item in self.terminals.values():
+                    item.muted = True
+                self._rebuild_nav_tree()
+            elif aid == "unmute_all":
+                for item in self.terminals.values():
+                    item.muted = False
+                self._rebuild_nav_tree()
+            elif aid == "toggle_mirror":
+                try:
+                    self.chk_mirror.value = not self.chk_mirror.value
+                except Exception:
+                    pass
+                self._rebuild_nav_tree()
+        elif t == "log":
+            cat = data.get("cat", "events")
+            self._switch_view({
+                "events": "tab-events",
+                "errors": "tab-errors",
+                "output": "tab-output",
+                "debug": "tab-debug",
+            }[cat])
+
+    # --- Scrollback navigation ----------------------------------------
+    def _on_navigate(self, action: str, amount: int) -> bool:
+        name = self.active_terminal
+        if not name or name not in self.scroll_buffers:
+            return False
+        # Ensure buffer exists
+        buf = self.scroll_buffers[name]
+        offset = self.scroll_offsets.get(name, 0)
+        if action == 'wheel':
+            offset = max(0, offset - amount)
+        elif action == 'pageup':
+            offset = max(0, offset - abs(amount))
+        elif action == 'pagedown':
+            offset = max(0, offset + abs(amount))
+        elif action == 'home':
+            offset = len(buf)
+        elif action == 'end':
+            offset = 0
+        else:
+            return False
+        self.scroll_offsets[name] = offset
+        self._render_scrollback(name)
+        return True
+
+    def _render_scrollback(self, name: str) -> None:
+        buf = self.scroll_buffers.get(name, [])
+        offset = self.scroll_offsets.get(name, 0)
+        if not buf:
+            return
+        # Show last screen worth with offset
+        lines = buf
+        height = max(10, self.size.height - 6)
+        start = max(0, len(lines) - height - offset)
+        view = lines[start:start+height]
+        indicator = f"[SCROLLBACK offset={offset}]\n" if offset else ""
+        self._set_terminal_text(indicator + "\n".join(view))
 
 
 def main() -> None:
