@@ -44,6 +44,7 @@ from .term_emulator import EmulatedTerminal
 from .term_view import TermView
 from .log_manager import LogManager
 from .terminal_manager import TerminalManager
+from .diagnostics import DiagnosticsManager
 
 
 THEME_CLASSES = ("theme-ledger", "theme-analyst", "theme-seminar")
@@ -81,6 +82,17 @@ class BenchTextualApp(App):
             on_output_callback=self._on_terminal_output
         )
 
+        # Version info (will be populated in on_mount)
+        self._version_info: Dict[str, str] = {}
+
+        # Diagnostics manager
+        self.diagnostics = DiagnosticsManager(
+            terminal_manager=self.terminal_manager,
+            log_manager=self.log_manager,
+            version_info=self._version_info,
+            get_app_state=self._get_app_state_for_diagnostics
+        )
+
         # UI state
         self.viewer_url: Optional[str] = None
         self.facilitator_client: Optional[FacilitatorClient] = None
@@ -92,8 +104,6 @@ class BenchTextualApp(App):
         self.connect_mode: bool = False
         self.action_lines: List[str] = []
         self._session_id: Optional[str] = None
-        self._version_info: Dict[str, str] = {}
-        self._key_events: list[str] = []
         self._writer_attached: bool = False
         self._border_blink_timer: Optional[Timer] = None
 
@@ -195,6 +205,18 @@ class BenchTextualApp(App):
     def _debug_logger(self, message: str) -> None:
         """Logger callback for terminal emulator debug output."""
         self.log_manager.add("debug", message)
+
+    def _get_app_state_for_diagnostics(self) -> Dict[str, any]:
+        """Get current app state for diagnostics snapshot.
+
+        Returns:
+            Dictionary with active_view, active_terminal, writer_attached
+        """
+        return {
+            "active_view": self.active_view,
+            "active_terminal": self.active_terminal,
+            "writer_attached": self._writer_attached
+        }
 
     def _gather_version_info(self) -> Dict[str, str]:
         """Collect version metadata for status banner."""
@@ -325,97 +347,26 @@ class BenchTextualApp(App):
         except Exception:
             _clear_border()
 
-    def _recent_log_text(self, category: str, limit: int = 50) -> str:
-        buf = self.log_manager.buffers.get(category)
-        if not buf:
-            return "(none)"
-        lines = list(buf)
-        if limit:
-            lines = lines[-limit:]
-        return "\n".join(lines) if lines else "(none)"
-
     def _troubleshooting_snapshot(self) -> str:
-        versions = self._version_info or self._gather_version_info()
-        lines: list[str] = []
-        lines.append(f"timestamp: {datetime.utcnow().isoformat()}Z")
-        lines.append("versions:")
-        lines.append(f"  actcli-bench: {versions.get('bench', 'unknown')}")
-        lines.append(f"  textual: {versions.get('textual', 'unknown')}")
-        lines.append(f"  pyte: {versions.get('pyte', 'none')}")
-        lines.append(f"active_view: {self.active_view}")
-        lines.append(f"active_terminal: {self.active_terminal or '(none)'}")
-        lines.append(f"writer_attached: {self._writer_attached}")
-        lines.append("terminals:")
-        for name in self.terminal_manager.list_terminals():
-            state = self.terminal_manager.get_terminal_state(name)
-            if not state:
-                continue
-
-            emu = state.emulator
-            emu_size = f"{emu.cols}x{emu.rows}"
-            last_sync = state.last_synced_size
-            sync_str = f"{last_sync[0]}x{last_sync[1]}" if last_sync else "n/a"
-            tty_preview = state.output_buffer[-120:] if state.output_buffer else ""
-            runner = state.item
-            first_preview = ""
-            if hasattr(runner, "first_output_preview"):
-                try:
-                    first_preview = runner.first_output_preview(240)
-                except Exception:
-                    first_preview = ""
-            lines.append(
-                f"  - {name}: muted={runner.muted} cmd={' '.join(runner.command)} "
-                f"emu={emu_size} last_winsize={sync_str}"
-            )
-            history = state.winsize_history
-            if history:
-                lines.append("    winsize_history:")
-                for entry in history[-10:]:
-                    lines.append(f"      • {entry}")
-            if tty_preview:
-                lines.append("    recent_output_preview:")
-                lines.append("      " + tty_preview.replace("\n", "\\n"))
-            if first_preview:
-                lines.append("    first_output_preview:")
-                lines.append("      " + first_preview.replace("\n", "\\n"))
-        lines.append("---- recent events ----")
-        lines.append(self._recent_log_text("events"))
-        lines.append("---- recent errors ----")
-        lines.append(self._recent_log_text("errors"))
-        lines.append("---- recent debug ----")
-        lines.append(self._recent_log_text("debug"))
-        lines.append("---- recent output ----")
-        lines.append(self._recent_log_text("output"))
-        if self._key_events:
-            lines.append("---- recent key events ----")
-            lines.extend(self._key_events[-20:])
-        return "\n".join(lines)
+        """Generate troubleshooting snapshot - delegates to DiagnosticsManager."""
+        return self.diagnostics.generate_snapshot()
 
     def _update_troubleshooting_log(self) -> str:
-        snapshot = self._troubleshooting_snapshot()
-        buf = self.log_manager.buffers.get("troubleshooting")
-        if buf is not None:
-            buf.clear()
-        self.log_manager.add("troubleshooting", snapshot)
-        return snapshot
+        """Update troubleshooting log - delegates to DiagnosticsManager."""
+        return self.diagnostics.update_troubleshooting_log()
 
     def _export_troubleshooting_pack(self) -> None:
-        snapshot = self._update_troubleshooting_log()
-        try:
-            target_dir = Path("docs") / "Trouble-Snaps"
-            target_dir.mkdir(parents=True, exist_ok=True)
-            timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-            target_file = target_dir / f"troubleshooting_pack_{timestamp}.txt"
-            target_file.write_text(snapshot, encoding="utf-8")
-            self._log_action(f"Troubleshooting pack saved → {target_file}")
-        except Exception as exc:
-            self._log_action(f"Troubleshooting pack export failed: {exc}")
+        """Export troubleshooting pack to file - delegates to DiagnosticsManager."""
+        result = self.diagnostics.export_to_file()
+        if result:
+            self._log_action(f"Troubleshooting pack saved → {result}")
+        else:
+            self._log_action("Troubleshooting pack export failed")
 
     def _record_key_event(self, key: str, character: Optional[str], modifiers: set[str]) -> None:
+        """Record key event for diagnostics - delegates to DiagnosticsManager."""
+        self.diagnostics.record_key_event(key, character, modifiers)
         entry = f"key={key!r} char={character!r} mods={sorted(modifiers)} writer={self._writer_attached}"
-        self._key_events.append(entry)
-        if len(self._key_events) > 50:
-            del self._key_events[:-50]
         self._debug_logger(f"KEY event: {entry}")
 
     def _log_emulator_mode(self, term_name: str, emulator: EmulatedTerminal) -> None:
