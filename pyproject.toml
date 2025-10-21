@@ -1,6 +1,6 @@
 [project]
 name = "actcli-bench"
-version = "0.0.0"
+version = "0.0.3"
 description = "Facilitator + wrappers + bench UIs for ActCLI"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -16,7 +16,7 @@ dependencies = [
 
 [project.optional-dependencies]
 tui = ["prompt_toolkit>=3.0.43", "pyte>=0.8.1"]
-textual = ["textual>=0.50.0"]
+textual = ["textual>=0.50.0", "pyte>=0.8.1", "wcwidth>=0.2.0"]
 auth = ["keyring>=25.0.0"]
 
 [project.scripts]
@@ -31,4 +31,3 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/actcli"]
-

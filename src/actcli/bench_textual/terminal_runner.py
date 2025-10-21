@@ -18,6 +18,10 @@ import pty
 import select
 import sys
 import threading
+import fcntl
+import termios
+import struct
+import signal
 from dataclasses import dataclass, field
 from typing import Callable, List, Optional
 import shlex
@@ -25,6 +29,7 @@ import time
 
 
 OutputCallback = Callable[[str], None]
+ExitCallback = Callable[[int], None]
 
 
 @dataclass
@@ -37,17 +42,99 @@ class TerminalRunner:
     _reader_thread: Optional[threading.Thread] = None
     _stop_event: threading.Event = field(default_factory=threading.Event)
     _on_output: Optional[OutputCallback] = None
+    _on_exit: Optional[ExitCallback] = None
+    _first_output: bytearray = field(default_factory=bytearray, init=False, repr=False)
+    _last_requested_rows: Optional[int] = field(default=None, init=False, repr=False)
+    _last_requested_cols: Optional[int] = field(default=None, init=False, repr=False)
+    _post_output_resize_pending: bool = field(default=False, init=False, repr=False)
+    _post_output_resize_done: bool = field(default=False, init=False, repr=False)
+    _pending_scheduled_resize: Optional[threading.Timer] = field(default=None, init=False, repr=False)
 
     def on_output(self, cb: OutputCallback) -> None:
         self._on_output = cb
+
+    def on_exit(self, cb: ExitCallback) -> None:
+        """Set callback for process exit (receives exit code)."""
+        self._on_exit = cb
+
+    def set_winsize(self, rows: int, cols: int) -> None:
+        """Set PTY window size and notify child process via SIGWINCH."""
+        self._apply_winsize(rows, cols)
+        self._last_requested_rows = rows
+        self._last_requested_cols = cols
+        if not self._post_output_resize_done:
+            self._post_output_resize_pending = True
+
+    def _apply_child_winsize(self, rows: int, cols: int) -> None:
+        """Set initial winsize inside the child process before exec."""
+        try:
+            winsize = struct.pack("HHHH", rows, cols, 0, 0)
+        except Exception:
+            return
+        try:
+            import os
+            os.environ["LINES"] = str(rows)
+            os.environ["ROWS"] = str(rows)
+            os.environ["COLUMNS"] = str(cols)
+            os.environ["COLS"] = str(cols)
+        except Exception:
+            pass
+        for stream in (sys.stdin, sys.stdout, sys.stderr):
+            try:
+                fd = stream.fileno()
+                fcntl.ioctl(fd, termios.TIOCSWINSZ, winsize)
+            except Exception:
+                continue
+
+    def get_winsize(self) -> Optional[tuple[int, int]]:
+        """Return current PTY winsize as (rows, cols) if available."""
+        if self.master_fd is None:
+            return None
+        try:
+            data = fcntl.ioctl(self.master_fd, termios.TIOCGWINSZ, struct.pack('HHHH', 0, 0, 0, 0))
+            rows, cols, _, _ = struct.unpack('HHHH', data)
+            return rows, cols
+        except Exception:
+            return None
+
+    def first_output_preview(self, limit: int = 512) -> str:
+        if not self._first_output:
+            return ""
+        return self._first_output[:limit].decode("utf-8", errors="replace")
+
+    def _apply_winsize(self, rows: int, cols: int) -> None:
+        if self.master_fd is None:
+            return
+        try:
+            winsize = struct.pack('HHHH', rows, cols, 0, 0)
+            fcntl.ioctl(self.master_fd, termios.TIOCSWINSZ, winsize)
+        except Exception:
+            pass
+        if self.pid:
+            try:
+                os.kill(self.pid, signal.SIGWINCH)
+            except Exception:
+                pass
 
     def start(self) -> bool:
         """Fork process in PTY and begin background read loop."""
         if self.pid is not None:
             return True
 
+        self._first_output.clear()
+        self._post_output_resize_pending = False
+        self._post_output_resize_done = False
+        if self._pending_scheduled_resize is not None:
+            try:
+                self._pending_scheduled_resize.cancel()
+            except Exception:
+                pass
+            self._pending_scheduled_resize = None
+
         pid, master = pty.fork()
         if pid == 0:
+            # Child: apply an explicit winsize before exec to avoid 80x24 default
+            self._apply_child_winsize(rows=48, cols=240)
             # Child: exec the command; fallback to bash -lc "cmd" if direct exec fails
             try:
                 os.execvp(self.command[0], self.command)
@@ -67,15 +154,21 @@ class TerminalRunner:
         self._stop_event.clear()
         self._reader_thread = threading.Thread(target=self._reader_loop, daemon=True)
         self._reader_thread.start()
-
-        # Best-effort: disable mouse tracking, bracketed paste, focus reporting
-        # to reduce control-sequence noise from chatty TUIs.
+        # Initialize default window size so child doesn't assume 80x24.
         try:
-            if self.master_fd is not None:
-                os.write(self.master_fd, b"\x1B[?9l\x1B[?1000l\x1B[?1001l\x1B[?1002l\x1B[?1003l\x1B[?1006l\x1B[?1015l")
-                os.write(self.master_fd, b"\x1B[?2004l\x1B[?1004l")
+            self.set_winsize(rows=48, cols=240)
         except Exception:
             pass
+
+        # Disabled: these sequences can cause issues with some programs
+        # that echo them back, creating garbled output at startup.
+        # The emulator (pyte) handles mouse tracking sequences fine anyway.
+        # try:
+        #     if self.master_fd is not None:
+        #         os.write(self.master_fd, b"\x1B[?9l\x1B[?1000l\x1B[?1001l\x1B[?1002l\x1B[?1003l\x1B[?1006l\x1B[?1015l")
+        #         os.write(self.master_fd, b"\x1B[?2004l\x1B[?1004l")
+        # except Exception:
+        #     pass
         # Quick sanity: detect immediate child exit
         for _ in range(10):
             if not self.is_alive():
@@ -95,6 +188,29 @@ class TerminalRunner:
                         data = os.read(fd, 4096)
                         if not data:
                             break
+                        if len(self._first_output) < 2048:
+                            remaining = 2048 - len(self._first_output)
+                            self._first_output.extend(data[:remaining])
+                            if self._pending_scheduled_resize is None and self._last_requested_rows and self._last_requested_cols:
+                                def _delayed_resize() -> None:
+                                    try:
+                                        self._apply_winsize(self._last_requested_rows, self._last_requested_cols)
+                                    finally:
+                                        self._pending_scheduled_resize = None
+                                timer = threading.Timer(0.5, _delayed_resize)
+                                timer.daemon = True
+                                timer.start()
+                                self._pending_scheduled_resize = timer
+
+                        if (
+                            not self._post_output_resize_done
+                            and self._post_output_resize_pending
+                            and self._last_requested_rows is not None
+                            and self._last_requested_cols is not None
+                        ):
+                            self._apply_winsize(self._last_requested_rows, self._last_requested_cols)
+                            self._post_output_resize_pending = False
+                            self._post_output_resize_done = True
                         if self._on_output:
                             # Stream as-is; UI may decide how to render
                             text = data.decode("utf-8", errors="replace")
@@ -103,6 +219,14 @@ class TerminalRunner:
                         break
             except Exception:
                 break
+        # Process exited - get exit status and call callback
+        if self.pid is not None and self._on_exit:
+            try:
+                _, status = os.waitpid(self.pid, os.WNOHANG)
+                exit_code = os.WEXITSTATUS(status) if os.WIFEXITED(status) else -1
+                self._on_exit(exit_code)
+            except Exception:
+                pass
 
     def write(self, data: str) -> None:
         """Write text to the child's stdin (via PTY)."""
@@ -114,8 +238,9 @@ class TerminalRunner:
             pass
 
     def inject(self, text: str) -> None:
-        """Inject a line (adds trailing newline)."""
-        self.write(text + "\n")
+        """Inject a line (presses Enter)."""
+        # Use carriage return to simulate Enter reliably across TUIs
+        self.write(text + "\r")
 
     def close(self) -> None:
         # Stop reader loop
