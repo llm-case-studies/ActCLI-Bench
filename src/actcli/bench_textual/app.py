@@ -133,11 +133,7 @@ class BenchTextualApp(ActCLIShell):
         await self._bootstrap_session_async()
         # Session bootstrap may update status text, refresh afterwards
         self._update_status_line()
-        # Build nav tree after state is ready
-        try:
-            self._rebuild_nav_tree()
-        except Exception:
-            pass
+        # Note: Navigation tree already built by base shell's on_mount()
         # Set up terminal view focus callback to refresh cursor display
         self.terminal_view.set_on_focus(self._on_terminal_view_focused)
 
