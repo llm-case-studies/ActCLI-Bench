@@ -12,7 +12,8 @@ from typing import Protocol, Iterator, runtime_checkable
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Header, Static, Tree, Input, Button
+from textual.widgets import Header, Static, Input, Button
+from .navigation_tree import NavigationTree
 
 
 @runtime_checkable
@@ -23,11 +24,11 @@ class NavigationProvider(Protocol):
     in the build_navigation_tree method.
     """
 
-    def build_navigation_tree(self, tree: Tree) -> None:
+    def build_navigation_tree(self, tree: NavigationTree) -> None:
         """Build the navigation tree structure.
 
         Args:
-            tree: The Tree widget to populate with navigation nodes
+            tree: The NavigationTree widget to configure with sections/handlers
         """
         ...
 
@@ -100,7 +101,7 @@ class ActCLIShell(App):
         self._active_theme = self.DEFAULT_THEME
 
         # Widgets that subclasses can access
-        self.nav_tree: Tree | None = None
+        self.nav_tree: NavigationTree | None = None
         self.status_line: Static | None = None
         self.control_input: Input | None = None
 
@@ -125,7 +126,7 @@ class ActCLIShell(App):
             # Sidebar
             with Vertical(id="sidebar"):
                 yield Static(self.get_brand_text(), id="brand")
-                self.nav_tree = Tree("Navigation", id="nav-tree")
+                self.nav_tree = NavigationTree("Navigation", id="nav-tree")
                 yield self.nav_tree
                 yield Static(self.get_theme_hints(), id="hint")
 
