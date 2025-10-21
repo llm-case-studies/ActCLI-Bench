@@ -26,6 +26,8 @@ class TermView(Static):
         self._writer: Optional[Callable[[str], None]] = None
         self._navigator: Optional[Callable[[str, int], bool]] = None
         self._on_focus_callback: Optional[Callable[[], None]] = None
+        self._size_listener: Optional[Callable[[], None]] = None
+        self._key_logger: Optional[Callable[[str, Optional[str], set[str]], None]] = None
 
         # Try to disable text wrapping - Static widget might be auto-wrapping
         # Check if these attributes exist and set them
@@ -48,10 +50,38 @@ class TermView(Static):
         """Set callback to call when view gains focus."""
         self._on_focus_callback = callback
 
+    def set_size_listener(self, callback: Callable[[], None]) -> None:
+        """Set callback invoked when the widget is resized."""
+        self._size_listener = callback
+
+    def set_key_logger(self, callback: Callable[[str, Optional[str], set[str]], None]) -> None:
+        """Set callback invoked for raw key events."""
+        self._key_logger = callback
+
     def on_focus(self) -> None:
         """Called when the view gains focus."""
+        self.add_class("has-focus")
         if self._on_focus_callback:
             self._on_focus_callback()
+
+    def on_blur(self) -> None:  # type: ignore[override]
+        """Remove focus styling when focus is lost."""
+        try:
+            self.remove_class("has-focus")
+        except Exception:
+            pass
+
+    def on_resize(self, event) -> None:  # type: ignore[override]
+        if self._size_listener:
+            try:
+                self._size_listener()
+            except Exception:
+                pass
+        parent = super()
+        handler = getattr(parent, "on_resize", None)
+        if callable(handler):
+            return handler(event)
+        return None
 
     # --- Key handling -------------------------------------------------
 
@@ -77,11 +107,20 @@ class TermView(Static):
 
             seq: Optional[str] = None
             k = (event.key or '').lower()
+            mods = set(getattr(event, "modifiers", []) or [])
+
+            if self._key_logger:
+                try:
+                    self._key_logger(k, getattr(event, 'character', None), mods)
+                except Exception:
+                    pass
 
             # Printable characters
             ch = getattr(event, 'character', None)
             if ch and len(ch) == 1:
                 seq = ch
+            elif not ch and k and len(k) == 1 and not any(mod in getattr(event, "modifiers", []) for mod in ("ctrl", "alt", "meta")):
+                seq = k
 
             # Control keys
             mapping = {
@@ -104,6 +143,11 @@ class TermView(Static):
 
             if seq is None:
                 seq = mapping.get(k)
+
+            # Ctrl+<char> handling
+            if seq is None and "ctrl" in mods and k and len(k) == 1:
+                ctrl_char = k.upper()
+                seq = chr(ord(ctrl_char) & 0x1F)
 
             if seq is not None:
                 try:

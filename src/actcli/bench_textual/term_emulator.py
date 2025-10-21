@@ -44,13 +44,16 @@ class EmulatedTerminal:
         self.cols = cols
         self.rows = rows
         self._use_pyte = False
+        self._pyte_version: Optional[str] = None
         self._debug_logger = debug_logger
         try:
             import pyte  # type: ignore
 
-            self._screen = pyte.Screen(cols, rows)
+            # pyte.Screen(columns, lines) - note the order!
+            self._screen = pyte.Screen(columns=cols, lines=rows)
             self._stream = pyte.ByteStream(self._screen)
             self._use_pyte = True
+            self._pyte_version = getattr(pyte, "__version__", None)
         except Exception:
             self._screen = _NoopScreen(cols, rows)  # type: ignore
             self._stream = None
@@ -137,8 +140,25 @@ class EmulatedTerminal:
         self.rows = rows
         if self._use_pyte:
             try:
-                self._screen.resize(cols, rows)  # type: ignore[attr-defined]
-            except Exception:
-                pass
+                # CRITICAL: pyte.Screen.resize(lines, columns) not (columns, lines)!
+                self._screen.resize(lines=rows, columns=cols)  # type: ignore[attr-defined]
+                # Debug: verify the resize actually worked
+                if self._debug_logger:
+                    actual_cols = getattr(self._screen, 'columns', '?')
+                    actual_rows = getattr(self._screen, 'lines', '?')
+                    self._debug_logger(f"[Emulator] resize(cols={cols}, rows={rows}) → pyte screen is now {actual_cols}x{actual_rows}")
+            except Exception as e:
+                if self._debug_logger:
+                    self._debug_logger(f"[Emulator] resize(cols={cols}, rows={rows}) FAILED: {e}")
         else:
             self._screen.resize(cols, rows)  # type: ignore
+
+    @property
+    def mode(self) -> str:
+        """Current rendering mode."""
+        return "pyte" if self._use_pyte else "plain"
+
+    @property
+    def pyte_version(self) -> str:
+        """Return detected pyte version or 'none' when unavailable."""
+        return self._pyte_version or "none"

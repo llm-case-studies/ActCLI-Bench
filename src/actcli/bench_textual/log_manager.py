@@ -16,7 +16,7 @@ class LogManager:
     buffers: Dict[str, Deque[str]] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        for name in ("events", "errors", "debug", "output"):
+        for name in ("events", "errors", "debug", "output", "troubleshooting"):
             self.buffers[name] = deque(maxlen=self.max_lines)
 
     def add(self, category: str, message: str) -> None:
@@ -29,4 +29,3 @@ class LogManager:
         if not buf:
             return ""
         return "\n".join(buf)
-

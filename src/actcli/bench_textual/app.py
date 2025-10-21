@@ -31,6 +31,11 @@ from dataclasses import dataclass
 from typing import Dict, Optional, List
 import shlex
 import re
+from importlib import metadata
+from pathlib import Path
+from functools import lru_cache
+from datetime import datetime
+from textual.timer import Timer
 
 from ..wrapper_tui.session_manager import SessionManager
 from ..wrapper.client import FacilitatorClient
@@ -61,10 +66,9 @@ class BenchTextualApp(App):
         Binding("ctrl+q", "quit", "Quit"),
     ]
 
-    async def on_mount(self) -> None:
-        # Start with the first palette
-        self.add_class("theme-ledger")
-        # App state
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        # Ensure core attributes exist before mount/compose triggers any status updates
         self.session_manager = SessionManager()
         self.log_manager = LogManager()
         self.viewer_url: Optional[str] = None
@@ -77,13 +81,39 @@ class BenchTextualApp(App):
         self.adding_mode: bool = False
         self.connect_mode: bool = False
         self.action_lines: List[str] = []
-        # Kick off session bootstrap
-        await self._bootstrap_session_async()
+        self._session_id: Optional[str] = None
+        self._version_info: Dict[str, str] = {}
+        self._emulator_mode_logged: set[str] = set()
         self.emulators: Dict[str, EmulatedTerminal] = {}
-        # Scrollback state
         self.scroll_buffers: Dict[str, list[str]] = {}
         self.scroll_offsets: Dict[str, int] = {}
         self.max_scrollback_lines: int = 2000
+        self._last_synced_sizes: Dict[str, tuple[int, int]] = {}
+        self._winsize_history: Dict[str, list[str]] = {}
+        self._tty_output_buffer: Dict[str, str] = {}
+        self._key_events: list[str] = []
+        self._writer_attached: bool = False
+        self._border_blink_timer: Optional[Timer] = None
+
+    async def on_mount(self) -> None:
+        # Start with the first palette
+        self.add_class("theme-ledger")
+        # App state
+        # Ensure version info is gathered once mount occurs (may refresh from __init__ placeholder)
+        self._version_info = self._gather_version_info()
+        self._update_status_line()
+        # Configure terminal view interactions
+        self.terminal_view.set_writer(self._write_to_active)
+        self.terminal_view.set_navigator(self._on_navigate)
+        self.terminal_view.set_size_listener(self._on_terminal_view_size_change)
+        self.terminal_view.set_key_logger(self._record_key_event)
+        self._writer_attached = True
+        self._start_border_blink(duration=1.2)
+        self._start_border_blink()
+        # Kick off session bootstrap
+        await self._bootstrap_session_async()
+        # Session bootstrap may update status text, refresh afterwards
+        self._update_status_line()
         # Build nav tree after state is ready
         try:
             self._rebuild_nav_tree()
@@ -132,7 +162,9 @@ class BenchTextualApp(App):
     def on_resize(self, event) -> None:  # type: ignore[override]
         try:
             if self.active_view == "terminal" and self.active_terminal:
-                self._sync_terminal_size(self.active_terminal)
+                name = self.active_terminal
+                self._sync_terminal_size(name)
+                self._schedule_terminal_resizes(name)
         except Exception:
             pass
 
@@ -158,6 +190,241 @@ class BenchTextualApp(App):
     def _debug_logger(self, message: str) -> None:
         """Logger callback for terminal emulator debug output."""
         self.log_manager.add("debug", message)
+
+    def _gather_version_info(self) -> Dict[str, str]:
+        """Collect version metadata for status banner."""
+        return {
+            "bench": self._get_package_version(["actcli-bench", "actcli"], default="dev"),
+            "textual": self._get_package_version(["textual"], default="unknown"),
+            "pyte": self._get_package_version(["pyte"], default="none"),
+        }
+
+    def _get_package_version(self, names: List[str], default: str) -> str:
+        for pkg in names:
+            try:
+                return metadata.version(pkg)
+            except Exception:
+                if pkg == "actcli-bench":
+                    fb = self._fallback_bench_version()
+                    if fb:
+                        return fb
+                continue
+        return default
+
+    @staticmethod
+    @lru_cache(maxsize=1)
+    def _fallback_bench_version() -> Optional[str]:
+        """Read actcli-bench version directly from pyproject when metadata is missing."""
+        try:
+            pyproject = Path(__file__).resolve().parents[3] / "pyproject.toml"
+            text = pyproject.read_text(encoding="utf-8")
+        except Exception:
+            return None
+        match = re.search(r'^version\s*=\s*"([^"]+)"', text, re.MULTILINE)
+        if match:
+            return match.group(1)
+        return None
+
+    def _current_emulator_mode(self) -> str:
+        emulators_obj = getattr(self, "emulators", {}) or {}
+        if not isinstance(emulators_obj, dict):
+            self._log_action(f"Unexpected emulators container type: {type(emulators_obj)!r}")
+            emulators_obj = {}
+        emulators = emulators_obj
+        active = getattr(self, "active_terminal", None)
+        def _resolve_mode(candidate, label: str) -> Optional[str]:
+            if candidate is None:
+                return None
+            try:
+                mode_val = getattr(candidate, "mode")
+                if callable(mode_val):
+                    mode_val = mode_val()
+            except Exception as exc:
+                self._log_action(f"Mode lookup failed for {label}: {exc}")
+                return None
+            return str(mode_val) if isinstance(mode_val, str) else None
+
+        if active and active in emulators:
+            mode_active = _resolve_mode(emulators.get(active), active)
+            if mode_active:
+                return mode_active
+        for name, emu_candidate in emulators.items():
+            mode_candidate = _resolve_mode(emu_candidate, name)
+            if mode_candidate:
+                return mode_candidate
+        return "plain"
+
+    def _update_status_line(self) -> None:
+        status = getattr(self, "status_line", None)
+        if not status:
+            return
+        session_val = getattr(self, "_session_id", None) or "(none)"
+        viewer_val = getattr(self, "viewer_url", None) or "(none)"
+        try:
+            versions_obj = getattr(self, "_version_info", None)
+            if not isinstance(versions_obj, dict):
+                if versions_obj is not None:
+                    self._log_action(f"Unexpected version info type: {type(versions_obj)!r}")
+                versions_obj = {}
+            versions = versions_obj
+            bench_v = str(versions.get("bench", "dev"))
+            textual_v = str(versions.get("textual", "unknown"))
+            pyte_v = str(versions.get("pyte", "none"))
+        except Exception as exc:
+            self._log_action(f"Version info retrieval failed: {exc}")
+            bench_v = "dev"
+            textual_v = "unknown"
+            pyte_v = "none"
+        try:
+            mode = self._current_emulator_mode()
+        except Exception as exc:
+            mode = "plain"
+            self._log_action(f"Mode detection failed: {exc}")
+        try:
+            status.update(
+                "Terminal  |  "
+                f"Session: {session_val}  |  "
+                f"Viewer: {viewer_val}  |  "
+                f"actcli-bench {bench_v}  |  "
+                f"textual {textual_v}  |  "
+                f"pyte {pyte_v}  |  "
+                f"mode <{mode}>"
+            )
+        except Exception as exc:
+            self._log_action(f"Status line update failed: {exc}")
+
+    def _start_border_blink(self, duration: float = 1.0) -> None:
+        view = getattr(self, "terminal_view", None)
+        if not view:
+            return
+        try:
+            view.add_class("blink-border")
+        except Exception:
+            return
+        if self._border_blink_timer is not None:
+            try:
+                self._border_blink_timer.stop()
+            except Exception:
+                pass
+            self._border_blink_timer = None
+
+        def _clear_border() -> None:
+            try:
+                view.remove_class("blink-border")
+            except Exception:
+                pass
+            self._border_blink_timer = None
+
+        try:
+            self._border_blink_timer = self.set_timer(duration, _clear_border)
+        except Exception:
+            _clear_border()
+
+    def _recent_log_text(self, category: str, limit: int = 50) -> str:
+        buf = self.log_manager.buffers.get(category)
+        if not buf:
+            return "(none)"
+        lines = list(buf)
+        if limit:
+            lines = lines[-limit:]
+        return "\n".join(lines) if lines else "(none)"
+
+    def _troubleshooting_snapshot(self) -> str:
+        versions = self._version_info or self._gather_version_info()
+        lines: list[str] = []
+        lines.append(f"timestamp: {datetime.utcnow().isoformat()}Z")
+        lines.append("versions:")
+        lines.append(f"  actcli-bench: {versions.get('bench', 'unknown')}")
+        lines.append(f"  textual: {versions.get('textual', 'unknown')}")
+        lines.append(f"  pyte: {versions.get('pyte', 'none')}")
+        lines.append(f"active_view: {self.active_view}")
+        lines.append(f"active_terminal: {self.active_terminal or '(none)'}")
+        lines.append(f"writer_attached: {self._writer_attached}")
+        lines.append("terminals:")
+        for name, item in self.terminals.items():
+            emu = self.emulators.get(name)
+            emu_size = f"{getattr(emu, 'cols', '?')}x{getattr(emu, 'rows', '?')}" if emu else "n/a"
+            last_sync = self._last_synced_sizes.get(name)
+            sync_str = f"{last_sync[1]}x{last_sync[0]}" if last_sync else "n/a"
+            tty_preview = self._tty_output_buffer.get(name, "")[-120:]
+            runner = item.runner
+            first_preview = ""
+            if hasattr(runner, "first_output_preview"):
+                try:
+                    first_preview = runner.first_output_preview(240)
+                except Exception:
+                    first_preview = ""
+            lines.append(
+                f"  - {name}: muted={item.muted} cmd={' '.join(item.command)} "
+                f"emu={emu_size} last_winsize={sync_str}"
+            )
+            history = self._winsize_history.get(name)
+            if history:
+                lines.append("    winsize_history:")
+                for entry in history[-10:]:
+                    lines.append(f"      • {entry}")
+            if tty_preview:
+                lines.append("    recent_output_preview:")
+                lines.append("      " + tty_preview.replace("\n", "\\n"))
+            if first_preview:
+                lines.append("    first_output_preview:")
+                lines.append("      " + first_preview.replace("\n", "\\n"))
+        lines.append("---- recent events ----")
+        lines.append(self._recent_log_text("events"))
+        lines.append("---- recent errors ----")
+        lines.append(self._recent_log_text("errors"))
+        lines.append("---- recent debug ----")
+        lines.append(self._recent_log_text("debug"))
+        lines.append("---- recent output ----")
+        lines.append(self._recent_log_text("output"))
+        if self._key_events:
+            lines.append("---- recent key events ----")
+            lines.extend(self._key_events[-20:])
+        return "\n".join(lines)
+
+    def _update_troubleshooting_log(self) -> str:
+        snapshot = self._troubleshooting_snapshot()
+        buf = self.log_manager.buffers.get("troubleshooting")
+        if buf is not None:
+            buf.clear()
+        self.log_manager.add("troubleshooting", snapshot)
+        return snapshot
+
+    def _export_troubleshooting_pack(self) -> None:
+        snapshot = self._update_troubleshooting_log()
+        try:
+            target_dir = Path("docs") / "Trouble-Snaps"
+            target_dir.mkdir(parents=True, exist_ok=True)
+            timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+            target_file = target_dir / f"troubleshooting_pack_{timestamp}.txt"
+            target_file.write_text(snapshot, encoding="utf-8")
+            self._log_action(f"Troubleshooting pack saved → {target_file}")
+        except Exception as exc:
+            self._log_action(f"Troubleshooting pack export failed: {exc}")
+
+    def _record_key_event(self, key: str, character: Optional[str], modifiers: set[str]) -> None:
+        entry = f"key={key!r} char={character!r} mods={sorted(modifiers)} writer={self._writer_attached}"
+        self._key_events.append(entry)
+        if len(self._key_events) > 50:
+            del self._key_events[:-50]
+        self._debug_logger(f"KEY event: {entry}")
+
+    def _log_emulator_mode(self, term_name: str, emulator: EmulatedTerminal) -> None:
+        """Emit a one-time log entry describing emulator mode."""
+        if term_name in self._emulator_mode_logged:
+            return
+        self._emulator_mode_logged.add(term_name)
+        if emulator.mode == "pyte":
+            version = emulator.pyte_version or "unknown"
+            if self._version_info.get("pyte") in ("none", "unknown"):
+                self._version_info["pyte"] = version
+            msg = f"EmulatedTerminal: using pyte {version}"
+        else:
+            msg = "EmulatedTerminal: pyte not available -- falling back to plain (install pyte)"
+            # Ensure banner reflects absence
+            self._version_info["pyte"] = "none"
+        self._log_action(f"[{term_name}] {msg}")
+        self._update_status_line()
 
     def _sync_terminal_size(self, name: str) -> None:
         """Sync terminal view size to both emulator and PTY child process."""
@@ -189,7 +456,34 @@ class BenchTextualApp(App):
         # Set PTY window size (this is the KEY fix!)
         runner = self.terminals[name].runner
         runner.set_winsize(rows, cols)
-        self._debug_logger(f"Synced PTY winsize: {rows}x{cols}")
+        current = runner.get_winsize()
+        self._debug_logger(f"Synced PTY winsize: requested={rows}x{cols} actual={current or 'n/a'}")
+        self._last_synced_sizes[name] = (rows, cols)
+        history = self._winsize_history.setdefault(name, [])
+        timestamp = datetime.utcnow().strftime("%H:%M:%S.%f")[:-3]
+        history.append(
+            f"{timestamp} view={cols}x{rows} emu={emu.cols}x{emu.rows} requested={rows}x{cols} actual={current or 'n/a'}"
+        )
+        if len(history) > 20:
+            del history[:-20]
+
+    def _schedule_terminal_resizes(self, name: str) -> None:
+        """Schedule delayed syncs to catch late layout adjustments."""
+        delays = (0.05, 0.2, 0.5, 1.0)
+        try:
+            self.call_after_refresh(lambda n=name: self._sync_terminal_size(n))
+        except Exception:
+            pass
+        for delay in delays:
+            try:
+                self.set_timer(delay, lambda n=name: self._sync_terminal_size(n))
+            except Exception:
+                pass
+
+    def _on_terminal_view_size_change(self) -> None:
+        """Handle terminal view size updates by syncing the active terminal."""
+        if self.active_terminal:
+            self._schedule_terminal_resizes(self.active_terminal)
 
     def _resize_emulator_if_needed(self, emu: EmulatedTerminal) -> None:
         """Resize emulator to match terminal view content area."""
@@ -289,6 +583,11 @@ class BenchTextualApp(App):
         # Resize emulator to match view before feeding data
         self._resize_emulator_if_needed(emu)
         emu.feed(text)
+        buf = self._tty_output_buffer.setdefault(name, "")
+        buf += text
+        if len(buf) > 4096:
+            buf = buf[-4096:]
+        self._tty_output_buffer[name] = buf
         # Append to scrollback buffer (plain lines) and log to Output category
         sb = self.scroll_buffers.setdefault(name, [])
         for line in text.splitlines():
@@ -347,22 +646,34 @@ class BenchTextualApp(App):
             self._log_action("Facilitator start failed")
             return
         ok = await self.session_manager.create_default_session()
-        if ok and self.session_manager.session:
-            sid = self.session_manager.session.session_id
+        if not ok or not self.session_manager.session:
+            self._log_action("Default session creation failed — continuing without facilitator viewer")
+            return
+
+        try:
+            sid = getattr(self.session_manager.session, "session_id", None)
+            if not sid:
+                raise RuntimeError("session missing after creation")
             self.viewer_url = f"{self.session_manager.facilitator_url}/viewer/{sid}"
-            self._set_title_status(sid)
+            try:
+                self._set_title_status(sid)
+            except Exception as exc:
+                self._log_action(f"Session status update failed: {exc}")
             # Connect as moderator (optional mirror)
             self.facilitator_client = FacilitatorClient(self.session_manager.facilitator_url)
             try:
                 await self.facilitator_client.join_session(sid, "moderator", participant_type="human")
                 await self.facilitator_client.connect_websocket()
-            except Exception:
+            except Exception as exc:
                 self.facilitator_client = None
-                self._log_action("Moderator WS connect failed (mirror disabled)")
+                self._log_action(f"Moderator WS connect failed (mirror disabled): {exc}")
+        except Exception as exc:
+            self._log_action(f"Session bootstrap error: {exc}")
+            return
 
-    def _set_title_status(self, session_id: str) -> None:
-        if getattr(self, "status_line", None):
-            self.status_line.update(f"Terminal  |  Session: {session_id}  |  Viewer: {self.viewer_url}")
+    def _set_title_status(self, session_id: Optional[str]) -> None:
+        self._session_id = session_id
+        self._update_status_line()
 
     def _handle_broadcast(self, text: str) -> None:
         """Broadcast a line to all unmuted terminals; optionally mirror to viewer."""
@@ -459,11 +770,17 @@ class BenchTextualApp(App):
             return
         self.terminals[name] = TerminalItem(name=name, command=cmd, runner=runner, muted=True)
         # init emulator buffer
-        self.emulators[name] = EmulatedTerminal(debug_logger=self._debug_logger)
+        emu = EmulatedTerminal(debug_logger=self._debug_logger)
+        self.emulators[name] = emu
+        self._log_emulator_mode(name, emu)
+        self._winsize_history[name] = []
         # Set initial PTY size (critical - do this right after starting!)
         self._sync_terminal_size(name)
+        self._schedule_terminal_resizes(name)
         if not self.active_terminal:
             self.active_terminal = name
+        self._switch_view("tab-terminal")
+        self._update_status_line()
         self._refresh_nav()
         self._set_terminal_text(f"Added terminal '{name}' → {' '.join(cmd)}  [muted]")
         self._log_action(f"Added: {name} cmd={' '.join(cmd)} [muted]")
@@ -483,19 +800,30 @@ class BenchTextualApp(App):
                 # Show cursor immediately since we just focused
                 text = self.emulators[name].text_with_cursor(show=True)
             self._set_terminal_text(text)
+            self._writer_attached = True
+            self._start_border_blink()
             return
 
         # Logs view
         self.terminal_view.set_writer(None)
+        self._writer_attached = False
         mapping = {
             "tab-events": "events",
             "tab-errors": "errors",
             "tab-output": "output",
             "tab-debug": "debug",
+            "tab-troubleshooting": "troubleshooting",
         }
         cat = mapping.get(tab_id, "events")
         self.active_view = f"log:{cat}"
-        self._set_terminal_text(self.log_manager.text(cat) or f"(no {cat})")
+        if cat == "troubleshooting":
+            text = self._update_troubleshooting_log()
+            self._start_border_blink(duration=1.5)
+        else:
+            text = self.log_manager.text(cat)
+        if not text:
+            text = f"(no {cat})"
+        self._set_terminal_text(text)
 
     # Write bytes/strings to the active terminal's PTY
     def _write_to_active(self, data: str) -> None:
@@ -506,6 +834,7 @@ class BenchTextualApp(App):
         if not item:
             return
         try:
+            self._debug_logger(f"KEY→PTY [{name}]: {repr(data)}")
             item.runner.write(data)
         except Exception:
             pass
@@ -551,15 +880,22 @@ class BenchTextualApp(App):
         mirror_label = f"Mirror to viewer {'[X]' if mirror_checked else '[ ]'}"
         mirror = settings_node.add(mirror_label)
         mirror.data = {"type": "action", "id": "toggle_mirror"}
+        export_pack = settings_node.add("Export troubleshooting pack")
+        export_pack.data = {"type": "action", "id": "export_troubleshooting"}
         logs_node = self.nav_tree.root.add("Logs")
         for cat in ("Events", "Errors", "Output", "Debug"):
             n = logs_node.add(cat)
             n.data = {"type": "log", "cat": cat.lower()}
+        tpack = logs_node.add("Troubleshooting Pack")
+        tpack.data = {"type": "log", "cat": "troubleshooting"}
+        tpack_save = tpack.add("Save to file")
+        tpack_save.data = {"type": "action", "id": "export_troubleshooting"}
         self.nav_tree.root.expand()
         terminals_node.expand()
         sessions_node.expand()
         settings_node.expand()
         logs_node.expand()
+        tpack.expand()
 
     def on_tree_node_selected(self, event: Tree.NodeSelected) -> None:  # type: ignore[attr-defined]
         data = getattr(event.node, "data", None) or {}
@@ -575,8 +911,10 @@ class BenchTextualApp(App):
             name = data.get("name")
             if name in self.terminals:
                 self.active_terminal = name
+                self._update_status_line()
                 emu = self.emulators.get(name) or EmulatedTerminal(debug_logger=self._debug_logger)
                 self.emulators[name] = emu
+                self._log_emulator_mode(name, emu)
                 self.active_view = "terminal"
                 self.terminal_view.set_writer(self._write_to_active)
                 self.terminal_view.set_navigator(self._on_navigate)
@@ -588,6 +926,7 @@ class BenchTextualApp(App):
                     self.call_after_refresh(lambda n=name: self._sync_terminal_size(n))
                 except Exception:
                     pass
+                self._schedule_terminal_resizes(name)
                 self._set_terminal_text(emu.text_with_cursor(show=True))
                 self._log_action(f"Selected terminal: {name}")
         elif t == "connect":
@@ -613,14 +952,18 @@ class BenchTextualApp(App):
                 except Exception:
                     pass
                 self._rebuild_nav_tree()
+            elif aid == "export_troubleshooting":
+                self._export_troubleshooting_pack()
         elif t == "log":
             cat = data.get("cat", "events")
-            self._switch_view({
+            tab_map = {
                 "events": "tab-events",
                 "errors": "tab-errors",
                 "output": "tab-output",
                 "debug": "tab-debug",
-            }[cat])
+                "troubleshooting": "tab-troubleshooting",
+            }
+            self._switch_view(tab_map.get(cat, "tab-events"))
 
     # --- Scrollback navigation ----------------------------------------
     def _on_navigate(self, action: str, amount: int) -> bool:

@@ -55,5 +55,13 @@
     overflow-y: auto;
 }
 #terminal-view:focus { border: thick #4ec9b0; }
+#terminal-view.has-focus {
+    border: thick #4ec9b0;
+    background: rgba(78, 201, 176, 0.05);
+}
+#terminal-view.blink-border {
+    border: thick #ffda76;
+    background: rgba(255, 218, 118, 0.06);
+}
 #control { height: 3; align-horizontal: left; content-align: center middle; }
 #control-input { width: 1fr; height: 3; }
