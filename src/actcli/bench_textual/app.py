@@ -364,10 +364,10 @@ class BenchTextualApp(App):
                 except Exception:
                     first_preview = ""
             lines.append(
-                f"  - {name}: muted={item.muted} cmd={' '.join(item.command)} "
+                f"  - {name}: muted={runner.muted} cmd={' '.join(runner.command)} "
                 f"emu={emu_size} last_winsize={sync_str}"
             )
-            history = self._winsize_history.get(name)
+            history = state.winsize_history
             if history:
                 lines.append("    winsize_history:")
                 for entry in history[-10:]:

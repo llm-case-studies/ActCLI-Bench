@@ -1,0 +1,192 @@
+timestamp: 2025-10-20T22:40:04.655032Z
+versions:
+  actcli-bench: 0.0.2
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: terminal
+active_terminal: actcli-bench
+writer_attached: True
+terminals:
+  - bash: muted=True cmd=bash emu=194x39 last_winsize=194x39
+    winsize_history:
+      • 22:35:42.232 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:35:42.532 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:35:43.033 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:37:15.373 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:37:15.426 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:37:15.426 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:37:15.427 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:37:15.574 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:37:15.875 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:37:16.373 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+    recent_output_preview:
+      ocs)[39m                                [38;2;203;166;247m gemini-2.5-pro [38;2;108;112;134m(99% context left)[39m\n
+    first_output_preview:
+      bash: /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory\n[?2004h]0;alex@msi-raider-linux: ~/Projects/ActCLI-Bench[01;32malex@msi-raider-linux[00m:[01;34m~/Projects/ActCLI-Bench[00m$ [K]0;alex@msi-raider-
+  - gemini: muted=True cmd=gemini emu=194x39 last_winsize=194x39
+    winsize_history:
+      • 22:38:26.006 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:38:26.306 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:38:26.807 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:38:34.095 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:38:34.147 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:38:34.147 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:38:34.148 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:38:34.297 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:38:34.597 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:38:35.097 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+    recent_output_preview:
+      cs)[39m                                [38;2;203;166;247m gemini-2.5-pro [38;2;108;112;134m(100% context left)[39m\n
+    first_output_preview:
+      [?u[cLoaded cached credentials.\n]2;Gemini - ActCLI-Bench\n[38;2;71;150;228m [38;2;73;149;227m█[38;2;74;149;227m█[38;2;76;148;226m█[38;2;77;147;226m [38;2;79;146;225m [38;2;80;146;225m [38;2;82;145;224m [38;2;84;144;223m 
+  - actcli-bench: muted=True cmd=actcli-bench emu=194x39 last_winsize=194x39
+    winsize_history:
+      • 22:39:20.597 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:39:20.898 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:39:21.399 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:39:24.452 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:39:24.509 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:39:24.509 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:39:24.510 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:39:24.653 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:39:24.953 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 22:39:25.452 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+    recent_output_preview:
+      m[38;2;224;224;224;48;2;0;0;0m [0m[38;2;224;224;224;48;2;0;0;0m [0m[38;2;224;224;224;48;2;0;0;0m [0m[44;30H[2;5H
+    first_output_preview:
+      [?1049h[?1000h[?1003h[?1015h[?1006h[?25l[?1004h[>1u[?2026$p[?2048$p[?2004h[?7l[?1000h[?1003h[?1015h[?1006h[3;33H[38;2;102;194;255;48;2;27;39;54mTerminal  |  Session: session_bf5711fa  |  Viewer: http://localhost:8765/viewe
+---- recent events ----
+[bash] EmulatedTerminal: using pyte none
+Added: bash cmd=bash [muted]
+Selected terminal: bash
+[gemini] EmulatedTerminal: using pyte none
+Added: gemini cmd=gemini [muted]
+Selected terminal: gemini
+[actcli-bench] EmulatedTerminal: using pyte none
+Added: actcli-bench cmd=actcli-bench [muted]
+Selected terminal: actcli-bench
+---- recent errors ----
+(none)
+---- recent debug ----
+view.container_size = Size(width=194, height=39)
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+cursor at (x=4, y=1), line='                                       '
+Setting text: 194 lines, first line len=39, preview=' ⭘                                     '
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+view.size = Size(width=194, height=39)
+view.region = Region(x=32, y=4, width=196, height=41)
+view.content_size = Size(width=194, height=39)
+view.container_size = Size(width=194, height=39)
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+cursor at (x=4, y=1), line='                                       '
+Setting text: 194 lines, first line len=39, preview=' ⭘                                     '
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+view.size = Size(width=194, height=39)
+view.region = Region(x=32, y=4, width=196, height=41)
+view.content_size = Size(width=194, height=39)
+view.container_size = Size(width=194, height=39)
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+cursor at (x=4, y=1), line='                                       '
+Setting text: 194 lines, first line len=39, preview=' ⭘                                     '
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+view.size = Size(width=194, height=39)
+view.region = Region(x=32, y=4, width=196, height=41)
+view.content_size = Size(width=194, height=39)
+view.container_size = Size(width=194, height=39)
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+cursor at (x=4, y=1), line='                                       '
+Setting text: 194 lines, first line len=39, preview=' ⭘                                     '
+Setting text: 45 lines, first line len=225, preview='0m               │                                                                                  '
+Setting text: 45 lines, first line len=225, preview='0m               │                                                                                  '
+Setting text: 45 lines, first line len=225, preview='0m               │                                                                                  '
+Setting text: 45 lines, first line len=225, preview='0m               │                                                                                  '
+Setting text: 45 lines, first line len=225, preview='0m               │                                                                                  '
+Setting text: 46 lines, first line len=21, preview='[SCROLLBACK offset=3]'
+Setting text: 46 lines, first line len=21, preview='[SCROLLBACK offset=6]'
+Setting text: 46 lines, first line len=21, preview='[SCROLLBACK offset=9]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=12]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=15]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=18]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=21]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=24]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=27]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=30]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=27]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=24]'
+Setting text: 46 lines, first line len=22, preview='[SCROLLBACK offset=21]'
+---- recent output ----
+[actcli-bench]  │   └── ▶ Export troubleshoo   │                                                                                                                                                                                                            │  
+[actcli-bench]  └── ▼ Logs                     │                                                                                                                                                                                                            │  
+[actcli-bench]      ├── ▶ Events               │                                                                                                                                                                                                            │  
+[actcli-bench]      ├── ▶ Errors               │                                                                                                                                                                                                            │  
+[actcli-bench]      ├── ▶ Output[
+[actcli-bench] 0m               │                                                                                                                                                                                                            │  
+[actcli-bench]      ├── ▶ Debug                │                                                                                                                                                                                                            │  
+[actcli-bench]      └── ▼ Troubleshooting Pa   │                                                                                                                                                                                                            │  
+[actcli-bench]          └── ▶ Save to file     │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                        
+[actcli-bench]                                                     │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │[38;
+[actcli-bench] 2;224;224;224;48;2;27;39;54m                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 │                                                                                                                                                                                                            │  
+[actcli-bench]                                 └──────────────────────────────────────────────────────────────────────────────────────────
+[actcli-bench] ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘  
+[actcli-bench]                                                                                                                                                                                                                                                 
+[actcli-bench]                       ▎         ▊▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▎▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▊▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▎  
+[actcli-bench]  F1: Ledger • F2: Analyst •     ▊  Broadcast to all unmuted…                                                                                                                                         ▎   Broadcast    ▊ ▐X▌ Mirror to viewer ▎  
+[actcli-bench]  F3: Seminar                    ▊▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+[actcli-bench] ▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▎▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▊▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▎  
+[actcli-bench]                                                                                                                                                                                                                                                 
+[actcli-bench]  ^q Quit  f1 Ledger  f2 Analyst  f3 Seminar                                                                                                                                                                                         ▏^p palette                      ▎                           ▎                 
+[actcli-bench]           ▎                           ▎                           ▎      
+[actcli-bench]                      ▎      
+[actcli-bench]                      ▎      
+[actcli-bench]                      ▎      
+[actcli-bench]                      ▎      
+[actcli-bench]                      ▎      
+[actcli-bench]                      ▎      
+[actcli-bench]                      ▎      
+[actcli-bench]                      ▎      
+[actcli-bench]                      ▎      
+---- recent key events ----
+key='up' char=None mods=[] writer=True
+key='up' char=None mods=[] writer=True
+key='up' char=None mods=[] writer=True
+key='down' char=None mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True
+key='slash' char='/' mods=[] writer=True
+key='q' char='q' mods=[] writer=True
+key='up' char=None mods=[] writer=True
+key='slash' char='/' mods=[] writer=True
+key='q' char='q' mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True
+key='ctrl+c' char='\x03' mods=[] writer=True
+key='o' char='O' mods=[] writer=True
+key='o' char='o' mods=[] writer=True
+key='p' char='p' mods=[] writer=True
+key='s' char='s' mods=[] writer=True
+key='full_stop' char='.' mods=[] writer=True
+key='full_stop' char='.' mods=[] writer=True
+key='full_stop' char='.' mods=[] writer=True
+key='space' char=' ' mods=[] writer=True

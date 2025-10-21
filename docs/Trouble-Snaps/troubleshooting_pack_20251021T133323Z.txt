@@ -1,0 +1,121 @@
+timestamp: 2025-10-21T13:33:23.128932Z
+versions:
+  actcli-bench: 0.0.3
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: terminal
+active_terminal: tree
+writer_attached: True
+terminals:
+  - tree: muted=True cmd=tree emu=175x39 last_winsize=175x39
+    winsize_history:
+      • 13:32:06.664 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:32:06.696 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:32:06.715 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:32:06.866 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:32:07.166 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:32:07.666 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+    recent_output_preview:
+      ── test_websocket_routing.py\n    └── [01;34munit[0m\n        └── test_wrapper_client.py\n\n17 directories, 71 files\n
+    first_output_preview:
+      [01;34m.[0m\n├── ActCLI-Bench_ status_and_next_steps.md\n├── [01;34mdocs[0m\n│   ├── [01;34mscreenshots[0m\n│   │   ├── README.md\n│   │   ├── [01;35msr_225c2383.png[0m\n│   │�
+---- recent events ----
+[tree] EmulatedTerminal: using pyte none
+Added: tree cmd=tree [muted]
+Terminal 'tree' exited (code 0)
+---- recent errors ----
+(none)
+---- recent debug ----
+[Emulator] resize(175, 39) → pyte screen is now 39x175
+Synced emulator size: 175x39
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+cursor at (x=0, y=0), line='                                       '
+Setting text: 175 lines, first line len=40, preview='▌                                       '
+Setting text: 1 lines, first line len=37, preview="Added terminal 'tree' → tree  [muted]"
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+Setting text: 175 lines, first line len=39, preview='.                                      '
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=0, y=11), line='                                       '
+Setting text: 175 lines, first line len=39, preview='.                                      '
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=0, y=117), line='                                       '
+Setting text: 175 lines, first line len=39, preview='.                                      '
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=0, y=117), line='                                       '
+Setting text: 175 lines, first line len=39, preview='.                                      '
+---- recent output ----
+[tree] │       ├── bench_textual
+[tree] │       │   ├── app.py
+[tree] │       │   ├── log_manager.py
+[tree] │       │   ├── __pycache__
+[tree] │       │   │   ├── app.cpython-312.pyc
+[tree] │       │   │   ├── log_manager.cpython-312.pyc
+[tree] │       │   │   ├── term_emulator.cpython-312.pyc
+[tree] │       │   │   ├── terminal_runner.cpython-312.pyc
+[tree] │       │   │   └── term_view.cpython-312.pyc
+[tree] │       │   ├── term_emulator.py
+[tree] │       │   ├── terminal_runner.py
+[tree] │       │   ├── term_view.py
+[tree] │       │   └── themes.tcss
+[tree] │       ├── facilitator
+[tree] │       │   ├── __init__.py
+[tree] │       │   ├── service.py
+[tree] │       │   └── session.py
+[tree] │       ├── wrapper
+[tree] │       │   ├── client.py
+[tree] │       │   ├── cli.py
+[tree] │       │   ├── facilitator_cli.py
+[tree] │       │   ├── __init__.py
+[tree] │       │   ├── pty_wrapper.py
+[tree] │       │   ├── __pycache__
+[tree] │       │   │   ├── client.cpython-312.pyc
+[tree] │       │   │   ├── __init__.cpython-312.pyc
+[tree] │       │   │   └── pty_wrapper.cpython-312.pyc
+[tree] │       │   ├── README.md
+[tree] │       │   ├── TESTING_GUIDE.md
+[tree] │       │   └── wrap_cli.py
+[tree] │       └── wrapper_tui
+[tree] │           ├── __init__.py
+[tree] │           ├── __pycache__
+[tree] │           │   ├── __init__.cpython-312.pyc
+[tree] │           │   ├── session_manager.cpython-312.pyc
+[tree] │           │   └── shell.cpython-312.pyc
+[tree] │           ├── README.md
+[tree] │           ├── session_manager.py
+[tree] │           ├── shell.py
+[tree] │           ├── STATUS.md
+[tree] │           ├── terminal_tab.py
+[tree] │           └── wrapped_terminal.py
+[tree] ├── TERMINAL_WIDTH_ISSUE.md
+[tree] └── tests
+[tree]     ├── integration
+[tree]     │   ├── test_pty_wrapper_simple.py
+[tree]     │   └── test_websocket_routing.py
+[tree]     └── unit
+[tree]         └── test_wrapper_client.py
+[tree] 17 directories, 71 files

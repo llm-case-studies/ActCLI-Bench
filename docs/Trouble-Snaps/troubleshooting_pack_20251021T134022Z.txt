@@ -1,0 +1,153 @@
+timestamp: 2025-10-21T13:40:22.849724Z
+versions:
+  actcli-bench: 0.0.3
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: terminal
+active_terminal: gemini
+writer_attached: True
+terminals:
+  - tree: muted=True cmd=tree emu=175x39 last_winsize=175x39
+    winsize_history:
+      • 13:38:28.528 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:28.829 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:29.330 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:37.506 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:37.549 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:37.549 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:37.574 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:37.707 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:38.007 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:38.508 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+    recent_output_preview:
+      ── test_websocket_routing.py\n    └── [01;34munit[0m\n        └── test_wrapper_client.py\n\n17 directories, 72 files\n
+    first_output_preview:
+      [01;34m.[0m\n├── ActCLI-Bench_ status_and_next_steps.md\n├── [01;34mdocs[0m\n│   ├── [01;34mscreenshots[0m\n│   │   ├── README.md\n│   │   ├── [01;35msr_225c2383.png[0m\n│   │�
+  - gemini: muted=True cmd=gemini emu=175x39 last_winsize=175x39
+    winsize_history:
+      • 13:38:56.931 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:57.231 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:38:57.732 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:39:02.207 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:39:02.236 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:39:02.236 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:39:02.261 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:39:02.408 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:39:02.708 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 13:39:03.209 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+    recent_output_preview:
+      ;134m(see /docs)[39m                        [38;2;203;166;247m gemini-2.5-pro [38;2;108;112;134m(100% context [39m\n
+    first_output_preview:
+      [?u[cLoaded cached credentials.\n]2;Gemini - ActCLI-Bench\n[38;2;71;150;228m [38;2;73;149;227m█[38;2;74;149;227m█[38;2;76;148;226m█[38;2;77;147;226m [38;2;79;146;225m [38;2;80;146;225m [38;2;82;145;224m [38;2;84;144;223m 
+---- recent events ----
+[tree] EmulatedTerminal: using pyte none
+Added: tree cmd=tree [muted]
+Terminal 'tree' exited (code 0)
+Selected terminal: tree
+[gemini] EmulatedTerminal: using pyte none
+Added: gemini cmd=gemini [muted]
+Selected terminal: gemini
+---- recent errors ----
+(none)
+---- recent debug ----
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=31, y=3), line='  ░░░███      ███     ░░░  ░███                   '
+Setting text: 39 lines, first line len=175, preview='                                                                                                    '
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=66, y=5), line='     ███░    ░███    █████ ░███░░█    ░███ ░░░  ░█'
+Setting text: 39 lines, first line len=175, preview='                                                                                                    '
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=22, y=8), line='░░░            ░░░░░░░                            '
+Setting text: 39 lines, first line len=175, preview='                                                                                                    '
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=0, y=20), line='                                                  '
+Setting text: 39 lines, first line len=175, preview='                                                                                                    '
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=0, y=20), line='                                                  '
+Setting text: 39 lines, first line len=175, preview='                                                                                                    '
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=0, y=20), line='                                                  '
+Setting text: 39 lines, first line len=175, preview='                                                                                                    '
+---- recent output ----
+[gemini] │   @path/to/file                 │
+[gemini] ╰─────────────────────────────────╯
+[gemini] ~/Projects/
+[gemini] ActCLI-Benc  no       gemini-2.5-
+[gemini] h (feat/ben  sandbox pro (100% 
+[gemini] ch-emulator  (see    context 
+[gemini] -rebased*)   /docs)  left)
+[gemini] Using:
+[gemini]   - 1 GEMINI.md file
+[gemini] ╭─────────────────────────────────╮
+[gemini] │ >   Type your message or        │
+[gemini] │   @path/to/file                 │
+[gemini] ╰─────────────────────────────────╯
+[gemini] ActCLI-Bench 
+[gemini] (feat/bench-emulator-rebased*)
+[gemini] no sandbox (see /docs)
+[gemini] gemini-2.5-pro (100% context left)
+[gemini] Using:
+[gemini]   - 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ActCLI-Bench (feat/bench-emulator-rebased*)
+[gemini] no sandbox (see /docs)
+[gemini] gemini-2.5-pro (100% context left)
+[gemini] Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                      no sandbox (see /docs)                         gemini-2.5-pro (100% context 
+[gemini]  ███            █████████  ██████████ ██████   ██████ █████ ██████   █████ █████
+[gemini] ░░░███         ███░░░░░███░░███░░░░░█░░██████ ██████ ░░███ ░░██████ ░░███ ░░███
+[gemini]   ░░░███      ███     ░░░  ░███[38;2;11
+[gemini] 9;128;211m  █ ░  ░███░█████░███  ░███  ░███░███ ░███  ░███
+[gemini]     ░░░███   ░███          ░██████    ░███░░███ ░███  ░███  ░███░░███░███  ░███
+[gemini]      ███░    ░███    █████ ░███░░█    ░███ ░░░  ░███  ░███  ░███ ░[38;2;176;109
+[gemini] ;151m░██████  ░███
+[gemini]    ███░      ░░███  ░░███  ░███ ░   █ ░███      ░███  ░███  ░███  ░░█████  ░███
+[gemini]  ███░         ░░█████████  ██████████ █████     █████ █████ █████  ░░█████ █████
+[gemini] ░░░            ░░░░░░░[38;2;105;134;
+[gemini] 216m░░  ░░░░░░░░░░ ░░░░░     ░░░░░ ░░░░░ ░░░░░    ░░░░░ ░░░░░
+[gemini] Tips for getting started:
+[gemini] 1. Ask questions, edit files, or run commands.
+[gemini] 2. Be specific for the best results.
+[gemini] 3. /help for more information.
+[gemini] Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                      no sandbox (see /docs)                         gemini-2.5-pro (100% context 

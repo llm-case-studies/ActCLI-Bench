@@ -1,0 +1,157 @@
+timestamp: 2025-10-21T03:44:54.599337Z
+versions:
+  actcli-bench: 0.0.3
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: terminal
+active_terminal: bash
+writer_attached: True
+terminals:
+  - bash: muted=True cmd=bash emu=175x39 last_winsize=175x39
+    winsize_history:
+      • 03:43:47.400 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:43:47.701 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:43:48.200 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:43:52.794 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:43:52.854 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:43:52.854 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:43:52.855 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:43:52.994 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:43:53.296 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:43:53.797 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+    recent_output_preview:
+      [00m$ stty size\\[7Ptreestty size\\[C[C[C[C[C[C[C[C[C[C[C[1@/[1P
+    first_output_preview:
+      bash: /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory\n[?2004h]0;alex@msi-raider-linux: ~/Projects/ActCLI-Bench[01;32malex@msi-raider-linux[00m:[01;34m~/Projects/ActCLI-Bench[00m$ [K]0;alex@msi-raider-
+---- recent events ----
+[bash] EmulatedTerminal: using pyte none
+Added: bash cmd=bash [muted]
+Selected terminal: bash
+Selected terminal: bash
+Selected terminal: bash
+Selected terminal: bash
+---- recent errors ----
+(none)
+---- recent debug ----
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+KEY event: key='end' char=None mods=[] writer=True
+KEY→PTY [bash]: '\x1b[F'
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+KEY event: key='home' char=None mods=[] writer=True
+KEY→PTY [bash]: '\x1b[H'
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+KEY event: key='home' char=None mods=[] writer=True
+KEY→PTY [bash]: '\x1b[H'
+KEY event: key='home' char=None mods=[] writer=True
+KEY→PTY [bash]: '\x1b[H'
+KEY event: key='tab' char='\t' mods=[] writer=True
+KEY→PTY [bash]: '\t'
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+KEY event: key='slash' char='/' mods=[] writer=True
+KEY→PTY [bash]: '/'
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+KEY event: key='delete' char=None mods=[] writer=True
+KEY→PTY [bash]: '\x1b[3~'
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+KEY event: key='insert' char=None mods=[] writer=True
+KEY→PTY [bash]: '\x1b[2~'
+---- recent output ----
+[bash] │       │   ├── cli.py
+[bash] │       │   ├── facilitator_cli.py
+[bash] │       │   ├── __init__.py
+[bash] │       │   ├── pty_wrapper.py
+[bash] │       │   ├── __pycache__
+[bash] │       │   │   ├── client.cpython-312.pyc
+[bash] │       │   │   ├── __init__.cpython-312.pyc
+[bash] │       │   │   └── pty_wrapper.cpython-312.pyc
+[bash] │       │   ├── README.md
+[bash] │       │   ├── TESTING_GUIDE.md
+[bash] │       │   └── wrap_cli.py
+[bash] │       └── wrapper_tui
+[bash] │           ├── __init__.py
+[bash] │           ├── __pycache__
+[bash] │           │   ├── __init__.cpython-312.pyc
+[bash] │           │   ├── session_manager.cpython-312.pyc
+[bash] │           │   └── shell.cpython-312.pyc
+[bash] │           ├── README.md
+[bash] │           ├── session_manager.py
+[bash] │           ├── shell.py
+[bash] │           ├── STATUS.md
+[bash] │           ├── terminal_tab.py
+[bash] │           └── wrapped_terminal.py
+[bash] ├── TERMINAL_WIDTH_ISSUE.md
+[bash] └── tests
+[bash]     ├── integration
+[bash]     │   ├── test_pty_wrapper_simple.py
+[bash]     │   └── test_websocket_routing.py
+[bash]     └── unit
+[bash]         └�
+[bash] ��─ test_wrapper_client.py
+[bash] 17 directories, 66 files
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ 
+[bash] tree
+[bash] stty size
+[bash] \
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ stty size\
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ stty size\
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ stty size\
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ stty size\
+[bash] \
+[bash] 
+[bash] 
+[bash] 
+[bash] tree
+[bash] stty size\\
+[bash] 
+[bash] 
+[bash] 
+[bash] /
+---- recent key events ----
+key='left' char=None mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True
+key='up' char=None mods=[] writer=True
+key='up' char=None mods=[] writer=True
+key='backslash' char='\\' mods=[] writer=True
+key='backslash' char='\\' mods=[] writer=True
+key='pageup' char=None mods=[] writer=True
+key='pagedown' char=None mods=[] writer=True
+key='right' char=None mods=[] writer=True
+key='down' char=None mods=[] writer=True
+key='up' char=None mods=[] writer=True
+key='home' char=None mods=[] writer=True
+key='end' char=None mods=[] writer=True
+key='home' char=None mods=[] writer=True
+key='home' char=None mods=[] writer=True
+key='home' char=None mods=[] writer=True
+key='tab' char='\t' mods=[] writer=True
+key='slash' char='/' mods=[] writer=True
+key='delete' char=None mods=[] writer=True
+key='insert' char=None mods=[] writer=True

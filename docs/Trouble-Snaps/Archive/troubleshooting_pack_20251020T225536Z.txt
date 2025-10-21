@@ -1,0 +1,89 @@
+timestamp: 2025-10-20T22:55:36.870997Z
+versions:
+  actcli-bench: 0.0.2
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: terminal
+active_terminal: bash
+writer_attached: True
+terminals:
+  - bash: muted=True cmd=bash emu=173x39 last_winsize=173x39
+    winsize_history:
+      • 22:55:25.569 view=173x39 emu=173x39 requested=39x173 actual=(39, 173)
+      • 22:55:25.604 view=173x39 emu=173x39 requested=39x173 actual=(39, 173)
+      • 22:55:25.620 view=173x39 emu=173x39 requested=39x173 actual=(39, 173)
+      • 22:55:25.770 view=173x39 emu=173x39 requested=39x173 actual=(39, 173)
+      • 22:55:26.071 view=173x39 emu=173x39 requested=39x173 actual=(39, 173)
+      • 22:55:26.570 view=173x39 emu=173x39 requested=39x173 actual=(39, 173)
+    recent_output_preview:
+      alex@msi-raider-linux: ~/Projects/ActCLI-Bench[01;32malex@msi-raider-linux[00m:[01;34m~/Projects/ActCLI-Bench[00m$ 
+    first_output_preview:
+      bash: /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory\n[?2004h]0;alex@msi-raider-linux: ~/Projects/ActCLI-Bench[01;32malex@msi-raider-linux[00m:[01;34m~/Projects/ActCLI-Bench[00m$ [K]0;alex@msi-raider-
+---- recent events ----
+[bash] EmulatedTerminal: using pyte none
+Added: bash cmd=bash [muted]
+---- recent errors ----
+(none)
+---- recent debug ----
+view.size = Size(width=173, height=39)
+view.region = Region(x=32, y=4, width=175, height=41)
+view.content_size = Size(width=173, height=39)
+view.container_size = Size(width=173, height=39)
+view.virtual_size = Size(width=175, height=41)
+Using content_region: 173x39
+cursor at (x=8, y=5), line='-Bench$                                '
+Setting text: 173 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+Synced PTY winsize: requested=39x173 actual=(39, 173)
+Synced PTY winsize: requested=39x173 actual=(39, 173)
+Synced PTY winsize: requested=39x173 actual=(39, 173)
+Synced PTY winsize: requested=39x173 actual=(39, 173)
+KEY event: key='up' char=None mods=[] writer=True
+KEY→PTY [bash]: '\x1b[A'
+view.size = Size(width=173, height=39)
+view.region = Region(x=32, y=4, width=175, height=41)
+view.content_size = Size(width=173, height=39)
+view.container_size = Size(width=173, height=39)
+view.virtual_size = Size(width=175, height=41)
+Using content_region: 173x39
+cursor at (x=14, y=5), line='-Bench$ gemini                         '
+Setting text: 173 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+KEY event: key='up' char=None mods=[] writer=True
+KEY→PTY [bash]: '\x1b[A'
+view.size = Size(width=173, height=39)
+view.region = Region(x=32, y=4, width=175, height=41)
+view.content_size = Size(width=173, height=39)
+view.container_size = Size(width=173, height=39)
+view.virtual_size = Size(width=175, height=41)
+Using content_region: 173x39
+cursor at (x=17, y=5), line='-Bench$ stty size                      '
+Setting text: 173 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+KEY event: key='enter' char='\r' mods=[] writer=True
+KEY→PTY [bash]: '\r'
+view.size = Size(width=173, height=39)
+view.region = Region(x=32, y=4, width=175, height=41)
+view.content_size = Size(width=173, height=39)
+view.container_size = Size(width=173, height=39)
+view.virtual_size = Size(width=175, height=41)
+Using content_region: 173x39
+cursor at (x=0, y=6), line='                                       '
+Setting text: 173 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+view.size = Size(width=173, height=39)
+view.region = Region(x=32, y=4, width=175, height=41)
+view.content_size = Size(width=173, height=39)
+view.container_size = Size(width=173, height=39)
+view.virtual_size = Size(width=175, height=41)
+Using content_region: 173x39
+cursor at (x=8, y=8), line='-Bench$                                '
+Setting text: 173 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+---- recent output ----
+[bash] bash: /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ 
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ 
+[bash] gemini
+[bash] stty size
+[bash] 39 173
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ 
+---- recent key events ----
+key='up' char=None mods=[] writer=True
+key='up' char=None mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True
