@@ -15,14 +15,16 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tui = ["prompt_toolkit>=3.0.43", "pyte>=0.8.1"]
+# Legacy prototypes archived - only bench is actively maintained
+# tui = ["prompt_toolkit>=3.0.43", "pyte>=0.8.1"]
 textual = ["textual>=0.50.0", "pyte>=0.8.1", "wcwidth>=0.2.0"]
-auth = ["keyring>=25.0.0"]
+# auth = ["keyring>=25.0.0"]
 
 [project.scripts]
-actcli-wrap = "actcli.wrapper.wrap_cli:app"
-actcli-facilitator = "actcli.wrapper.facilitator_cli:app"
-actcli-shell = "actcli.wrapper_tui.shell:main"
+# Legacy entry points removed - prototypes archived in archive/legacy_prototypes/
+# actcli-wrap = "actcli.wrapper.wrap_cli:app"
+# actcli-facilitator = "actcli.wrapper.facilitator_cli:app"
+# actcli-shell = "actcli.wrapper_tui.shell:main"
 actcli-bench = "actcli.bench_textual.app:main"
 
 [build-system]

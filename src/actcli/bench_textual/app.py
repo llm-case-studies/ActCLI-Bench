@@ -37,8 +37,8 @@ from functools import lru_cache
 from datetime import datetime
 from textual.timer import Timer
 
-from ..wrapper_tui.session_manager import SessionManager
-from ..wrapper.client import FacilitatorClient
+from .session_manager import SessionManager
+from .client import FacilitatorClient
 from .terminal_runner import TerminalRunner
 from .term_emulator import EmulatedTerminal
 from .term_view import TermView
