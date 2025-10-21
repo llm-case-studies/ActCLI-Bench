@@ -1,0 +1,119 @@
+timestamp: 2025-10-21T03:55:15.779599Z
+versions:
+  actcli-bench: 0.0.3
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: terminal
+active_terminal: ssh
+writer_attached: True
+terminals:
+  - ssh: muted=False cmd=ssh emu=175x39 last_winsize=175x39
+    winsize_history:
+      • 03:54:35.268 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:54:35.570 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:54:36.082 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:54:55.226 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:54:55.263 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:54:55.263 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:54:55.277 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:54:55.427 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:54:55.727 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:54:56.227 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+    recent_output_preview:
+       host:port] [-w local_tun[:remote_tun]]\n           destination [command [argument ...]]\n       ssh [-Q query_option]\n
+    first_output_preview:
+      usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] [-B bind_interface] [-b bind_address]\n           [-c cipher_spec] [-D [bind_address:]port] [-E log_file]\n           [-e escape_char] [-F configfile] [-I pkcs11] [-i identity_file]\n           [-J dest
+---- recent events ----
+[ssh] EmulatedTerminal: using pyte none
+Added: ssh cmd=ssh [muted]
+Terminal 'ssh' exited (code 255)
+Selected terminal: ssh
+Selected terminal: ssh
+Selected terminal: ssh
+Selected terminal: ssh
+Selected terminal: ssh
+Selected terminal: ssh
+Selected terminal: ssh
+---- recent errors ----
+(none)
+---- recent debug ----
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+[Width-fix] Terminal 'ssh' selected: forced PTY resize to 175x39
+cursor at (x=0, y=15), line='                                       '
+Setting text: 175 lines, first line len=39, preview='usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] ['
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=0, y=15), line='                                       '
+Setting text: 175 lines, first line len=39, preview='usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] ['
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+[Width-fix] Terminal 'ssh' selected: forced PTY resize to 175x39
+cursor at (x=0, y=15), line='                                       '
+Setting text: 175 lines, first line len=39, preview='usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] ['
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=0, y=15), line='                                       '
+Setting text: 175 lines, first line len=39, preview='usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] ['
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+KEY event: key='l' char='l' mods=[] writer=True
+KEY→PTY [ssh]: 'l'
+KEY event: key='s' char='s' mods=[] writer=True
+KEY→PTY [ssh]: 's'
+KEY event: key='enter' char='\r' mods=[] writer=True
+KEY→PTY [ssh]: '\r'
+---- recent output ----
+[ssh] usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] [-B bind_interface] [-b bind_address]
+[ssh]            [-c cipher_spec] [-D [bind_address:]port] [-E log_file]
+[ssh]            [-e escape_char] [-F configfile] [-I pkcs11] [-i identity_file]
+[ssh]            [-J destination] [-L address] [-l login_name] [-m mac_spec]
+[ssh]            [-O ctl_cmd] [-o option] [-P tag] [-p port] [-R address]
+[ssh]            [-S ctl_path] [-W host:port] [-w local_tun[:remote_tun]]
+[ssh]            destination [command [argument ...]]
+[ssh]        ssh [-Q query_option]
+---- recent key events ----
+key='backspace' char='\x7f' mods=[] writer=True
+key='backspace' char='\x7f' mods=[] writer=True
+key='backspace' char='\x7f' mods=[] writer=True
+key='backspace' char='\x7f' mods=[] writer=True
+key='backspace' char='\x7f' mods=[] writer=True
+key='t' char='t' mods=[] writer=True
+key='r' char='r' mods=[] writer=True
+key='e' char='e' mods=[] writer=True
+key='e' char='e' mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True
+key='t' char='t' mods=[] writer=True
+key='r' char='r' mods=[] writer=True
+key='e' char='e' mods=[] writer=True
+key='e' char='e' mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True
+key='l' char='l' mods=[] writer=True
+key='s' char='s' mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True

@@ -1,0 +1,30 @@
+timestamp: 2025-10-21T15:18:54.106246Z
+versions:
+  actcli-bench: 0.0.3
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: log:debug
+active_terminal: (none)
+writer_attached: False
+terminals:
+---- recent events ----
+Failed to start: tree
+Start failed for tree: tree
+Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251021T151820Z.txt
+Failed to start: tree
+Start failed for tree: tree
+---- recent errors ----
+(none)
+---- recent debug ----
+Terminal 'tree' exited with code 0
+Failed to start terminal 'tree'
+Setting text: 3 lines, first line len=21, preview='Failed to start: tree'
+Setting text: 1 lines, first line len=11, preview='(no errors)'
+Setting text: 3 lines, first line len=21, preview='Failed to start: tree'
+Setting text: 1 lines, first line len=11, preview='(no errors)'
+Setting text: 1 lines, first line len=11, preview='(no output)'
+Setting text: 7 lines, first line len=34, preview="Terminal 'tree' exited with code 0"
+Terminal 'tree' exited with code 0
+Failed to start terminal 'tree'
+---- recent output ----
+(none)

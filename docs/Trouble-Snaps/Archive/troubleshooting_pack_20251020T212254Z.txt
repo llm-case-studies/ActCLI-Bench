@@ -1,0 +1,118 @@
+timestamp: 2025-10-20T21:22:54.649442Z
+versions:
+  actcli-bench: 0.0.2
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: log:troubleshooting
+active_terminal: gemini
+terminals:
+  - gemini: muted=True cmd=gemini emu=194x39 last_winsize=194x39
+    winsize_history:
+      • 21:14:48.756 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:14:49.056 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:14:49.556 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:14:56.338 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:14:56.386 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:14:56.387 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:14:56.397 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:14:56.539 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:14:56.840 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:14:57.341 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+    recent_output_preview:
+      cs)[39m                                [38;2;203;166;247m gemini-2.5-pro [38;2;108;112;134m(100% context left)[39m\n
+---- recent events ----
+[gemini] EmulatedTerminal: using pyte none
+Added: gemini cmd=gemini [muted]
+Selected terminal: gemini
+Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251020T211544Z.txt
+---- recent errors ----
+(none)
+---- recent debug ----
+cursor at (x=0, y=114), line='                                       '
+Setting text: 194 lines, first line len=39, preview='Loaded cached credentials.             '
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 1 lines, first line len=11, preview='(no errors)'
+Setting text: 3 lines, first line len=42, preview='[gemini] EmulatedTerminal: using pyte none'
+Setting text: 37 lines, first line len=35, preview='[gemini] Loaded cached credentials.'
+Setting text: 126 lines, first line len=28, preview='Synced emulator size: 194x39'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 117 lines, first line len=38, preview='timestamp: 2025-10-20T21:15:34.605781Z'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 37 lines, first line len=26, preview='Loaded cached credentials.'
+Setting text: 38 lines, first line len=21, preview='[SCROLLBACK offset=3]'
+Setting text: 38 lines, first line len=21, preview='[SCROLLBACK offset=6]'
+Setting text: 38 lines, first line len=21, preview='[SCROLLBACK offset=9]'
+Setting text: 38 lines, first line len=22, preview='[SCROLLBACK offset=12]'
+Setting text: 38 lines, first line len=22, preview='[SCROLLBACK offset=15]'
+view.size = Size(width=194, height=39)
+view.region = Region(x=32, y=4, width=196, height=41)
+view.content_size = Size(width=194, height=39)
+view.container_size = Size(width=194, height=39)
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+cursor at (x=0, y=114), line='                                       '
+Setting text: 194 lines, first line len=39, preview='Loaded cached credentials.             '
+view.size = Size(width=194, height=39)
+view.region = Region(x=32, y=4, width=196, height=41)
+view.content_size = Size(width=194, height=39)
+view.container_size = Size(width=194, height=39)
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+cursor at (x=0, y=114), line='                                       '
+Setting text: 194 lines, first line len=39, preview='Loaded cached credentials.             '
+---- recent output ----
+[gemini] Loaded cached credentials.
+[gemini] 2;Gemini - ActCLI-Bench
+[gemini]  ███            █████████  ██████████ ██████   ██████ █████ ██████   █████ █████
+[gemini] ░░░███         ███░░░░░███░░███░░░░░█░░██████ ██████ ░░███ ░░██████ ░░███ ░░███
+[gemini]   ░░░███      ███     ░░░  ░███  █[
+[gemini] 38;2;124;126;209m ░  ░███░█████░███  ░███  ░███░███ ░███  ░███
+[gemini]     ░░░███   ░███          ░██████    ░███░░███ ░███  ░███  ░███░░███░███  ░███
+[gemini]      ███░    ░███    █████ ░███░░█    ░███ ░░░  ░███  ░███  ░███ ░░██[3
+[gemini] 8;2;180;107;145m████  ░███
+[gemini]    ███░      ░░███  ░░███  ░███ ░   █ ░███      ░███  ░███  ░███  ░░█████  ░███
+[gemini]  ███░         ░░█████████  ██████████ █████     █████ █████ █████  ░░█████ █████
+[gemini] ░░░            ░░░░░░░░░ [38;2
+[gemini] ;110;132;214m ░░░░░░░░░░ ░░░░░     ░░░░░ ░░░░░ ░░░░░    ░░░░░ ░░░░░
+[gemini] Tips for getting started:
+[gemini] 1. Ask questions, edit files, or run commands.
+[gemini] 2. Be specific for the best results.
+[gemini] 3. /help for more information.
+[gemini] ╭─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │                                                                                                                                                                             │
+[gemini] │ ⠋ Waiting for auth... (Press ESC or CTRL+C to cancel)                                                                                                                       │
+[gemini] │                                                                                                                                                                             │
+[gemini] ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ╭─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │                                                                                                                                                                             │
+[gemini] │ ⠙ Waiting for auth... (Press ESC or CTRL+C to cancel)                                                                                                                       │
+[gemini] │                                                                                                                                                                             │
+[gemini] ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ╭─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │                                                                                                                                                                             │
+[gemini] │ ⠹ Waiting for auth... (Press ESC or CTRL+C to cancel)                                                                                                                       │
+[gemini] │                                                                                                                                                                             │
+[gemini] ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] Using: 1 GEMINI.md file
+[gemini] ╭─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                                      │
+[gemini] ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                              no sandbox (see /docs)                                 gemini-2.5-pro (100% context left)

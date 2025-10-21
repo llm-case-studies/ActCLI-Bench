@@ -1,0 +1,88 @@
+timestamp: 2025-10-21T03:22:20.354644Z
+versions:
+  actcli-bench: 0.0.3
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: terminal
+active_terminal: bash
+writer_attached: False
+terminals:
+  - bash: muted=True cmd=bash emu=175x39 last_winsize=175x39
+    winsize_history:
+      • 03:20:44.267 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:20:44.567 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:20:45.068 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:21:08.636 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:21:08.678 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:21:08.678 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:21:08.691 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:21:08.836 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:21:09.137 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+      • 03:21:09.638 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+    recent_output_preview:
+      alex@msi-raider-linux: ~/Projects/ActCLI-Bench[01;32malex@msi-raider-linux[00m:[01;34m~/Projects/ActCLI-Bench[00m$ 
+    first_output_preview:
+      bash: /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory\n[?2004h]0;alex@msi-raider-linux: ~/Projects/ActCLI-Bench[01;32malex@msi-raider-linux[00m:[01;34m~/Projects/ActCLI-Bench[00m$ [K]0;alex@msi-raider-
+---- recent events ----
+[bash] EmulatedTerminal: using pyte none
+Added: bash cmd=bash [muted]
+Selected terminal: bash
+Selected terminal: bash
+Selected terminal: bash
+---- recent errors ----
+(none)
+---- recent debug ----
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=8, y=5), line='-Bench$                                '
+Setting text: 175 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+[Width-fix experiment] Resize failed: 'TerminalRunner' object has no attribute 'resize_pty'
+Setting text: 175 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+Setting text: 87 lines, first line len=38, preview='timestamp: 2025-10-21T03:21:04.418313Z'
+Setting text: 87 lines, first line len=38, preview='timestamp: 2025-10-21T03:21:04.418313Z'
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+cursor at (x=8, y=5), line='-Bench$                                '
+Setting text: 175 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=8, y=5), line='-Bench$                                '
+Setting text: 175 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+Synced PTY winsize: requested=39x175 actual=(39, 175)
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=8, y=5), line='-Bench$                                '
+Setting text: 175 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+cursor at (x=8, y=5), line='-Bench$                                '
+Setting text: 175 lines, first line len=39, preview='bash: /home/alex/snap/code/176/.local/s'
+---- recent output ----
+[bash] bash: /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ 
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ 

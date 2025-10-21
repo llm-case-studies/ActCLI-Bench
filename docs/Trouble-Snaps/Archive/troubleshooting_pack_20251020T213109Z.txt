@@ -1,0 +1,183 @@
+timestamp: 2025-10-20T21:31:09.441472Z
+versions:
+  actcli-bench: 0.0.2
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: terminal
+active_terminal: gemini
+terminals:
+  - tree: muted=False cmd=tree emu=194x39 last_winsize=194x39
+    winsize_history:
+      • 21:27:51.119 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:27:51.155 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:27:51.169 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:27:51.320 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:27:51.620 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:27:52.121 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+    recent_output_preview:
+      ── test_websocket_routing.py\n    └── [01;34munit[0m\n        └── test_wrapper_client.py\n\n16 directories, 57 files\n
+  - bash: muted=False cmd=bash emu=194x39 last_winsize=194x39
+    winsize_history:
+      • 21:28:17.451 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:28:17.752 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:28:18.252 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:28:19.862 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:28:19.925 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:28:19.925 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:28:19.926 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:28:20.063 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:28:20.364 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:28:20.862 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+    recent_output_preview:
+      ────────────────────────────────────────────────────────────────────────────────────────────────╯[39m\n[?2026l[?1004l
+  - gemini: muted=True cmd=gemini emu=194x39 last_winsize=194x39
+    winsize_history:
+      • 21:30:11.365 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:30:11.665 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:30:12.165 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:30:55.062 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:30:55.117 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:30:55.117 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:30:55.118 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:30:55.262 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:30:55.562 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+      • 21:30:56.063 view=194x39 emu=194x39 requested=39x194 actual=(39, 194)
+    recent_output_preview:
+      ocs)[39m                                [38;2;203;166;247m gemini-2.5-pro [38;2;108;112;134m(99% context left)[39m\n
+---- recent events ----
+Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251020T212720Z.txt
+[tree] EmulatedTerminal: using pyte none
+Added: tree cmd=tree [muted]
+Terminal 'tree' exited (code 0)
+[bash] EmulatedTerminal: using pyte none
+Added: bash cmd=bash [muted]
+Selected terminal: bash
+[gemini] EmulatedTerminal: using pyte none
+Added: gemini cmd=gemini [muted]
+Selected terminal: gemini
+Selected terminal: gemini
+---- recent errors ----
+(none)
+---- recent debug ----
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+view.size = Size(width=194, height=39)
+view.region = Region(x=32, y=4, width=196, height=41)
+view.content_size = Size(width=194, height=39)
+view.container_size = Size(width=194, height=39)
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+KEY event: key='right' char=None mods=[] writer=True
+KEY→PTY [gemini]: '\x1b[C'
+KEY event: key='left' char=None mods=[] writer=True
+KEY→PTY [gemini]: '\x1b[D'
+KEY event: key='enter' char='\r' mods=[] writer=True
+KEY→PTY [gemini]: '\r'
+view.size = Size(width=194, height=39)
+view.region = Region(x=32, y=4, width=196, height=41)
+view.content_size = Size(width=194, height=39)
+view.container_size = Size(width=194, height=39)
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+cursor at (x=0, y=193), line='                                       '
+Setting text: 194 lines, first line len=39, preview='                                       '
+view.size = Size(width=194, height=39)
+view.region = Region(x=32, y=4, width=196, height=41)
+view.content_size = Size(width=194, height=39)
+view.container_size = Size(width=194, height=39)
+view.virtual_size = Size(width=196, height=41)
+Using content_region: 194x39
+cursor at (x=0, y=193), line='                                       '
+Setting text: 194 lines, first line len=39, preview='                                       '
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Synced PTY winsize: requested=39x194 actual=(39, 194)
+Setting text: 46 lines, first line len=21, preview='[SCROLLBACK offset=9]'
+Setting text: 46 lines, first line len=21, preview='[SCROLLBACK offset=6]'
+Setting text: 46 lines, first line len=21, preview='[SCROLLBACK offset=3]'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+Setting text: 45 lines, first line len=176, preview=' ╰──────────────────────────────────────────────────────────────────────────────────────────────────'
+---- recent output ----
+[gemini]  │                                                                                                                                                                             │
+[gemini]  │   1. Yes, allow once                                                                                                                                                        │
+[gemini]  │   2. Yes, allow always ...                                                                                                                                                  │
+[gemini]  │ ● 3. No, suggest changes (esc)                                                                                                                                              │
+[gemini]  │                                                                                                                                                                             │
+[gemini]  ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ⠏ Waiting for user confirmation...
+[gemini] Using: 1 GEMINI.md file
+[gemini] ~/Projects/ActCLI-Bench (feat/bench-emulator-rebas
+[gemini] ed*)                               no sandbox (see /docs)                                 gemini-2.5-pro (99% context left)
+[gemini]  ╭─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini]  │ ?  Shell find . -maxdepth 4 (Find files with a maximum depth of 4 in the current directory.) ←                                                                              │
+[gemini]  │                                                                                                                                                                             │
+[gemini]  │   find . -maxdepth 4                                                                                                                                                        │
+[gemini]  │                                                                                                                                                                             │
+[gemini]  │ Allow execution of: 'find'?                                                                                                                                                 │
+[gemini]  │                                                                                                                                                                             │
+[gemini]  │ ● 1. Yes, allow once                                                                                                                                                        │
+[gemini]  │   2. Yes, allow always ...                                                                                                                                                  │
+[gemini]  │   3. No, suggest changes (esc)                                                                                                                                              │
+[gemini]  │                                                                                                                                                                             │
+[gemini]  ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ⠏ Waiting for user confirmation...
+[gemini] Using: 1 GEMINI.md file
+[gemini] ~/Projects/ActCLI-Bench (feat/bench-emulator-rebas
+[gemini] ed*)                               no sandbox (see /docs)                                 gemini-2.5-pro (99% context left)
+[gemini]  ╭─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini]  │ ?  Shell find . -maxdepth 4 (Find files with a maximum depth of 4 in the current directory.) ←                                                                              │
+[gemini]  │                                                                                                                                                                             │
+[gemini]  │   find . -maxdepth 4                                                                                                                                                        │
+[gemini]  │                                                                                                                                                                             │
+[gemini]  │ Allow execution of: 'find'?                                                                                                                                                 │
+[gemini]  │                                                                                                                                                                             │
+[gemini]  │   1. Yes, allow once                                                                                                                                                        │
+[gemini]  │   2. Yes, allow always ...                                                                                                                                                  │
+[gemini]  │ ● 3. No, suggest changes (esc)                                                                                                                                              │
+[gemini]  │                                                                                                                                                                             │
+[gemini]  ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ⠏ Waiting for user confirmation...
+[gemini] Using: 1 GEMINI.md file
+[gemini] ~/Projects/ActCLI-Bench (feat/bench-emulator-rebas
+[gemini] ed*)                               no sandbox (see /docs)                                 gemini-2.5-pro (99% context left)
+[gemini]  ╭───────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini]  │ -  Shell find . -maxdepth 4 (Find files with a maximum depth of 4 in the current directory.)  │
+[gemini]  ╰───────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] Using: 1 GEMINI.md file
+[gemini] ╭─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                                      │
+[gemini] ╰─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                               no sandbox (see /docs)                                 gemini-2.5-pro (99% context left)
+---- recent key events ----
+key='c' char='c' mods=[] writer=True
+key='o' char='o' mods=[] writer=True
+key='m' char='m' mods=[] writer=True
+key='e' char='e' mods=[] writer=True
+key='space' char=' ' mods=[] writer=True
+key='b' char='b' mods=[] writer=True
+key='a' char='a' mods=[] writer=True
+key='c' char='c' mods=[] writer=True
+key='k' char='k' mods=[] writer=True
+key='full_stop' char='.' mods=[] writer=True
+key='full_stop' char='.' mods=[] writer=True
+key='full_stop' char='.' mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True
+key='down' char=None mods=[] writer=True
+key='down' char=None mods=[] writer=True
+key='down' char=None mods=[] writer=True
+key='up' char=None mods=[] writer=True
+key='right' char=None mods=[] writer=True
+key='left' char=None mods=[] writer=True
+key='enter' char='\r' mods=[] writer=True

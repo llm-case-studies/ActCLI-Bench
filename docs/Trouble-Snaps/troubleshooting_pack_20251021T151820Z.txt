@@ -1,0 +1,19 @@
+timestamp: 2025-10-21T15:18:20.279465Z
+versions:
+  actcli-bench: 0.0.3
+  textual: 6.3.0
+  pyte: 0.8.2
+active_view: terminal
+active_terminal: (none)
+writer_attached: True
+terminals:
+---- recent events ----
+Failed to start: tree
+Start failed for tree: tree
+---- recent errors ----
+(none)
+---- recent debug ----
+Terminal 'tree' exited with code 0
+Failed to start terminal 'tree'
+---- recent output ----
+(none)
