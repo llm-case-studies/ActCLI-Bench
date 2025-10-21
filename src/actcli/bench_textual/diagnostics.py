@@ -187,5 +187,7 @@ class DiagnosticsManager:
         buf = self.log_manager.buffers.get(category, [])
         if not buf:
             return f"(no {category})"
-        recent = buf[-limit:]
+        # Convert deque to list for slicing (deques don't support slicing)
+        buf_list = list(buf)
+        recent = buf_list[-limit:]
         return "\n".join(recent)

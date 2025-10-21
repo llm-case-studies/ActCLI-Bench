@@ -159,9 +159,10 @@ class BenchTextualApp(ActCLIShell):
         yield self.chk_mirror
 
     def build_navigation_tree(self, tree: NavigationTree) -> None:
-        """Build the Bench navigation tree structure.
+        """Configure the Bench navigation tree.
 
-        Register sections and handlers, then build the tree.
+        Register sections and handlers. The tree will be built when
+        the widget mounts or when rebuild() is called explicitly.
         """
         # Register sections (in display order)
         tree.register_section(TerminalsSection(self.terminal_manager))
@@ -181,9 +182,6 @@ class BenchTextualApp(ActCLIShell):
         tree.register_node_handler("connect", self._handle_connect)
         tree.register_node_handler("session_info", self._handle_session_info)
         tree.register_node_handler("log", self._handle_log_view)
-
-        # Build initial tree
-        tree.rebuild()
 
     def _get_mirror_state(self) -> bool:
         """Get current mirror checkbox state."""

@@ -156,6 +156,8 @@ class ActCLIShell(App):
         # Build navigation tree if provider implemented
         if isinstance(self, NavigationProvider) and self.nav_tree:
             self.build_navigation_tree(self.nav_tree)
+            # Trigger initial tree build after configuration
+            self.nav_tree.rebuild()
 
     def get_brand_text(self) -> str:
         """Get the brand text for the sidebar.
