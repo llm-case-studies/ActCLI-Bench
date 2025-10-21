@@ -43,6 +43,7 @@ from .terminal_runner import TerminalRunner
 from .term_emulator import EmulatedTerminal
 from .term_view import TermView
 from .log_manager import LogManager
+from .terminal_manager import TerminalManager
 
 
 THEME_CLASSES = ("theme-ledger", "theme-analyst", "theme-seminar")
@@ -71,11 +72,20 @@ class BenchTextualApp(App):
         # Ensure core attributes exist before mount/compose triggers any status updates
         self.session_manager = SessionManager()
         self.log_manager = LogManager()
+
+        # Terminal management (replaces scattered dictionaries)
+        self.terminal_manager = TerminalManager(
+            debug_logger=self._debug_logger,
+            log_manager=self.log_manager,
+            max_scrollback_lines=2000,
+            on_output_callback=self._on_terminal_output
+        )
+
+        # UI state
         self.viewer_url: Optional[str] = None
         self.facilitator_client: Optional[FacilitatorClient] = None
-        self.terminals: Dict[str, TerminalItem] = {}
-        self.active_terminal: Optional[str] = None
         self.active_view: str = "terminal"
+        self.active_terminal: Optional[str] = None  # Currently selected terminal
         self.mirror_to_facilitator: bool = False
         self.last_broadcast: Optional[str] = None
         self.adding_mode: bool = False
@@ -83,17 +93,12 @@ class BenchTextualApp(App):
         self.action_lines: List[str] = []
         self._session_id: Optional[str] = None
         self._version_info: Dict[str, str] = {}
-        self._emulator_mode_logged: set[str] = set()
-        self.emulators: Dict[str, EmulatedTerminal] = {}
-        self.scroll_buffers: Dict[str, list[str]] = {}
-        self.scroll_offsets: Dict[str, int] = {}
-        self.max_scrollback_lines: int = 2000
-        self._last_synced_sizes: Dict[str, tuple[int, int]] = {}
-        self._winsize_history: Dict[str, list[str]] = {}
-        self._tty_output_buffer: Dict[str, str] = {}
         self._key_events: list[str] = []
         self._writer_attached: bool = False
         self._border_blink_timer: Optional[Timer] = None
+
+        # Scrollback UI state (managed separately from TerminalManager)
+        self.scroll_offsets: Dict[str, int] = {}
 
     async def on_mount(self) -> None:
         # Start with the first palette
@@ -341,13 +346,17 @@ class BenchTextualApp(App):
         lines.append(f"active_terminal: {self.active_terminal or '(none)'}")
         lines.append(f"writer_attached: {self._writer_attached}")
         lines.append("terminals:")
-        for name, item in self.terminals.items():
-            emu = self.emulators.get(name)
-            emu_size = f"{getattr(emu, 'cols', '?')}x{getattr(emu, 'rows', '?')}" if emu else "n/a"
-            last_sync = self._last_synced_sizes.get(name)
-            sync_str = f"{last_sync[1]}x{last_sync[0]}" if last_sync else "n/a"
-            tty_preview = self._tty_output_buffer.get(name, "")[-120:]
-            runner = item.runner
+        for name in self.terminal_manager.list_terminals():
+            state = self.terminal_manager.get_terminal_state(name)
+            if not state:
+                continue
+
+            emu = state.emulator
+            emu_size = f"{emu.cols}x{emu.rows}"
+            last_sync = state.last_synced_size
+            sync_str = f"{last_sync[0]}x{last_sync[1]}" if last_sync else "n/a"
+            tty_preview = state.output_buffer[-120:] if state.output_buffer else ""
+            runner = state.item
             first_preview = ""
             if hasattr(runner, "first_output_preview"):
                 try:
@@ -428,7 +437,7 @@ class BenchTextualApp(App):
 
     def _sync_terminal_size(self, name: str) -> None:
         """Sync terminal view size to both emulator and PTY child process."""
-        if name not in self.terminals or name not in self.emulators:
+        if name not in self.terminal_manager.terminals:
             return
 
         view = getattr(self, "terminal_view", None)
@@ -447,25 +456,8 @@ class BenchTextualApp(App):
         if cols <= 0 or rows <= 0:
             return
 
-        # Resize emulator
-        emu = self.emulators[name]
-        if emu.cols != cols or emu.rows != rows:
-            emu.resize(cols, rows)
-            self._debug_logger(f"Synced emulator size: {cols}x{rows}")
-
-        # Set PTY window size (this is the KEY fix!)
-        runner = self.terminals[name].runner
-        runner.set_winsize(rows, cols)
-        current = runner.get_winsize()
-        self._debug_logger(f"Synced PTY winsize: requested={rows}x{cols} actual={current or 'n/a'}")
-        self._last_synced_sizes[name] = (rows, cols)
-        history = self._winsize_history.setdefault(name, [])
-        timestamp = datetime.utcnow().strftime("%H:%M:%S.%f")[:-3]
-        history.append(
-            f"{timestamp} view={cols}x{rows} emu={emu.cols}x{emu.rows} requested={rows}x{cols} actual={current or 'n/a'}"
-        )
-        if len(history) > 20:
-            del history[:-20]
+        # Delegate to TerminalManager
+        self.terminal_manager.sync_terminal_size(name, cols, rows)
 
     def _schedule_terminal_resizes(self, name: str) -> None:
         """Schedule delayed syncs to catch late layout adjustments."""
@@ -568,53 +560,26 @@ class BenchTextualApp(App):
 
     def _on_terminal_view_focused(self) -> None:
         """Called when terminal view gains focus - refresh display with cursor."""
-        if self.active_terminal and self.active_terminal in self.emulators:
-            emu = self.emulators[self.active_terminal]
-            # Resize emulator to match terminal view if needed
-            self._resize_emulator_if_needed(emu)
-            self._set_terminal_text(emu.text_with_cursor(show=True))
+        if self.active_terminal:
+            state = self.terminal_manager.get_terminal_state(self.active_terminal)
+            if state:
+                emu = state.emulator
+                # Resize emulator to match terminal view if needed
+                self._resize_emulator_if_needed(emu)
+                self._set_terminal_text(emu.text_with_cursor(show=True))
 
-    def _append_terminal_output(self, name: str, text: str) -> None:
-        """Feed emulator for terminal 'name' and refresh view if active."""
-        emu = self.emulators.get(name)
-        if not emu:
-            emu = EmulatedTerminal(debug_logger=self._debug_logger)
-            self.emulators[name] = emu
-        # Resize emulator to match view before feeding data
-        self._resize_emulator_if_needed(emu)
-        emu.feed(text)
-        buf = self._tty_output_buffer.setdefault(name, "")
-        buf += text
-        if len(buf) > 4096:
-            buf = buf[-4096:]
-        self._tty_output_buffer[name] = buf
-        # Append to scrollback buffer (plain lines) and log to Output category
-        sb = self.scroll_buffers.setdefault(name, [])
-        for line in text.splitlines():
-            clean = self._strip_ansi(line)
-            if clean:
-                sb.append(clean)
-                if len(sb) > self.max_scrollback_lines:
-                    del sb[: len(sb) - self.max_scrollback_lines]
-                # Log plain output to Output category
-                self.log_manager.add("output", f"[{name}] {clean}")
-        if self.active_terminal == name and self.active_view == "terminal" and self.scroll_offsets.get(name, 0) == 0:
-            # Show cursor when in terminal view and not scrolled away
-            self._set_terminal_text(emu.text_with_cursor(show=self.terminal_view.has_focus))
+    def _on_terminal_output(self, name: str, text: str) -> None:
+        """Called when terminal output arrives - refresh view if needed.
 
-    # ANSI/control filtering adapted from wrapper.pty_wrapper
-    def _strip_ansi(self, s: str) -> str:
-        patterns = [
-            r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])",
-            r"\x1B\][^\x07]*\x07",
-            r"\x1B\][^\x1B]*\x1B\\",
-            r"\x1B[PX^_][^\x1B]*\x1B\\",
-            r"\x1B[\[\]()][0-9;]*[A-Za-z<>]",
-        ]
-        out = s
-        for p in patterns:
-            out = re.sub(p, "", out)
-        return out
+        TerminalManager handles emulator feeding and logging, this just updates the UI.
+        """
+        # Refresh terminal view if this is the active terminal and we're in terminal view
+        if self.active_terminal == name and self.active_view == "terminal":
+            state = self.terminal_manager.get_terminal_state(name)
+            if state and state.scroll_offset == 0:
+                # Only refresh if not scrolled away
+                # Show cursor when in terminal view and not scrolled away
+                self._set_terminal_text(state.emulator.text_with_cursor(show=self.terminal_view.has_focus))
 
     def _is_control_sequence(self, s: str) -> bool:
         t = s.strip()
@@ -679,9 +644,10 @@ class BenchTextualApp(App):
         """Broadcast a line to all unmuted terminals; optionally mirror to viewer."""
         self.last_broadcast = text
         # Inject into each unmuted terminal
-        for item in self.terminals.values():
-            if not item.muted:
-                item.runner.inject(text)
+        for name in self.terminal_manager.list_terminals():
+            state = self.terminal_manager.get_terminal_state(name)
+            if state and not state.item.muted:
+                state.item.write(text)
         # Mirror to facilitator feed if enabled
         if self.chk_mirror.value and self.facilitator_client and self.session_manager.session:
             import asyncio
@@ -757,36 +723,29 @@ class BenchTextualApp(App):
             self._log_action(f"Connect error for {session_id}: {e}")
 
     def _add_terminal(self, name: str, cmd: List[str]) -> None:
-        if name in self.terminals:
-            self._log(f"Terminal '{name}' already exists")
-            return
-        runner = TerminalRunner(name=name, command=cmd, muted=True)
-        runner.on_output(lambda text, n=name: self.call_from_thread(self._append_terminal_output, n, text))
-        runner.on_exit(lambda code, n=name: self.call_from_thread(self._on_terminal_exit, n, code))
-        ok = runner.start()
-        if not ok:
+        # Use TerminalManager to create and start terminal
+        success = self.terminal_manager.add_terminal(name, cmd)
+
+        if not success:
             self._log(f"Failed to start: {' '.join(cmd)}")
             self._log_action(f"Start failed for {name}: {' '.join(cmd)}")
             return
-        self.terminals[name] = TerminalItem(name=name, command=cmd, runner=runner, muted=True)
-        # init emulator buffer
-        emu = EmulatedTerminal(debug_logger=self._debug_logger)
-        self.emulators[name] = emu
-        self._log_emulator_mode(name, emu)
-        self._winsize_history[name] = []
+
+        # Set as active terminal
+        self.active_terminal = name
+
         # Set initial PTY size (critical - do this right after starting!)
         self._sync_terminal_size(name)
         self._schedule_terminal_resizes(name)
-        if not self.active_terminal:
-            self.active_terminal = name
+
+        # Initialize UI-specific state
+        self.scroll_offsets[name] = 0
+
         self._switch_view("tab-terminal")
         self._update_status_line()
         self._refresh_nav()
         self._set_terminal_text(f"Added terminal '{name}' → {' '.join(cmd)}  [muted]")
         self._log_action(f"Added: {name} cmd={' '.join(cmd)} [muted]")
-        # Prepare scrollback structures
-        self.scroll_buffers[name] = []
-        self.scroll_offsets[name] = 0
 
     # --- View switching -------------------------------------------------
     def _switch_view(self, tab_id: str) -> None:
@@ -796,9 +755,11 @@ class BenchTextualApp(App):
             self.terminal_view.focus()
             name = self.active_terminal
             text = ""
-            if name and name in self.emulators:
-                # Show cursor immediately since we just focused
-                text = self.emulators[name].text_with_cursor(show=True)
+            if name:
+                state = self.terminal_manager.get_terminal_state(name)
+                if state:
+                    # Show cursor immediately since we just focused
+                    text = state.emulator.text_with_cursor(show=True)
             self._set_terminal_text(text)
             self._writer_attached = True
             self._start_border_blink()
@@ -830,12 +791,12 @@ class BenchTextualApp(App):
         name = self.active_terminal
         if not name or name == "__logs__":
             return
-        item = self.terminals.get(name)
-        if not item:
+        state = self.terminal_manager.get_terminal_state(name)
+        if not state:
             return
         try:
             self._debug_logger(f"KEY→PTY [{name}]: {repr(data)}")
-            item.runner.write(data)
+            state.item.write(data)
         except Exception:
             pass
 
@@ -857,10 +818,12 @@ class BenchTextualApp(App):
         # Add action
         add_node = terminals_node.add("+ Add…")
         add_node.data = {"type": "add_terminal"}
-        for name, item in self.terminals.items():
-            mark = "[M]" if item.muted else "[U]"
-            node = terminals_node.add(f"{name} {mark}")
-            node.data = {"type": "terminal", "name": name}
+        for name in self.terminal_manager.list_terminals():
+            state = self.terminal_manager.get_terminal_state(name)
+            if state:
+                mark = "[M]" if state.item.muted else "[U]"
+                node = terminals_node.add(f"{name} {mark}")
+                node.data = {"type": "terminal", "name": name}
         sessions_node = self.nav_tree.root.add("Sessions")
         cur = sessions_node.add("Current session")
         cur.data = {"type": "session_info"}
@@ -909,12 +872,10 @@ class BenchTextualApp(App):
             self.control_input.focus()
         elif t == "terminal":
             name = data.get("name")
-            if name in self.terminals:
+            state = self.terminal_manager.get_terminal_state(name)
+            if state:
                 self.active_terminal = name
                 self._update_status_line()
-                emu = self.emulators.get(name) or EmulatedTerminal(debug_logger=self._debug_logger)
-                self.emulators[name] = emu
-                self._log_emulator_mode(name, emu)
                 self.active_view = "terminal"
                 self.terminal_view.set_writer(self._write_to_active)
                 self.terminal_view.set_navigator(self._on_navigate)
@@ -927,7 +888,7 @@ class BenchTextualApp(App):
                 except Exception:
                     pass
                 self._schedule_terminal_resizes(name)
-                self._set_terminal_text(emu.text_with_cursor(show=True))
+                self._set_terminal_text(state.emulator.text_with_cursor(show=True))
                 self._log_action(f"Selected terminal: {name}")
         elif t == "connect":
             # Inline connect prompt using control input
@@ -939,12 +900,16 @@ class BenchTextualApp(App):
         elif t == "action":
             aid = data.get("id")
             if aid == "mute_all":
-                for item in self.terminals.values():
-                    item.muted = True
+                for name in self.terminal_manager.list_terminals():
+                    state = self.terminal_manager.get_terminal_state(name)
+                    if state:
+                        state.item.muted = True
                 self._rebuild_nav_tree()
             elif aid == "unmute_all":
-                for item in self.terminals.values():
-                    item.muted = False
+                for name in self.terminal_manager.list_terminals():
+                    state = self.terminal_manager.get_terminal_state(name)
+                    if state:
+                        state.item.muted = False
                 self._rebuild_nav_tree()
             elif aid == "toggle_mirror":
                 try:
@@ -968,10 +933,11 @@ class BenchTextualApp(App):
     # --- Scrollback navigation ----------------------------------------
     def _on_navigate(self, action: str, amount: int) -> bool:
         name = self.active_terminal
-        if not name or name not in self.scroll_buffers:
+        state = self.terminal_manager.get_terminal_state(name)
+        if not state:
             return False
-        # Ensure buffer exists
-        buf = self.scroll_buffers[name]
+
+        buf = state.scroll_buffer
         offset = self.scroll_offsets.get(name, 0)
         if action == 'wheel':
             offset = max(0, offset - amount)
@@ -986,11 +952,16 @@ class BenchTextualApp(App):
         else:
             return False
         self.scroll_offsets[name] = offset
+        state.scroll_offset = offset  # Sync to TerminalState
         self._render_scrollback(name)
         return True
 
     def _render_scrollback(self, name: str) -> None:
-        buf = self.scroll_buffers.get(name, [])
+        state = self.terminal_manager.get_terminal_state(name)
+        if not state:
+            return
+
+        buf = state.scroll_buffer
         offset = self.scroll_offsets.get(name, 0)
         if not buf:
             return
