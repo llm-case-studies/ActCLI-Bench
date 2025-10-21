@@ -12,18 +12,14 @@ Goals:
 
 from __future__ import annotations
 
-from textual.app import App, ComposeResult
+from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.containers import Horizontal, Vertical
+from textual.containers import Horizontal
 from textual.widgets import (
-    Header,
     Footer,
-    Static,
     Input,
     Button,
-    Log,
     Checkbox,
-    Label,
     Tree,
 )
 
@@ -45,9 +41,7 @@ from .term_view import TermView
 from .log_manager import LogManager
 from .terminal_manager import TerminalManager
 from .diagnostics import DiagnosticsManager
-
-
-THEME_CLASSES = ("theme-ledger", "theme-analyst", "theme-seminar")
+from ..shell import ActCLIShell
 
 
 @dataclass
@@ -58,13 +52,14 @@ class TerminalItem:
     muted: bool = True
 
 
-class BenchTextualApp(App):
-    CSS_PATH = "themes.tcss"
+class BenchTextualApp(ActCLIShell):
+    """ActCLI Bench - Terminal wrapper and facilitator for knowledge transfer."""
+
+    CSS_PATH = "../shell/themes.tcss"
+    DEFAULT_THEME = "ledger"
 
     BINDINGS = [
-        Binding("f1", "switch_theme('ledger')", "Ledger"),
-        Binding("f2", "switch_theme('analyst')", "Analyst"),
-        Binding("f3", "switch_theme('seminar')", "Seminar"),
+        *ActCLIShell.BINDINGS,
         Binding("ctrl+q", "quit", "Quit"),
     ]
 
@@ -110,9 +105,18 @@ class BenchTextualApp(App):
         # Scrollback UI state (managed separately from TerminalManager)
         self.scroll_offsets: Dict[str, int] = {}
 
+    def get_brand_text(self) -> str:
+        """Override to provide Bench branding."""
+        return "ActCLI • Bench"
+
+    def get_initial_status(self) -> str:
+        """Override to provide Bench initial status."""
+        return "Terminal"
+
     async def on_mount(self) -> None:
-        # Start with the first palette
-        self.add_class("theme-ledger")
+        """Override to set up Bench-specific initialization."""
+        # Call parent mount (which adds default theme)
+        super().on_mount()
         # App state
         # Ensure version info is gathered once mount occurs (may refresh from __init__ placeholder)
         self._version_info = self._gather_version_info()
@@ -138,40 +142,33 @@ class BenchTextualApp(App):
         self.terminal_view.set_on_focus(self._on_terminal_view_focused)
 
     def compose(self) -> ComposeResult:
-        yield Header(id="header")
-
-        # Main split: left navigation + right detail
-        with Horizontal(id="body"):
-            with Vertical(id="sidebar"):
-                yield Static("ActCLI • Bench", id="brand")
-                # Tree navigation
-                self.nav_tree = Tree("Navigation", id="nav-tree")
-                yield self.nav_tree
-                yield Static("F1: Ledger • F2: Analyst • F3: Seminar", id="hint")
-
-            with Vertical(id="detail"):
-                # Right: Title / status line
-                self.status_line = Static("Terminal", id="title")
-                yield self.status_line
-                # Active terminal output view (emulated, focusable)
-                self.terminal_view = TermView(id="terminal-view", expand=True, shrink=False)
-                yield self.terminal_view
-                # Control pad
-                with Horizontal(id="control"):
-                    self.control_input = Input(placeholder="Broadcast to all unmuted…", id="control-input")
-                    yield self.control_input
-                    self.btn_broadcast = Button("Broadcast", id="btn-broadcast")
-                    yield self.btn_broadcast
-                    self.chk_mirror = Checkbox("Mirror to viewer", id="chk-mirror")
-                    yield self.chk_mirror
-
+        """Compose the Bench UI using the shell layout."""
+        # Use parent shell layout (sidebar + detail view)
+        yield from super().compose()
+        # Add footer (not part of base shell)
         yield Footer(id="footer")
 
+    def compose_detail_view(self) -> ComposeResult:
+        """Provide the terminal view for the detail panel."""
+        self.terminal_view = TermView(id="terminal-view", expand=True, shrink=False)
+        yield self.terminal_view
+
+    def compose_control_panel(self) -> ComposeResult:
+        """Provide the control panel widgets."""
+        self.control_input = Input(placeholder="Broadcast to all unmuted…", id="control-input")
+        yield self.control_input
+        self.btn_broadcast = Button("Broadcast", id="btn-broadcast")
+        yield self.btn_broadcast
+        self.chk_mirror = Checkbox("Mirror to viewer", id="chk-mirror")
+        yield self.chk_mirror
+
+    def build_navigation_tree(self, tree: Tree) -> None:
+        """Build the Bench navigation tree structure."""
+        self._rebuild_nav_tree()
+
     def action_switch_theme(self, theme: str) -> None:
-        # Remove previous theme classes and apply the new one
-        for cls in THEME_CLASSES:
-            self.remove_class(cls)
-        self.add_class(f"theme-{theme}")
+        """Override to add logging when switching themes."""
+        super().action_switch_theme(theme)
         self._log(f"Switched theme → {theme}")
 
     def on_resize(self, event) -> None:  # type: ignore[override]
