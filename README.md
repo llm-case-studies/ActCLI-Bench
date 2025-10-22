@@ -1,84 +1,330 @@
-# ActCLI Bench Suite (extraction package)
+# ActCLI-Bench
 
-This folder is a temporary export of the wrappers + facilitator + viewer + bench UIs
-from the ActCLI repo so we can verify the suite as a standalone project.
+> Multi-AI terminal wrapper and bench environment with a modern TUI framework
 
-Move `SctCLI-Bench/` to its own repository, then adjust packaging metadata.
+ActCLI-Bench is a complete system for running and coordinating multiple AI CLI tools (Claude, Gemini, etc.) through a unified interface. It includes a terminal wrapper, facilitator service, and a modern Textual-based bench UI with a reusable shell framework.
 
-## What’s included
+## Features
 
-- Facilitator (FastAPI + WebSocket routing)
-  - `src/actcli/facilitator/`
-- Wrapper client + PTY wrapper + wrap CLI
-  - `src/actcli/wrapper/`
-- PromptToolkit shell (multi‑terminal UI)
-  - `src/actcli/wrapper_tui/`
-- Textual bench (themeable UI)
-  - `src/actcli/bench_textual/`
-- Tests
-  - `tests/integration/test_websocket_routing.py`
-  - `tests/integration/test_pty_wrapper_simple.py`
-  - `tests/unit/test_wrapper_client.py`
-- Docs copied from submodules
-  - See `docs/` folder
+🚀 **Multi-AI Coordination**
+- Wrap AI CLI tools (Claude, Gemini, etc.) and connect them through a facilitator
+- Real-time message routing and broadcast streaming
+- Session management with viewer URL
 
-Full inventory:
-- `INVENTORY.txt` (paths)
-- `INVENTORY.sha256.txt` (hashes, if sha256sum available)
+🎨 **Modern TUI Interface**
+- Built with [Textual](https://textual.textualize.io/) for rich terminal UI
+- Three built-in themes (Ledger, Analyst, Seminar) with F1/F2/F3 switching
+- Terminal emulation with VT100 support via `pyte`
+- Navigation tree, status line, and control panel
 
-## Next steps (standalone repo)
+🧩 **Reusable Shell Framework**
+- Protocol-based architecture for easy customization
+- Pre-built widgets (NavigationTree, DetailView)
+- Section-based navigation system
+- Comprehensive documentation for building your own apps
 
-1) Create a new repository (e.g., `ActCLI-Bench`) and move contents of `SctCLI-Bench/` into it.
-2) Use the `pyproject.template.toml` below as a starting point for packaging.
-3) Verify console scripts:
-   - `actcli-facilitator` — start facilitator service
-   - `actcli-wrap` — wrap a CLI and join a session
-   - `actcli-shell` — multi‑terminal PTK shell
-   - `actcli-bench` — Textual bench (theme demo)
-4) Run tests under `tests/`.
+📊 **Observability & Debugging**
+- Comprehensive logging (Events, Errors, Debug, Output)
+- Troubleshooting snapshot export with timestamps
+- Terminal state tracking and diagnostics
+- Version info display in status line
 
-## Packaging template (edit as needed)
+## Quick Start
 
-```toml
-[project]
-name = "actcli-bench"
-version = "0.0.0"
-description = "Facilitator + wrappers + bench UIs for ActCLI"
-readme = "README.md"
-requires-python = ">=3.10"
-dependencies = [
-  "typer>=0.12.0",
-  "rich>=13.0.0",
-  "httpx>=0.27.0",
-  "websockets>=12.0",
-  "fastapi>=0.112.0",
-  "uvicorn>=0.30.0",
-]
+### Installation
 
-[project.optional-dependencies]
-tui = ["prompt_toolkit>=3.0.43", "pyte>=0.8.1"]
-textual = ["textual>=0.50.0"]
+```bash
+# Clone the repository
+git clone https://github.com/llm-case-studies/ActCLI-Bench.git
+cd ActCLI-Bench
 
-auth = [
-  "keyring>=25.0.0",
-]
-
-[project.scripts]
-actcli-wrap = "actcli.wrapper.wrap_cli:app"
-actcli-facilitator = "actcli.wrapper.facilitator_cli:app"
-actcli-shell = "actcli.wrapper_tui.shell:main"
-actcli-bench = "actcli.bench_textual.app:main"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/actcli"]
+# Install with pip (editable mode)
+pip install -e ".[textual]"
 ```
 
-## Notes
+### Running the Bench
 
-- Package name `actcli-bench` is independent; the import path remains `actcli.*` to avoid refactoring internals during extraction. You may later rename the top‑level package.
-- All server/UI code here is optional for ActCLI core; this split keeps the core lean.
+```bash
+# Start the bench UI
+actcli-bench
 
+# The bench will auto-start the facilitator and create a session
+# Add terminals using the navigation tree: Terminals → + Add...
+```
+
+### Key Bindings
+
+- **F1/F2/F3**: Switch themes
+- **Q**: Quit
+- Navigate with arrow keys or mouse
+- Type in the terminal view when focused
+- Use the broadcast input to send to all unmuted terminals
+
+## Project Structure
+
+```
+ActCLI-Bench/
+├── src/actcli/
+│   ├── bench_textual/       # Textual-based bench UI
+│   │   ├── app.py           # Main BenchTextualApp
+│   │   ├── term_view.py     # Terminal view widget
+│   │   ├── term_emulator.py # VT100 emulation (pyte)
+│   │   ├── terminal_runner.py # PTY management
+│   │   ├── terminal_manager.py # Terminal state management
+│   │   ├── diagnostics.py   # Troubleshooting snapshots
+│   │   └── tree_sections.py # Navigation tree sections
+│   │
+│   ├── shell/               # Reusable TUI shell framework ⭐
+│   │   ├── base_shell.py    # ActCLIShell base class
+│   │   ├── navigation_tree.py # NavigationTree widget
+│   │   ├── detail_view.py   # DetailView widget
+│   │   ├── themes.tcss      # CSS themes
+│   │   └── README.md        # Framework quick reference
+│   │
+│   ├── facilitator/         # FastAPI facilitator service
+│   │   ├── main.py          # FastAPI app
+│   │   ├── models.py        # Data models
+│   │   └── session.py       # Session management
+│   │
+│   └── wrapper/             # CLI wrapper and client
+│       ├── wrap_cli.py      # actcli-wrap command
+│       ├── client.py        # Facilitator client
+│       └── pty_wrapper.py   # PTY wrapper
+│
+├── docs/
+│   ├── shell-framework.md   # Complete shell framework guide ⭐
+│   ├── WRAPPER_*.md         # Wrapper documentation
+│   └── archive/             # Outdated documentation
+│
+└── tests/
+    ├── integration/         # Integration tests
+    └── unit/                # Unit tests
+```
+
+## Architecture
+
+### System Overview
+
+```
+┌──────────────────────────────────────────────────────┐
+│ ActCLI Bench (Textual UI)                            │
+│ ┌────────────┬───────────────────────────────────┐   │
+│ │ Sidebar    │ Detail View                       │   │
+│ │            │ ┌───────────────────────────────┐ │   │
+│ │ Navigation │ │ Status: Session | Viewer      │ │   │
+│ │ Tree       │ ├───────────────────────────────┤ │   │
+│ │            │ │                               │ │   │
+│ │ Terminals  │ │ Terminal View (VT100)         │ │   │
+│ │ Sessions   │ │ ├─ Emulated PTY output        │ │   │
+│ │ Settings   │ │ └─ Scrollback support         │ │   │
+│ │ Logs       │ │                               │ │   │
+│ │            │ └───────────────────────────────┘ │   │
+│ │            │ ┌───────────────────────────────┐ │   │
+│ │            │ │ Control: Broadcast input      │ │   │
+│ └────────────┴─┴───────────────────────────────┴───┘ │
+└──────────────────────────────────────────────────────┘
+                       ↕ WebSocket
+┌──────────────────────────────────────────────────────┐
+│ Facilitator Service (FastAPI)                        │
+│ - Session management                                 │
+│ - Message routing & broadcast                        │
+│ - WebSocket connections                              │
+└──────────────────────────────────────────────────────┘
+                       ↕ WebSocket
+┌──────────────────────────────────────────────────────┐
+│ Wrapped AI CLIs                                      │
+│ - claude (via actcli-wrap)                           │
+│ - gemini (via actcli-wrap)                           │
+│ - Any terminal command                               │
+└──────────────────────────────────────────────────────┘
+```
+
+### Shell Framework Architecture
+
+The bench is built on a reusable shell framework that you can use to build your own TUI apps. See **[docs/shell-framework.md](docs/shell-framework.md)** for complete documentation.
+
+```
+ActCLIShell (base class)
+├── NavigationTree (widget)
+│   ├── Section-based architecture
+│   ├── Action handlers
+│   └── Auto-rebuild
+│
+├── DetailView (widget)
+│   ├── Status line (docked top)
+│   └── Content area (flexible)
+│
+└── Control Panel (optional)
+    └── App-specific controls
+```
+
+## Components
+
+### 1. Bench UI (`actcli-bench`)
+
+Modern Textual-based interface for managing multiple terminals.
+
+**Features:**
+- Terminal emulation with VT100 escape sequences
+- Navigation tree with sections (Terminals, Sessions, Settings, Logs)
+- Status line showing session, viewer URL, and version info
+- Broadcast input to send commands to all unmuted terminals
+- Troubleshooting snapshot export
+- Theme switching (F1/F2/F3)
+
+### 2. Facilitator Service (`actcli-facilitator`)
+
+FastAPI service that routes messages between wrapped terminals.
+
+**Features:**
+- Session management
+- WebSocket message routing
+- Broadcast streaming
+- RESTful API for session operations
+
+```bash
+# Start the facilitator
+actcli-facilitator --port 8765
+```
+
+### 3. CLI Wrapper (`actcli-wrap`)
+
+Wraps any CLI tool and connects it to the facilitator.
+
+```bash
+# Wrap Claude CLI
+actcli-wrap --session SESSION_ID --name claude -- claude chat
+
+# Wrap Gemini
+actcli-wrap --session SESSION_ID --name gemini -- gemini chat
+```
+
+### 4. Shell Framework
+
+Reusable TUI framework for building Textual apps. Complete docs at **[docs/shell-framework.md](docs/shell-framework.md)**.
+
+```python
+from actcli.shell import ActCLIShell, NavigationTree
+from textual.app import ComposeResult
+
+class MyApp(ActCLIShell):
+    def get_brand_text(self) -> str:
+        return "ActCLI • MyApp"
+
+    def build_navigation_tree(self, tree: NavigationTree) -> None:
+        tree.register_section(MySection())
+        tree.register_action("my_action", self._handler)
+
+    def compose_detail_view(self) -> ComposeResult:
+        yield MyContentWidget()
+```
+
+## Development
+
+### Setup
+
+```bash
+# Install in development mode with all extras
+pip install -e ".[textual,tui,dev]"
+
+# Run tests
+pytest
+
+# Run specific test
+pytest tests/integration/test_websocket_routing.py
+```
+
+### Running Components Separately
+
+```bash
+# Start facilitator manually
+python -m actcli.facilitator.main
+
+# Start bench (auto-starts facilitator)
+python -m actcli.bench_textual.app
+
+# Wrap a terminal
+python -m actcli.wrapper.wrap_cli --session <SESSION> --name test -- bash
+```
+
+## Configuration
+
+The bench can be configured via environment variables or command-line options:
+
+```bash
+# Facilitator URL (default: http://localhost:8765)
+export ACTCLI_FACILITATOR_URL=http://localhost:8765
+
+# Default theme (ledger, analyst, seminar)
+# Change with F1/F2/F3 during runtime
+```
+
+## Troubleshooting
+
+### Export Diagnostic Snapshot
+
+In the bench UI:
+1. Navigate to Settings → Troubleshooting Pack
+2. Select "Export troubleshooting pack"
+3. File saved to `docs/Trouble-Snaps/troubleshooting_pack_<timestamp>.txt`
+
+The snapshot includes:
+- Version information
+- Active terminals and their state
+- Recent logs (events, errors, debug)
+- Window size history
+- Navigation tree rebuild history (if multiple rebuilds detected)
+
+### Common Issues
+
+**Terminal not displaying correctly:**
+- Check the troubleshooting snapshot for window size mismatches
+- Verify `pyte` is installed for VT100 emulation
+- Check recent errors in the Logs view
+
+**Facilitator connection failed:**
+- Ensure facilitator is running: `actcli-facilitator`
+- Check the facilitator URL in the bench status line
+- See bench logs for connection errors
+
+**Input not working in terminal:**
+- Click the terminal view to focus it
+- Check the border color (cyan = focused)
+- View debug logs for key event capture
+
+## Documentation
+
+- **[Shell Framework Guide](docs/shell-framework.md)** - Complete guide to using the shell framework
+- **[Shell Framework Quick Reference](src/actcli/shell/README.md)** - Quick start and API overview
+- **[Wrapper README](docs/WRAPPER_README.md)** - CLI wrapper system documentation
+- **[Wrapper Testing Guide](docs/WRAPPER_TESTING_GUIDE.md)** - Testing the wrapper system
+
+## Version History
+
+### Current (0.0.3)
+- ✅ Extracted DetailView as reusable widget
+- ✅ Fixed duplicate navigation tree bug
+- ✅ Enhanced troubleshooting snapshots with rebuild tracking
+- ✅ Comprehensive shell framework documentation
+- ✅ Terminal view fills available space correctly
+- ✅ Status line shows full information (session, viewer, versions)
+
+### Previous (0.0.2)
+- Terminal width fixes and resize handling
+- Observability improvements (version display, troubleshooting pack)
+- Emulator mode detection and logging
+- Border highlight on startup
+
+## Contributing
+
+This is part of the ActCLI suite. For issues or contributions, please use the GitHub issue tracker.
+
+## License
+
+See LICENSE file for details.
+
+## Links
+
+- **Repository**: https://github.com/llm-case-studies/ActCLI-Bench
+- **Shell Framework Docs**: [docs/shell-framework.md](docs/shell-framework.md)
+- **Issues**: https://github.com/llm-case-studies/ActCLI-Bench/issues
