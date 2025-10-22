@@ -1,0 +1,23 @@
+timestamp: 2025-10-22T03:41:45.043679Z
+versions:
+  actcli-bench: unknown
+  textual: unknown
+  pyte: none
+active_view: log:troubleshooting
+active_terminal: (none)
+writer_attached: False
+terminals:
+---- recent events ----
+Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251022T034111Z.txt
+Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251022T034121Z.txt
+Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251022T034130Z.txt
+---- recent errors ----
+(no errors)
+---- recent debug ----
+Setting text: 1 lines, first line len=89, preview='Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251022T034111Z.txt'
+Setting text: 1 lines, first line len=11, preview='(no errors)'
+Setting text: 1 lines, first line len=11, preview='(no output)'
+Setting text: 3 lines, first line len=141, preview="Setting text: 1 lines, first line len=89, preview='Troubleshooting pack saved → docs/Trouble-Snaps/t"
+Setting text: 21 lines, first line len=38, preview='timestamp: 2025-10-22T03:41:26.224670Z'
+---- recent output ----
+(no output)

@@ -80,12 +80,13 @@ class BenchTextualApp(ActCLIShell):
         # Version info (will be populated in on_mount)
         self._version_info: Dict[str, str] = {}
 
-        # Diagnostics manager
+        # Diagnostics manager (nav_tree will be set after compose)
         self.diagnostics = DiagnosticsManager(
             terminal_manager=self.terminal_manager,
             log_manager=self.log_manager,
             version_info=self._version_info,
-            get_app_state=self._get_app_state_for_diagnostics
+            get_app_state=self._get_app_state_for_diagnostics,
+            nav_tree=None  # Will be set in on_mount after compose
         )
 
         # UI state
@@ -115,8 +116,13 @@ class BenchTextualApp(ActCLIShell):
 
     async def on_mount(self) -> None:
         """Override to set up Bench-specific initialization."""
-        # Call parent mount (which adds default theme)
-        super().on_mount()
+        # Call parent mount (which adds default theme and builds nav tree)
+        await super().on_mount()
+
+        # Connect nav_tree to diagnostics for rebuild tracking
+        if self.nav_tree:
+            self.diagnostics.nav_tree = self.nav_tree
+
         # App state
         # Ensure version info is gathered once mount occurs (may refresh from __init__ placeholder)
         self._version_info = self._gather_version_info()

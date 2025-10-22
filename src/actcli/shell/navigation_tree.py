@@ -4,6 +4,7 @@ This widget encapsulates both tree structure building and event handling,
 keeping navigation logic separate from the main app.
 """
 
+import traceback
 from typing import Protocol, Callable, Dict, List, Any, Optional, runtime_checkable
 from textual.widgets import Tree
 from textual.widgets.tree import TreeNode
@@ -65,6 +66,9 @@ class NavigationTree(Tree):
         # Node selection handlers: node_type -> callable(node_data)
         self._node_handlers: Dict[str, Callable[[Dict[str, Any]], None]] = {}
 
+        # Diagnostics: track rebuild events to detect duplicates
+        self.rebuild_history: List[Dict[str, Any]] = []
+
     def register_section(self, section: TreeSection) -> None:
         """Register a tree section provider.
 
@@ -105,15 +109,21 @@ class NavigationTree(Tree):
         This clears all existing nodes and rebuilds from scratch.
         Call this when dynamic content changes (e.g., terminals added/removed).
         """
-        # Clear existing tree (compatible with Textual 6.x)
-        try:
-            for child in list(self.root.children):
-                try:
-                    child.remove()
-                except Exception:
-                    pass
-        except Exception:
-            pass
+        # Track this rebuild for diagnostics (FAST - no traceback extraction)
+        from datetime import datetime
+
+        rebuild_event = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "section_count": len(self._sections),
+        }
+        self.rebuild_history.append(rebuild_event)
+
+        # Keep only last 20 rebuild events
+        if len(self.rebuild_history) > 20:
+            self.rebuild_history = self.rebuild_history[-20:]
+
+        # Clear existing tree - use clear() instead of manual removal
+        self.root.remove_children()
 
         # Build each section
         for section in self._sections:

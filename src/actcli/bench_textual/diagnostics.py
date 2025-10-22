@@ -31,7 +31,8 @@ class DiagnosticsManager:
         terminal_manager: TerminalManager,
         log_manager: LogManager,
         version_info: Dict[str, str],
-        get_app_state: Callable[[], Dict[str, any]]
+        get_app_state: Callable[[], Dict[str, any]],
+        nav_tree = None
     ):
         """Initialize diagnostics manager.
 
@@ -40,11 +41,13 @@ class DiagnosticsManager:
             log_manager: LogManager instance for log access
             version_info: Dictionary of version information
             get_app_state: Callback to get current app state (active_view, etc.)
+            nav_tree: Optional NavigationTree for rebuild tracking
         """
         self.terminal_manager = terminal_manager
         self.log_manager = log_manager
         self.version_info = version_info
         self.get_app_state = get_app_state
+        self.nav_tree = nav_tree
         self.key_events: List[str] = []
 
     def record_key_event(self, key: str, character: Optional[str], modifiers: set[str]) -> None:
@@ -137,6 +140,23 @@ class DiagnosticsManager:
         if self.key_events:
             lines.append("---- recent key events ----")
             lines.extend(self.key_events[-20:])
+
+        # Navigation tree rebuild history
+        if self.nav_tree and hasattr(self.nav_tree, 'rebuild_history'):
+            rebuild_history = self.nav_tree.rebuild_history
+            if rebuild_history:
+                lines.append("---- navigation tree rebuild history ----")
+                lines.append(f"Total rebuilds: {len(rebuild_history)}")
+
+                # Detect potential duplicates (multiple rebuilds)
+                if len(rebuild_history) > 1:
+                    lines.append("⚠️  WARNING: Multiple rebuilds detected!")
+
+                lines.append("\nRebuild events:")
+                for event in rebuild_history:
+                    lines.append(
+                        f"  • {event['timestamp']} - [{event['section_count']} sections]"
+                    )
 
         return "\n".join(lines)
 

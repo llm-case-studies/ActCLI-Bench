@@ -105,6 +105,9 @@ class ActCLIShell(App):
         self.status_line: Static | None = None
         self.control_input: Input | None = None
 
+        # Guard against double mount
+        self._nav_tree_initialized = False
+
     def compose(self) -> ComposeResult:
         """Compose the base shell layout.
 
@@ -145,7 +148,7 @@ class ActCLIShell(App):
                     with Horizontal(id="control"):
                         yield from self.compose_control_panel()
 
-    def on_mount(self) -> None:
+    async def on_mount(self) -> None:
         """Called when app is mounted.
 
         Applies the default theme and builds the navigation tree.
@@ -153,8 +156,9 @@ class ActCLIShell(App):
         # Apply default theme class
         self.add_class(f"theme-{self._active_theme}")
 
-        # Build navigation tree if provider implemented
-        if isinstance(self, NavigationProvider) and self.nav_tree:
+        # Build navigation tree if provider implemented (guard against double mount)
+        if isinstance(self, NavigationProvider) and self.nav_tree and not self._nav_tree_initialized:
+            self._nav_tree_initialized = True
             self.build_navigation_tree(self.nav_tree)
             # Trigger initial tree build after configuration
             self.nav_tree.rebuild()
