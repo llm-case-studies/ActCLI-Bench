@@ -186,13 +186,50 @@ The current approach **cannot fully solve** the cursor positioning problem becau
 - Can be added as terminal to bench
 - Useful for visual testing
 
+## Session 2 Update (2025-10-22 Evening)
+
+### Key Realization
+Pattern-matching approaches (looking for `│ >`, `>`, separator lines, etc.) are a **dead end** because:
+- UI layouts change frequently (Gemini, Claude, Codex all different)
+- Codex has no box at all, just `>`
+- Different versions have different layouts
+- Can't reliably detect all patterns
+
+### Critical Question Raised
+**"In a real terminal, who is showing the cursor?"**
+
+Answer: The real terminal emulator receives cursor positioning escape codes from the application and displays the cursor at that position. Our pyte-based emulator should work the same way.
+
+### Next Steps (Fresh Research Approach)
+
+1. **Capture Raw PTY Output** - Log the actual escape sequences being sent
+   - Added feed logging (line 98-104 in term_emulator.py)
+   - Need to verify these logs appear in troubleshooting snapshots
+   - Compare what real terminal receives vs. what we receive
+
+2. **Understand Pyte's Cursor Tracking** - Why does pyte's cursor stay at wrong position?
+   - Does pyte receive the cursor codes?
+   - Is pyte processing them correctly?
+   - Are we reading pyte's state at the wrong time?
+
+3. **Build Diagnostic Tool** - Create a test program that:
+   - Sends known cursor positioning codes
+   - Reports where pyte thinks cursor is
+   - Compares with expected position
+   - Helps isolate the issue
+
+4. **Consider Alternatives to Pyte** - If pyte can't track cursor correctly:
+   - Raw escape sequence parsing
+   - Different terminal emulator library
+   - Direct PTY monitoring
+
 ## Recommendations
 
-1. **Commit current improvements** - They help with the initial cursor placement
-2. **Document the limitation** - Be clear that arrow key editing doesn't work in Gemini/Claude
-3. **Create sophisticated diagnostic mock** - Build a terminal that reports cursor position
-4. **Consider Option 4** - Investigate PTY-level diagnostics to see actual escape sequences
-5. **Reach out to Gemini/Claude teams** - Ask if cursor positioning can be improved
+1. **STOP pattern matching** - It's a dead end, layouts change too often
+2. **START with fundamentals** - Understand escape sequence flow
+3. **Build diagnostic tools** - Controlled tests before fixing real terminals
+4. **Investigate PTY-level** - See actual bytes being transmitted
+5. **Consider pyte alternatives** - If pyte is fundamentally broken for this use case
 
 ## Testing Notes
 

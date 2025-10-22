@@ -94,6 +94,15 @@ class EmulatedTerminal:
                     b = data.encode("utf-8", errors="replace")
                 else:
                     b = data
+
+                # DEBUG: Log escape sequences to understand what we're receiving
+                if self._debug_logger and b:
+                    # Log cursor positioning codes if present
+                    if b'\x1b[' in b or b'\x1bM' in b or b'\x1b' in b:
+                        # Truncate for readability
+                        preview = repr(b[:200]) if len(b) > 200 else repr(b)
+                        self._debug_logger(f"[feed] Received escape sequences: {preview}")
+
                 self._stream.feed(b)  # type: ignore[attr-defined]
             except Exception:
                 pass
@@ -179,9 +188,8 @@ class EmulatedTerminal:
                 continue
             line = lines[i]
 
-            # Look for input box pattern: "│ >" or standalone "> "
+            # Pattern 1: Gemini box style "│ > ..."
             if '│ >' in line:
-                # Found Gemini/Claude style input box
                 prompt_idx = line.index('│ >') + 3  # After "│ >"
 
                 # Extract content between prompt and trailing │
@@ -189,23 +197,53 @@ class EmulatedTerminal:
                 if '│' in content_after_prompt:
                     content_after_prompt = content_after_prompt[:content_after_prompt.rindex('│')]
 
-                # Remove placeholder text patterns
                 content = content_after_prompt.strip()
 
-                # Skip if this looks like placeholder text (common patterns)
+                # Skip placeholder text
                 if content.startswith('Type your message') or content.startswith('type '):
-                    content = ''  # Treat as empty, cursor goes right after prompt
+                    content = ''
 
                 cursor_col = prompt_idx + len(content)
-                if content:  # If there's content, add 1 space after it
+                if content:
                     cursor_col += 1
 
                 if self._debug_logger:
-                    self._debug_logger(f"[_find_input_line] Found input box at line {i}, col {cursor_col}")
-                    self._debug_logger(f"[_find_input_line] Input line: {repr(line[:100])}")
-                    self._debug_logger(f"[_find_input_line] Content: {repr(content)}")
+                    self._debug_logger(f"[_find_input_line] Found Gemini box at line {i}, col {cursor_col}")
+                    self._debug_logger(f"[_find_input_line] Line: {repr(line[:100])}, Content: {repr(content)}")
 
                 return (i, cursor_col)
+
+            # Pattern 2: Claude style with > and horizontal lines
+            #   Look for lines with just ">" or ">  " (with optional separator lines above/below)
+            stripped = line.lstrip()
+            if stripped.startswith('>') and not stripped.startswith('>>'):
+                # Check if previous/next lines have separator patterns
+                has_separator = False
+                for check_i in [i-1, i+1]:
+                    if 0 <= check_i < len(lines):
+                        check_line = lines[check_i]
+                        if '───' in check_line or '━━━' in check_line:
+                            has_separator = True
+                            break
+
+                if has_separator or stripped == '>' or stripped.startswith('> '):
+                    # Found Claude-style prompt
+                    prompt_idx = line.index('>') + 1  # After ">"
+
+                    # Skip optional space after >
+                    if prompt_idx < len(line) and line[prompt_idx] == ' ':
+                        prompt_idx += 1
+
+                    content_after_prompt = line[prompt_idx:].rstrip()
+                    cursor_col = prompt_idx + len(content_after_prompt)
+                    if content_after_prompt:
+                        cursor_col += 1
+
+                    if self._debug_logger:
+                        self._debug_logger(f"[_find_input_line] Found Claude prompt at line {i}, col {cursor_col}")
+                        self._debug_logger(f"[_find_input_line] Line: {repr(line[:100])}, Content: {repr(content_after_prompt)}")
+
+                    return (i, cursor_col)
 
         # No input box found, trust pyte
         if self._debug_logger:
@@ -239,14 +277,9 @@ class EmulatedTerminal:
                 self._debug_logger(f"[text_with_cursor] pyte cursor position: (x={cx}, y={cy})")
                 self._debug_logger(f"[text_with_cursor] total lines in display: {len(lines)}")
 
-            # Check if cursor is on a blank line and try to find actual input
-            actual_line, actual_col = self._find_input_line(lines, cy, cx)
-            if actual_line != -1:
-                # Found actual input line, override cursor position
-                if self._debug_logger:
-                    self._debug_logger(f"[text_with_cursor] Overriding cursor: ({cx},{cy}) -> ({actual_col},{actual_line})")
-                cx = actual_col
-                cy = actual_line
+            # SIMPLIFIED: Just trust pyte's cursor position
+            # The real terminal works because it trusts the cursor position from escape codes
+            # Pyte processes those codes correctly, so we should trust it too
 
             if 0 <= cy < len(lines):
                 line = lines[cy]
