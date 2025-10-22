@@ -158,6 +158,26 @@ ActCLIShell (base class)
     └── App-specific controls
 ```
 
+## Future: Round Table Integration
+
+ActCLI-Bench is designed to serve as the backend for **ActCLI Round Table** - a public AI debate platform where multiple AI agents discuss viewer-submitted topics in scheduled sessions.
+
+**Status:** 🚧 Planning phase
+
+**What Round Table Needs:**
+- REST API for session management
+- Live transcript streaming (WebSocket/SSE)
+- Configurable debate formats (YAML configs)
+- Structured artifact export (JSON, MD, PDF)
+- Multi-AI orchestration with turn management
+
+**Documentation:**
+- [Round Table Integration Spec](docs/round-table-integration.md) - Implementation roadmap
+- [OpenAPI Specification](docs/api/round-table-openapi.yaml) - API contract
+- [Round Table Vision](../ActCLI-Round-Table/README.md) - Full project overview
+
+See `docs/round-table-integration.md` for details on the planned integration.
+
 ## Components
 
 ### 1. Bench UI (`actcli-bench`)
