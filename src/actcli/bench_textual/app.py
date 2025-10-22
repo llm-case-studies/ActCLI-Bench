@@ -12,19 +12,14 @@ Goals:
 
 from __future__ import annotations
 
-from textual.app import App, ComposeResult
+from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.containers import Horizontal, Vertical
+from textual.containers import Horizontal
 from textual.widgets import (
-    Header,
     Footer,
-    Static,
     Input,
     Button,
-    Log,
     Checkbox,
-    Label,
-    Tree,
 )
 
 from dataclasses import dataclass
@@ -37,16 +32,16 @@ from functools import lru_cache
 from datetime import datetime
 from textual.timer import Timer
 
-from ..wrapper_tui.session_manager import SessionManager
-from ..wrapper.client import FacilitatorClient
+from .session_manager import SessionManager
+from .client import FacilitatorClient
 from .terminal_runner import TerminalRunner
 from .term_emulator import EmulatedTerminal
 from .term_view import TermView
 from .log_manager import LogManager
 from .terminal_manager import TerminalManager
-
-
-THEME_CLASSES = ("theme-ledger", "theme-analyst", "theme-seminar")
+from .diagnostics import DiagnosticsManager
+from .tree_sections import TerminalsSection, SessionsSection, SettingsSection, LogsSection
+from ..shell import ActCLIShell, NavigationTree
 
 
 @dataclass
@@ -57,13 +52,14 @@ class TerminalItem:
     muted: bool = True
 
 
-class BenchTextualApp(App):
-    CSS_PATH = "themes.tcss"
+class BenchTextualApp(ActCLIShell):
+    """ActCLI Bench - Terminal wrapper and facilitator for knowledge transfer."""
+
+    CSS_PATH = "../shell/themes.tcss"
+    DEFAULT_THEME = "ledger"
 
     BINDINGS = [
-        Binding("f1", "switch_theme('ledger')", "Ledger"),
-        Binding("f2", "switch_theme('analyst')", "Analyst"),
-        Binding("f3", "switch_theme('seminar')", "Seminar"),
+        *ActCLIShell.BINDINGS,
         Binding("ctrl+q", "quit", "Quit"),
     ]
 
@@ -81,6 +77,18 @@ class BenchTextualApp(App):
             on_output_callback=self._on_terminal_output
         )
 
+        # Version info (will be populated in on_mount)
+        self._version_info: Dict[str, str] = {}
+
+        # Diagnostics manager (nav_tree will be set after compose)
+        self.diagnostics = DiagnosticsManager(
+            terminal_manager=self.terminal_manager,
+            log_manager=self.log_manager,
+            version_info=self._version_info,
+            get_app_state=self._get_app_state_for_diagnostics,
+            nav_tree=None  # Will be set in on_mount after compose
+        )
+
         # UI state
         self.viewer_url: Optional[str] = None
         self.facilitator_client: Optional[FacilitatorClient] = None
@@ -92,17 +100,29 @@ class BenchTextualApp(App):
         self.connect_mode: bool = False
         self.action_lines: List[str] = []
         self._session_id: Optional[str] = None
-        self._version_info: Dict[str, str] = {}
-        self._key_events: list[str] = []
         self._writer_attached: bool = False
         self._border_blink_timer: Optional[Timer] = None
 
         # Scrollback UI state (managed separately from TerminalManager)
         self.scroll_offsets: Dict[str, int] = {}
 
+    def get_brand_text(self) -> str:
+        """Override to provide Bench branding."""
+        return "ActCLI • Bench"
+
+    def get_initial_status(self) -> str:
+        """Override to provide Bench initial status."""
+        return "Terminal"
+
     async def on_mount(self) -> None:
-        # Start with the first palette
-        self.add_class("theme-ledger")
+        """Override to set up Bench-specific initialization."""
+        # Call parent mount (which adds default theme and builds nav tree)
+        await super().on_mount()
+
+        # Connect nav_tree to diagnostics for rebuild tracking
+        if self.nav_tree:
+            self.diagnostics.nav_tree = self.nav_tree
+
         # App state
         # Ensure version info is gathered once mount occurs (may refresh from __init__ placeholder)
         self._version_info = self._gather_version_info()
@@ -119,49 +139,66 @@ class BenchTextualApp(App):
         await self._bootstrap_session_async()
         # Session bootstrap may update status text, refresh afterwards
         self._update_status_line()
-        # Build nav tree after state is ready
-        try:
-            self._rebuild_nav_tree()
-        except Exception:
-            pass
+        # Note: Navigation tree already built by base shell's on_mount()
         # Set up terminal view focus callback to refresh cursor display
         self.terminal_view.set_on_focus(self._on_terminal_view_focused)
 
     def compose(self) -> ComposeResult:
-        yield Header(id="header")
-
-        # Main split: left navigation + right detail
-        with Horizontal(id="body"):
-            with Vertical(id="sidebar"):
-                yield Static("ActCLI • Bench", id="brand")
-                # Tree navigation
-                self.nav_tree = Tree("Navigation", id="nav-tree")
-                yield self.nav_tree
-                yield Static("F1: Ledger • F2: Analyst • F3: Seminar", id="hint")
-
-            with Vertical(id="detail"):
-                # Right: Title / status line
-                self.status_line = Static("Terminal", id="title")
-                yield self.status_line
-                # Active terminal output view (emulated, focusable)
-                self.terminal_view = TermView(id="terminal-view", expand=True, shrink=False)
-                yield self.terminal_view
-                # Control pad
-                with Horizontal(id="control"):
-                    self.control_input = Input(placeholder="Broadcast to all unmuted…", id="control-input")
-                    yield self.control_input
-                    self.btn_broadcast = Button("Broadcast", id="btn-broadcast")
-                    yield self.btn_broadcast
-                    self.chk_mirror = Checkbox("Mirror to viewer", id="chk-mirror")
-                    yield self.chk_mirror
-
+        """Compose the Bench UI using the shell layout."""
+        # Use parent shell layout (sidebar + detail view)
+        yield from super().compose()
+        # Add footer (not part of base shell)
         yield Footer(id="footer")
 
+    def compose_detail_view(self) -> ComposeResult:
+        """Provide the terminal view for the detail panel."""
+        self.terminal_view = TermView(id="terminal-view", expand=True, shrink=False)
+        yield self.terminal_view
+
+    def compose_control_panel(self) -> ComposeResult:
+        """Provide the control panel widgets."""
+        self.control_input = Input(placeholder="Broadcast to all unmuted…", id="control-input")
+        yield self.control_input
+        self.btn_broadcast = Button("Broadcast", id="btn-broadcast")
+        yield self.btn_broadcast
+        self.chk_mirror = Checkbox("Mirror to viewer", id="chk-mirror")
+        yield self.chk_mirror
+
+    def build_navigation_tree(self, tree: NavigationTree) -> None:
+        """Configure the Bench navigation tree.
+
+        Register sections and handlers. The tree will be built when
+        the widget mounts or when rebuild() is called explicitly.
+        """
+        # Register sections (in display order)
+        tree.register_section(TerminalsSection(self.terminal_manager))
+        tree.register_section(SessionsSection())
+        tree.register_section(SettingsSection(get_mirror_state=self._get_mirror_state))
+        tree.register_section(LogsSection())
+
+        # Register action handlers
+        tree.register_action("mute_all", self._handle_mute_all)
+        tree.register_action("unmute_all", self._handle_unmute_all)
+        tree.register_action("toggle_mirror", self._handle_toggle_mirror)
+        tree.register_action("export_troubleshooting", self._export_troubleshooting_pack)
+
+        # Register node type handlers
+        tree.register_node_handler("add_terminal", self._handle_add_terminal)
+        tree.register_node_handler("terminal", self._handle_terminal_selected)
+        tree.register_node_handler("connect", self._handle_connect)
+        tree.register_node_handler("session_info", self._handle_session_info)
+        tree.register_node_handler("log", self._handle_log_view)
+
+    def _get_mirror_state(self) -> bool:
+        """Get current mirror checkbox state."""
+        try:
+            return bool(self.chk_mirror.value)
+        except Exception:
+            return False
+
     def action_switch_theme(self, theme: str) -> None:
-        # Remove previous theme classes and apply the new one
-        for cls in THEME_CLASSES:
-            self.remove_class(cls)
-        self.add_class(f"theme-{theme}")
+        """Override to add logging when switching themes."""
+        super().action_switch_theme(theme)
         self._log(f"Switched theme → {theme}")
 
     def on_resize(self, event) -> None:  # type: ignore[override]
@@ -195,6 +232,18 @@ class BenchTextualApp(App):
     def _debug_logger(self, message: str) -> None:
         """Logger callback for terminal emulator debug output."""
         self.log_manager.add("debug", message)
+
+    def _get_app_state_for_diagnostics(self) -> Dict[str, any]:
+        """Get current app state for diagnostics snapshot.
+
+        Returns:
+            Dictionary with active_view, active_terminal, writer_attached
+        """
+        return {
+            "active_view": self.active_view,
+            "active_terminal": self.active_terminal,
+            "writer_attached": self._writer_attached
+        }
 
     def _gather_version_info(self) -> Dict[str, str]:
         """Collect version metadata for status banner."""
@@ -325,97 +374,26 @@ class BenchTextualApp(App):
         except Exception:
             _clear_border()
 
-    def _recent_log_text(self, category: str, limit: int = 50) -> str:
-        buf = self.log_manager.buffers.get(category)
-        if not buf:
-            return "(none)"
-        lines = list(buf)
-        if limit:
-            lines = lines[-limit:]
-        return "\n".join(lines) if lines else "(none)"
-
     def _troubleshooting_snapshot(self) -> str:
-        versions = self._version_info or self._gather_version_info()
-        lines: list[str] = []
-        lines.append(f"timestamp: {datetime.utcnow().isoformat()}Z")
-        lines.append("versions:")
-        lines.append(f"  actcli-bench: {versions.get('bench', 'unknown')}")
-        lines.append(f"  textual: {versions.get('textual', 'unknown')}")
-        lines.append(f"  pyte: {versions.get('pyte', 'none')}")
-        lines.append(f"active_view: {self.active_view}")
-        lines.append(f"active_terminal: {self.active_terminal or '(none)'}")
-        lines.append(f"writer_attached: {self._writer_attached}")
-        lines.append("terminals:")
-        for name in self.terminal_manager.list_terminals():
-            state = self.terminal_manager.get_terminal_state(name)
-            if not state:
-                continue
-
-            emu = state.emulator
-            emu_size = f"{emu.cols}x{emu.rows}"
-            last_sync = state.last_synced_size
-            sync_str = f"{last_sync[0]}x{last_sync[1]}" if last_sync else "n/a"
-            tty_preview = state.output_buffer[-120:] if state.output_buffer else ""
-            runner = state.item
-            first_preview = ""
-            if hasattr(runner, "first_output_preview"):
-                try:
-                    first_preview = runner.first_output_preview(240)
-                except Exception:
-                    first_preview = ""
-            lines.append(
-                f"  - {name}: muted={runner.muted} cmd={' '.join(runner.command)} "
-                f"emu={emu_size} last_winsize={sync_str}"
-            )
-            history = state.winsize_history
-            if history:
-                lines.append("    winsize_history:")
-                for entry in history[-10:]:
-                    lines.append(f"      • {entry}")
-            if tty_preview:
-                lines.append("    recent_output_preview:")
-                lines.append("      " + tty_preview.replace("\n", "\\n"))
-            if first_preview:
-                lines.append("    first_output_preview:")
-                lines.append("      " + first_preview.replace("\n", "\\n"))
-        lines.append("---- recent events ----")
-        lines.append(self._recent_log_text("events"))
-        lines.append("---- recent errors ----")
-        lines.append(self._recent_log_text("errors"))
-        lines.append("---- recent debug ----")
-        lines.append(self._recent_log_text("debug"))
-        lines.append("---- recent output ----")
-        lines.append(self._recent_log_text("output"))
-        if self._key_events:
-            lines.append("---- recent key events ----")
-            lines.extend(self._key_events[-20:])
-        return "\n".join(lines)
+        """Generate troubleshooting snapshot - delegates to DiagnosticsManager."""
+        return self.diagnostics.generate_snapshot()
 
     def _update_troubleshooting_log(self) -> str:
-        snapshot = self._troubleshooting_snapshot()
-        buf = self.log_manager.buffers.get("troubleshooting")
-        if buf is not None:
-            buf.clear()
-        self.log_manager.add("troubleshooting", snapshot)
-        return snapshot
+        """Update troubleshooting log - delegates to DiagnosticsManager."""
+        return self.diagnostics.update_troubleshooting_log()
 
     def _export_troubleshooting_pack(self) -> None:
-        snapshot = self._update_troubleshooting_log()
-        try:
-            target_dir = Path("docs") / "Trouble-Snaps"
-            target_dir.mkdir(parents=True, exist_ok=True)
-            timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-            target_file = target_dir / f"troubleshooting_pack_{timestamp}.txt"
-            target_file.write_text(snapshot, encoding="utf-8")
-            self._log_action(f"Troubleshooting pack saved → {target_file}")
-        except Exception as exc:
-            self._log_action(f"Troubleshooting pack export failed: {exc}")
+        """Export troubleshooting pack to file - delegates to DiagnosticsManager."""
+        result = self.diagnostics.export_to_file()
+        if result:
+            self._log_action(f"Troubleshooting pack saved → {result}")
+        else:
+            self._log_action("Troubleshooting pack export failed")
 
     def _record_key_event(self, key: str, character: Optional[str], modifiers: set[str]) -> None:
+        """Record key event for diagnostics - delegates to DiagnosticsManager."""
+        self.diagnostics.record_key_event(key, character, modifiers)
         entry = f"key={key!r} char={character!r} mods={sorted(modifiers)} writer={self._writer_attached}"
-        self._key_events.append(entry)
-        if len(self._key_events) > 50:
-            del self._key_events[:-50]
         self._debug_logger(f"KEY event: {entry}")
 
     def _log_emulator_mode(self, term_name: str, emulator: EmulatedTerminal) -> None:
@@ -801,134 +779,89 @@ class BenchTextualApp(App):
             pass
 
     def _refresh_nav(self) -> None:
-        self._rebuild_nav_tree()
+        """Refresh the navigation tree."""
+        if self.nav_tree:
+            self.nav_tree.rebuild()
 
-    # --- Tree nav ------------------------------------------------------
-    def _rebuild_nav_tree(self) -> None:
-        # Clear existing children in a way compatible with Textual 6.x
-        try:
-            for child in list(self.nav_tree.root.children):
-                try:
-                    child.remove()
-                except Exception:
-                    pass
-        except Exception:
-            pass
-        terminals_node = self.nav_tree.root.add("Terminals")
-        # Add action
-        add_node = terminals_node.add("+ Add…")
-        add_node.data = {"type": "add_terminal"}
+    # --- Tree navigation handlers (called by NavigationTree widget) ---
+
+    def _handle_add_terminal(self, data: Dict[str, Any]) -> None:
+        """Handle 'Add terminal' action."""
+        self.adding_mode = True
+        self.connect_mode = False
+        self.control_input.placeholder = "Add terminal: <name> <command...>  (e.g., CO gemini)"
+        self.control_input.value = ""
+        self.control_input.focus()
+
+    def _handle_terminal_selected(self, data: Dict[str, Any]) -> None:
+        """Handle terminal selection."""
+        name = data.get("name")
+        state = self.terminal_manager.get_terminal_state(name)
+        if state:
+            self.active_terminal = name
+            self._update_status_line()
+            self.active_view = "terminal"
+            self.terminal_view.set_writer(self._write_to_active)
+            self.terminal_view.set_navigator(self._on_navigate)
+            self.terminal_view.focus()
+            # Sync terminal size to both emulator and PTY
+            self._sync_terminal_size(name)
+            # Also sync again after first render to capture final content size
+            try:
+                self.call_after_refresh(lambda n=name: self._sync_terminal_size(n))
+            except Exception:
+                pass
+            self._schedule_terminal_resizes(name)
+            self._set_terminal_text(state.emulator.text_with_cursor(show=True))
+            self._log_action(f"Selected terminal: {name}")
+
+    def _handle_connect(self, data: Dict[str, Any]) -> None:
+        """Handle 'Connect to session' action."""
+        self.connect_mode = True
+        self.adding_mode = False
+        self.control_input.placeholder = "Connect: <session_id>"
+        self.control_input.value = ""
+        self.control_input.focus()
+
+    def _handle_session_info(self, data: Dict[str, Any]) -> None:
+        """Handle session info node selection (currently no-op)."""
+        pass
+
+    def _handle_mute_all(self) -> None:
+        """Handle 'Mute All' action."""
         for name in self.terminal_manager.list_terminals():
             state = self.terminal_manager.get_terminal_state(name)
             if state:
-                mark = "[M]" if state.item.muted else "[U]"
-                node = terminals_node.add(f"{name} {mark}")
-                node.data = {"type": "terminal", "name": name}
-        sessions_node = self.nav_tree.root.add("Sessions")
-        cur = sessions_node.add("Current session")
-        cur.data = {"type": "session_info"}
-        connect = sessions_node.add("Connect…")
-        connect.data = {"type": "connect"}
-        settings_node = self.nav_tree.root.add("Settings")
-        m_all = settings_node.add("Mute All")
-        m_all.data = {"type": "action", "id": "mute_all"}
-        u_all = settings_node.add("Unmute All")
-        u_all.data = {"type": "action", "id": "unmute_all"}
-        # Build mirror toggle label safely even if chk_mirror isn't created yet
-        mirror_checked = False
-        try:
-            mirror_checked = bool(self.chk_mirror.value)
-        except Exception:
-            mirror_checked = False
-        mirror_label = f"Mirror to viewer {'[X]' if mirror_checked else '[ ]'}"
-        mirror = settings_node.add(mirror_label)
-        mirror.data = {"type": "action", "id": "toggle_mirror"}
-        export_pack = settings_node.add("Export troubleshooting pack")
-        export_pack.data = {"type": "action", "id": "export_troubleshooting"}
-        logs_node = self.nav_tree.root.add("Logs")
-        for cat in ("Events", "Errors", "Output", "Debug"):
-            n = logs_node.add(cat)
-            n.data = {"type": "log", "cat": cat.lower()}
-        tpack = logs_node.add("Troubleshooting Pack")
-        tpack.data = {"type": "log", "cat": "troubleshooting"}
-        tpack_save = tpack.add("Save to file")
-        tpack_save.data = {"type": "action", "id": "export_troubleshooting"}
-        self.nav_tree.root.expand()
-        terminals_node.expand()
-        sessions_node.expand()
-        settings_node.expand()
-        logs_node.expand()
-        tpack.expand()
+                state.item.muted = True
+        self._refresh_nav()
 
-    def on_tree_node_selected(self, event: Tree.NodeSelected) -> None:  # type: ignore[attr-defined]
-        data = getattr(event.node, "data", None) or {}
-        t = data.get("type")
-        if t == "add_terminal":
-            # Switch control input into Add mode
-            self.adding_mode = True
-            self.connect_mode = False
-            self.control_input.placeholder = "Add terminal: <name> <command...>  (e.g., CO gemini)"
-            self.control_input.value = ""
-            self.control_input.focus()
-        elif t == "terminal":
-            name = data.get("name")
+    def _handle_unmute_all(self) -> None:
+        """Handle 'Unmute All' action."""
+        for name in self.terminal_manager.list_terminals():
             state = self.terminal_manager.get_terminal_state(name)
             if state:
-                self.active_terminal = name
-                self._update_status_line()
-                self.active_view = "terminal"
-                self.terminal_view.set_writer(self._write_to_active)
-                self.terminal_view.set_navigator(self._on_navigate)
-                self.terminal_view.focus()
-                # Sync terminal size to both emulator and PTY
-                self._sync_terminal_size(name)
-                # Also sync again after first render to capture final content size
-                try:
-                    self.call_after_refresh(lambda n=name: self._sync_terminal_size(n))
-                except Exception:
-                    pass
-                self._schedule_terminal_resizes(name)
-                self._set_terminal_text(state.emulator.text_with_cursor(show=True))
-                self._log_action(f"Selected terminal: {name}")
-        elif t == "connect":
-            # Inline connect prompt using control input
-            self.connect_mode = True
-            self.adding_mode = False
-            self.control_input.placeholder = "Connect: <session_id>"
-            self.control_input.value = ""
-            self.control_input.focus()
-        elif t == "action":
-            aid = data.get("id")
-            if aid == "mute_all":
-                for name in self.terminal_manager.list_terminals():
-                    state = self.terminal_manager.get_terminal_state(name)
-                    if state:
-                        state.item.muted = True
-                self._rebuild_nav_tree()
-            elif aid == "unmute_all":
-                for name in self.terminal_manager.list_terminals():
-                    state = self.terminal_manager.get_terminal_state(name)
-                    if state:
-                        state.item.muted = False
-                self._rebuild_nav_tree()
-            elif aid == "toggle_mirror":
-                try:
-                    self.chk_mirror.value = not self.chk_mirror.value
-                except Exception:
-                    pass
-                self._rebuild_nav_tree()
-            elif aid == "export_troubleshooting":
-                self._export_troubleshooting_pack()
-        elif t == "log":
-            cat = data.get("cat", "events")
-            tab_map = {
-                "events": "tab-events",
-                "errors": "tab-errors",
-                "output": "tab-output",
-                "debug": "tab-debug",
-                "troubleshooting": "tab-troubleshooting",
-            }
-            self._switch_view(tab_map.get(cat, "tab-events"))
+                state.item.muted = False
+        self._refresh_nav()
+
+    def _handle_toggle_mirror(self) -> None:
+        """Handle 'Toggle Mirror' action."""
+        try:
+            self.chk_mirror.value = not self.chk_mirror.value
+        except Exception:
+            pass
+        self._refresh_nav()
+
+    def _handle_log_view(self, data: Dict[str, Any]) -> None:
+        """Handle log view selection."""
+        cat = data.get("cat", "events")
+        tab_map = {
+            "events": "tab-events",
+            "errors": "tab-errors",
+            "output": "tab-output",
+            "debug": "tab-debug",
+            "troubleshooting": "tab-troubleshooting",
+        }
+        self._switch_view(tab_map.get(cat, "tab-events"))
 
     # --- Scrollback navigation ----------------------------------------
     def _on_navigate(self, action: str, amount: int) -> bool:

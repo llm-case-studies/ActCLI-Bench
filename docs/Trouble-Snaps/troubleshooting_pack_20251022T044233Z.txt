@@ -1,0 +1,73 @@
+timestamp: 2025-10-22T04:42:33.689049Z
+versions:
+  actcli-bench: unknown
+  textual: unknown
+  pyte: none
+active_view: terminal
+active_terminal: sudo
+writer_attached: True
+terminals:
+  - sudo: muted=True cmd=docker ps emu=175x47 last_winsize=175x47
+    winsize_history:
+      • 00:40:11.011 view=175x47 emu=175x47 requested=47x175 actual=(47, 175)
+    recent_output_preview:
+      ypoint.s…"   3 weeks ago   Up 39 minutes (unhealthy)      27017/tcp                                     docker_mongo_1\n
+    first_output_preview:
+      CONTAINER ID   IMAGE                                                COMMAND                  CREATED       STATUS                         PORTS                                         NAMES\ncfaeb0fdaa23   zulip/docker-zulip:7.4-0          
+---- recent events ----
+Failed to start facilitator
+Facilitator start failed
+Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251022T043941Z.txt
+Added: sudo cmd=docker ps [muted]
+Selected terminal: sudo
+---- recent errors ----
+(no errors)
+---- recent debug ----
+[sudo] EmulatedTerminal: using pyte none
+Terminal 'sudo' exited with code 0
+Terminal 'sudo' started but exited quickly
+[Emulator] resize(cols=175, rows=47) → pyte screen is now 175x47
+Resized emulator from (120, 32) to 175x47
+Synced PTY winsize: requested=47x175 actual=(47, 175)
+cursor at (x=0, y=8), line='                                                  '
+Setting text: 47 lines, first line len=175, preview='CONTAINER ID   IMAGE                                                COMMAND                  CREATED'
+Setting text: 1 lines, first line len=42, preview="Added terminal 'sudo' → docker ps  [muted]"
+view.size = Size(width=175, height=47)
+view.region = Region(x=32, y=4, width=177, height=49)
+view.content_size = Size(width=175, height=47)
+view.container_size = Size(width=175, height=47)
+view.virtual_size = Size(width=177, height=49)
+Using content_region: 175x47
+cursor at (x=0, y=8), line='                                                  '
+Setting text: 47 lines, first line len=175, preview='CONTAINER ID   IMAGE                                                COMMAND                  CREATED'
+cursor at (x=0, y=8), line='                                                  '
+Setting text: 47 lines, first line len=175, preview='CONTAINER ID   IMAGE                                                COMMAND                  CREATED'
+view.size = Size(width=175, height=47)
+view.region = Region(x=32, y=4, width=177, height=49)
+view.content_size = Size(width=175, height=47)
+view.container_size = Size(width=175, height=47)
+view.virtual_size = Size(width=177, height=49)
+Using content_region: 175x47
+cursor at (x=0, y=8), line='                                                  '
+Setting text: 47 lines, first line len=175, preview='CONTAINER ID   IMAGE                                                COMMAND                  CREATED'
+view.size = Size(width=175, height=47)
+view.region = Region(x=32, y=4, width=177, height=49)
+view.content_size = Size(width=175, height=47)
+view.container_size = Size(width=175, height=47)
+view.virtual_size = Size(width=177, height=49)
+Using content_region: 175x47
+cursor at (x=0, y=8), line='                                                  '
+Setting text: 47 lines, first line len=175, preview='CONTAINER ID   IMAGE                                                COMMAND                  CREATED'
+---- recent output ----
+[sudo] CONTAINER ID   IMAGE                                                COMMAND                  CREATED       STATUS                         PORTS                                         NAMES
+[sudo] cfaeb0fdaa23   zulip/docker-zulip:7.4-0                             "/sbin/entrypoint.sh…"   3 weeks ago   Restarting (1) 4 seconds ago                                                 docker_zulip_1
+[sudo] f04f37036af7   registry.rocket.chat/rocketchat/rocket.chat:latest   "docker-entrypoint.s…"   3 weeks ago   Up 8 seconds                   0.0.0.0:3000->3000/tcp, [::]:3000->3000/tcp   docker_rocketchat_1
+[sudo] e2f4568d01ac   mongo:6                                              "docker-entrypoint.s…"
+[sudo]    3 weeks ago   Up 39 minutes (unhealthy)      27017/tcp                                     docker_mongo_1
+---- navigation tree rebuild history ----
+Total rebuilds: 2
+⚠️  WARNING: Multiple rebuilds detected!
+
+Rebuild events:
+  • 2025-10-22T04:39:24.782037Z - [4 sections]
+  • 2025-10-22T04:40:11.020961Z - [4 sections]

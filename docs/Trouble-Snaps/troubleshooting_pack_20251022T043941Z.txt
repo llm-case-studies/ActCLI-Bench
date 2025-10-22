@@ -1,0 +1,23 @@
+timestamp: 2025-10-22T04:39:41.022180Z
+versions:
+  actcli-bench: unknown
+  textual: unknown
+  pyte: none
+active_view: terminal
+active_terminal: (none)
+writer_attached: True
+terminals:
+---- recent events ----
+Failed to start facilitator
+Facilitator start failed
+---- recent errors ----
+(no errors)
+---- recent debug ----
+(no debug)
+---- recent output ----
+(no output)
+---- navigation tree rebuild history ----
+Total rebuilds: 1
+
+Rebuild events:
+  • 2025-10-22T04:39:24.782037Z - [4 sections]

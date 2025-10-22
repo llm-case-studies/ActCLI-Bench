@@ -1,0 +1,53 @@
+timestamp: 2025-10-22T04:29:46.640376Z
+versions:
+  actcli-bench: unknown
+  textual: unknown
+  pyte: none
+active_view: terminal
+active_terminal: (none)
+writer_attached: True
+terminals:
+---- recent events ----
+Failed to start facilitator
+Facilitator start failed
+---- recent errors ----
+(no errors)
+---- recent debug ----
+build_navigation_tree called:
+  File "/home/alex/Projects/ActCLI-Bench/.venv/lib/python3.12/site-packages/textual/_callback.py", line 96, in invoke
+    return await _invoke(callback, *params)
+  File "/home/alex/Projects/ActCLI-Bench/.venv/lib/python3.12/site-packages/textual/_callback.py", line 58, in _invoke
+    result = await result
+  File "/home/alex/Projects/ActCLI-Bench/src/actcli/bench_textual/app.py", line 120, in on_mount
+    super().on_mount()
+  File "/home/alex/Projects/ActCLI-Bench/src/actcli/shell/base_shell.py", line 158, in on_mount
+    self.build_navigation_tree(self.nav_tree)
+build_navigation_tree called:
+  File "/home/alex/Projects/ActCLI-Bench/.venv/lib/python3.12/site-packages/textual/message_pump.py", line 820, in _on_message
+    await invoke(method, message)
+  File "/home/alex/Projects/ActCLI-Bench/.venv/lib/python3.12/site-packages/textual/_callback.py", line 96, in invoke
+    return await _invoke(callback, *params)
+  File "/home/alex/Projects/ActCLI-Bench/.venv/lib/python3.12/site-packages/textual/_callback.py", line 56, in _invoke
+    result = callback(*params[:parameter_count])
+  File "/home/alex/Projects/ActCLI-Bench/src/actcli/shell/base_shell.py", line 158, in on_mount
+    self.build_navigation_tree(self.nav_tree)
+---- recent output ----
+(no output)
+---- navigation tree rebuild history ----
+Total rebuilds: 2
+⚠️  WARNING: Potential duplicate rebuilds detected!
+
+Rebuild events:
+  • 2025-10-22T04:29:28.697631Z - base_shell.py:160 in on_mount() [4 sections]
+  • 2025-10-22T04:29:34.016313Z - base_shell.py:160 in on_mount() [8 sections]
+
+---- section registration log ----
+Total section registrations: 8
+  1. Terminals from app.py:179
+  2. Sessions from app.py:180
+  3. Settings from app.py:181
+  4. Logs from app.py:182
+  5. Terminals from app.py:179
+  6. Sessions from app.py:180
+  7. Settings from app.py:181
+  8. Logs from app.py:182
