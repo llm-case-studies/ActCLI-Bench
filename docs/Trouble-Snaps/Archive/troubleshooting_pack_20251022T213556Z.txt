@@ -1,0 +1,118 @@
+timestamp: 2025-10-22T21:35:56.248036Z
+versions:
+  actcli-bench: unknown
+  textual: unknown
+  pyte: none
+active_view: terminal
+active_terminal: gemini
+writer_attached: True
+terminals:
+  - gemini: muted=True cmd=gemini emu=175x51 last_winsize=175x51
+    winsize_history:
+      • 17:35:48.822 view=175x51 emu=175x51 requested=51x175 actual=(51, 175)
+    recent_output_preview:
+      m (see /docs)[39m                       [38;2;203;166;247mgemini-2.5-pro [38;2;108;112;134m(100% context left)[39m\n
+    first_output_preview:
+      [?u[cLoaded cached credentials.\n[?7l]2;Gemini - ActCLI-Bench\n[38;2;71;150;228m [38;2;73;149;227m█[38;2;74;149;227m█[38;2;76;148;226m█[38;2;77;147;226m [38;2;79;146;225m [38;2;80;146;225m [38;2;82;145;224m [38;2;84;144;
+---- recent events ----
+Failed to start facilitator
+Facilitator start failed
+Added: gemini cmd=gemini [muted]
+---- recent errors ----
+(no errors)
+---- recent debug ----
+[_index_from_column] found at index=25, char=' ', accumulated_width=24
+[text_with_cursor] calculated string index=25 for column=25
+[text_with_cursor] inserting cursor at idx=25
+[text_with_cursor] before='░░░░░░░░░           '
+[text_with_cursor] after='░░░░░░░░░ ▌              '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+[text_with_cursor] pyte cursor position: (x=0, y=20)
+[text_with_cursor] total lines in display: 51
+[text_with_cursor] line[20] length=175, content='                                                                                '
+[text_with_cursor] line_bytes=b'                                                                                                                                                                               '
+[_index_from_column] target_column=0, line_len=175
+[_index_from_column] raw_line='                                                                                                                                                                               '
+[text_with_cursor] calculated string index=0 for column=0
+[text_with_cursor] inserting cursor at idx=0
+[text_with_cursor] before='          '
+[text_with_cursor] after='▌              '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+[text_with_cursor] pyte cursor position: (x=0, y=20)
+[text_with_cursor] total lines in display: 51
+[text_with_cursor] line[20] length=175, content='                                                                                '
+[text_with_cursor] line_bytes=b'                                                                                                                                                                               '
+[_index_from_column] target_column=0, line_len=175
+[_index_from_column] raw_line='                                                                                                                                                                               '
+[text_with_cursor] calculated string index=0 for column=0
+[text_with_cursor] inserting cursor at idx=0
+[text_with_cursor] before='          '
+[text_with_cursor] after='▌              '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+[text_with_cursor] pyte cursor position: (x=0, y=20)
+[text_with_cursor] total lines in display: 51
+[text_with_cursor] line[20] length=175, content='                                                                                '
+[text_with_cursor] line_bytes=b'                                                                                                                                                                               '
+[_index_from_column] target_column=0, line_len=175
+[_index_from_column] raw_line='                                                                                                                                                                               '
+[text_with_cursor] calculated string index=0 for column=0
+[text_with_cursor] inserting cursor at idx=0
+[text_with_cursor] before='          '
+[text_with_cursor] after='▌              '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+[text_with_cursor] pyte cursor position: (x=0, y=21)
+[text_with_cursor] total lines in display: 51
+[text_with_cursor] line[21] length=175, content='                                                                                '
+[text_with_cursor] line_bytes=b'                                                                                                                                                                               '
+[_index_from_column] target_column=0, line_len=175
+[_index_from_column] raw_line='                                                                                                                                                                               '
+[text_with_cursor] calculated string index=0 for column=0
+[text_with_cursor] inserting cursor at idx=0
+[text_with_cursor] before='          '
+[text_with_cursor] after='▌              '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+---- recent output ----
+[gemini] Loaded cached credentials.
+[gemini] 2;Gemini - ActCLI-Bench
+[gemini]  ███            █████████  ██████████ ██████   ██████ █████ ██████   █████ █████
+[gemini] ░░░███         ███░░░░░███░░███░░░░░█░░██████ ██████ ░░███ ░░██████ ░░███ ░░███
+[gemini]   ░░░███      ███     ░░░  ░███  █[
+[gemini] 38;2;124;126;209m ░  ░███░█████░███  ░███  ░███░███ ░███  ░███
+[gemini]     ░░░███   ░███          ░██████    ░███░░███ ░███  ░███  ░███░░███░███  ░███
+[gemini]      ███░    ░███    █████ ░███░░█    ░███ ░░░  ░███  ░███  ░███ ░░██[3
+[gemini] 8;2;180;107;145m████  ░███
+[gemini]    ███░      ░░███  ░░███  ░███ ░   █ ░███      ░███  ░███  ░███  ░░█████  ░███
+[gemini]  ███░         ░░█████████  ██████████ █████     █████ █████ █████  ░░█████ █████
+[gemini] ░░░            ░░░░░░░░░ [38;2
+[gemini] ;110;132;214m ░░░░░░░░░░ ░░░░░     ░░░░░ ░░░░░ ░░░░░    ░░░░░ ░░░░░
+[gemini] Tips for getting started:
+[gemini] 1. Ask questions, edit files, or run commands.
+[gemini] 2. Be specific for the best results.
+[gemini] 3. /help for more information.
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │                                                                                                                                                            │
+[gemini] │ ⠋ Waiting for auth... (Press ESC or CTRL+C to cancel)                                                                                                      │
+[gemini] │                                                                                                                                                            │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │                                                                                                                                                            │
+[gemini] │ ⠙ Waiting for auth... (Press ESC or CTRL+C to cancel)                                                                                                      │
+[gemini] │                                                                                                                                                            │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │                                                                                                                                                            │
+[gemini] │ ⠹ Waiting for auth... (Press ESC or CTRL+C to cancel)                                                                                                      │
+[gemini] │                                                                                                                                                            │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                       gemini-2.5-pro (100% context left)
+---- navigation tree rebuild history ----
+Total rebuilds: 2
+⚠️  WARNING: Multiple rebuilds detected!
+
+Rebuild events:
+  • 2025-10-22T21:35:30.684738Z - [4 sections]
+  • 2025-10-22T21:35:48.826707Z - [4 sections]
