@@ -1,0 +1,299 @@
+openapi: 3.0.3
+info:
+  title: ActCLI Round Table Mock API
+  version: 1.0.0
+  description: |
+    Mock service used by the frontend prototype and scheduler while the bench
+    integration is under development.
+servers:
+  - url: http://localhost:8000/api
+paths:
+  /:
+    get:
+      summary: Health check
+      operationId: healthcheck
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+  /topics:
+    get:
+      summary: List topics
+      operationId: listTopics
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/TopicStatus'
+          required: false
+      responses:
+        '200':
+          description: Topics response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicList'
+    post:
+      summary: Submit a topic
+      operationId: createTopic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TopicCreate'
+      responses:
+        '201':
+          description: Topic created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+        '422':
+          description: Validation error
+  /topics/{topic_id}/vote:
+    post:
+      summary: Vote on a topic
+      operationId: voteTopic
+      parameters:
+        - name: topic_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VoteRequest'
+      responses:
+        '200':
+          description: Vote updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  votes:
+                    type: integer
+        '404':
+          description: Topic not found
+  /sessions:
+    get:
+      summary: List sessions
+      operationId: listSessions
+      parameters:
+        - name: state
+          in: query
+          required: false
+          schema:
+            $ref: '#/components/schemas/SessionState'
+      responses:
+        '200':
+          description: Sessions response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionList'
+    post:
+      summary: Create a session (scheduler use)
+      operationId: createSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionCreate'
+      responses:
+        '202':
+          description: Session accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  state:
+                    $ref: '#/components/schemas/SessionState'
+        '404':
+          description: Topic not found
+  /sessions/active:
+    get:
+      summary: List active sessions
+      operationId: listActiveSessions
+      responses:
+        '200':
+          description: Active sessions response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionList'
+  /sessions/{session_id}/stream:
+    get:
+      summary: Stream transcript snippets for a session
+      operationId: streamSession
+      parameters:
+        - name: session_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: since
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Transcript chunk list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TranscriptChunk'
+        '404':
+          description: Session not found
+components:
+  schemas:
+    TopicStatus:
+      type: string
+      enum: [pending, approved, scheduled]
+    Topic:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        context_link:
+          type: string
+          nullable: true
+        status:
+          $ref: '#/components/schemas/TopicStatus'
+        votes:
+          type: integer
+        submitted_at:
+          type: string
+          format: date-time
+        submitter:
+          type: string
+          nullable: true
+    TopicList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Topic'
+        total:
+          type: integer
+    TopicCreate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 120
+        description:
+          type: string
+          maxLength: 1000
+        context_link:
+          type: string
+          nullable: true
+        submitter:
+          type: string
+          nullable: true
+      required: [title, description]
+    VoteRequest:
+      type: object
+      properties:
+        delta:
+          type: integer
+          default: 1
+      required: [delta]
+    SessionState:
+      type: string
+      enum: [upcoming, active, completed]
+    Participant:
+      type: object
+      properties:
+        role:
+          type: string
+        model:
+          type: string
+      required: [role, model]
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+        topic_id:
+          type: string
+        title:
+          type: string
+        scheduled_for:
+          type: string
+          format: date-time
+        state:
+          $ref: '#/components/schemas/SessionState'
+        format:
+          type: string
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+        summary:
+          type: string
+          nullable: true
+        artifacts:
+          type: object
+          additionalProperties:
+            type: string
+          nullable: true
+    SessionList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Session'
+        total:
+          type: integer
+    SessionCreate:
+      type: object
+      properties:
+        topic_id:
+          type: string
+        format_id:
+          type: string
+        scheduled_for:
+          type: string
+          format: date-time
+      required: [topic_id, format_id, scheduled_for]
+    TranscriptChunk:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        speaker:
+          type: string
+        text:
+          type: string
