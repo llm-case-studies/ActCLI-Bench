@@ -14,6 +14,7 @@ from textual.binding import Binding
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Header, Static, Input, Button
 from .navigation_tree import NavigationTree
+from .detail_view import DetailView
 
 
 @runtime_checkable
@@ -102,7 +103,7 @@ class ActCLIShell(App):
 
         # Widgets that subclasses can access
         self.nav_tree: NavigationTree | None = None
-        self.status_line: Static | None = None
+        self.detail_view: DetailView | None = None
         self.control_input: Input | None = None
 
         # Guard against double mount
@@ -133,17 +134,19 @@ class ActCLIShell(App):
                 yield self.nav_tree
                 yield Static(self.get_theme_hints(), id="hint")
 
-            # Detail panel
-            with Vertical(id="detail"):
-                # Status line
-                self.status_line = Static(self.get_initial_status(), id="title")
-                yield self.status_line
+            # Right panel: detail view + control panel
+            with Vertical(id="right-panel"):
+                # Detail panel - create it with initial content
+                self.detail_view = DetailView(initial_status=self.get_initial_status())
 
-                # Detail view content (from subclass)
-                if isinstance(self, DetailViewProvider):
-                    yield from self.compose_detail_view()
+                # Compose it as a child context to ensure proper ordering
+                with self.detail_view:
+                    # DetailView.compose() yields status line first
+                    # Then we yield the content widgets
+                    if isinstance(self, DetailViewProvider):
+                        yield from self.compose_detail_view()
 
-                # Control panel (from subclass)
+                # Control panel (from subclass) - below detail view
                 if isinstance(self, ControlPanelProvider):
                     with Horizontal(id="control"):
                         yield from self.compose_control_panel()
@@ -210,5 +213,5 @@ class ActCLIShell(App):
         Args:
             text: New status text
         """
-        if self.status_line:
-            self.status_line.update(text)
+        if self.detail_view:
+            self.detail_view.update_status(text)

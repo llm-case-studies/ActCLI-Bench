@@ -309,9 +309,10 @@ class BenchTextualApp(ActCLIShell):
         return "plain"
 
     def _update_status_line(self) -> None:
-        status = getattr(self, "status_line", None)
-        if not status:
+        # Use DetailView's status line
+        if not self.detail_view or not self.detail_view.status_line:
             return
+        status = self.detail_view.status_line
         session_val = getattr(self, "_session_id", None) or "(none)"
         viewer_val = getattr(self, "viewer_url", None) or "(none)"
         try:

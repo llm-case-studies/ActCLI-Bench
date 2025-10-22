@@ -1,0 +1,151 @@
+timestamp: 2025-10-22T11:21:52.037337Z
+versions:
+  actcli-bench: unknown
+  textual: unknown
+  pyte: none
+active_view: terminal
+active_terminal: gemini
+writer_attached: True
+terminals:
+  - tree: muted=True cmd=tree emu=175x51 last_winsize=175x51
+    winsize_history:
+      • 07:19:19.000 view=175x52 emu=175x52 requested=52x175 actual=(52, 175)
+      • 07:19:19.112 view=175x53 emu=175x53 requested=53x175 actual=(53, 175)
+      • 07:19:19.332 view=175x54 emu=175x54 requested=54x175 actual=(54, 175)
+      • 07:19:19.412 view=175x55 emu=175x55 requested=55x175 actual=(55, 175)
+      • 07:19:19.536 view=175x56 emu=175x56 requested=56x175 actual=(56, 175)
+      • 07:19:19.859 view=175x57 emu=175x57 requested=57x175 actual=(57, 175)
+      • 07:19:20.665 view=175x55 emu=175x55 requested=55x175 actual=(55, 175)
+      • 07:19:20.761 view=175x53 emu=175x53 requested=53x175 actual=(53, 175)
+      • 07:19:20.893 view=175x50 emu=175x50 requested=50x175 actual=(50, 175)
+      • 07:19:21.179 view=175x51 emu=175x51 requested=51x175 actual=(51, 175)
+    recent_output_preview:
+      ─ test_websocket_routing.py\n    └── [01;34munit[0m\n        └── test_wrapper_client.py\n\n23 directories, 116 files\n
+    first_output_preview:
+      [01;34m.[0m\n├── ActCLI-Bench_ status_and_next_steps.md\n├── [01;34marchive[0m\n│   ├── [01;34mlegacy_prototypes[0m\n│   │   ├── [01;34mfacilitator[0m\n│   │   │   ├── __init__.p
+  - gemini: muted=True cmd=gemini emu=175x51 last_winsize=175x51
+    winsize_history:
+      • 07:21:11.262 view=175x51 emu=175x51 requested=51x175 actual=(51, 175)
+    recent_output_preview:
+      m(see /docs)[39m                       [38;2;203;166;247m gemini-2.5-pro [38;2;108;112;134m(100% context left)[39m\n
+    first_output_preview:
+      [?u[cLoaded cached credentials.\n]2;Gemini - ActCLI-Bench\n[38;2;71;150;228m [38;2;73;149;227m█[38;2;74;149;227m█[38;2;76;148;226m█[38;2;77;147;226m [38;2;79;146;225m [38;2;80;146;225m [38;2;82;145;224m [38;2;84;144;223m 
+---- recent events ----
+Failed to start facilitator
+Facilitator start failed
+Added: tree cmd=tree [muted]
+Selected terminal: tree
+Selected terminal: tree
+Added: gemini cmd=gemini [muted]
+---- recent errors ----
+(no errors)
+---- recent debug ----
+view.virtual_size = Size(width=177, height=53)
+Using content_region: 175x51
+cursor at (x=0, y=31), line='                                                  '
+Setting text: 51 lines, first line len=175, preview='│\xa0\xa0         │\xa0\xa0 ├── __init__.cpython-312.pyc                                                        '
+cursor at (x=0, y=31), line='                                                  '
+Setting text: 51 lines, first line len=175, preview='│\xa0\xa0         │\xa0\xa0 ├── __init__.cpython-312.pyc                                                        '
+view.size = Size(width=175, height=51)
+view.region = Region(x=32, y=3, width=177, height=53)
+view.content_size = Size(width=175, height=51)
+view.container_size = Size(width=175, height=51)
+view.virtual_size = Size(width=177, height=53)
+Using content_region: 175x51
+cursor at (x=0, y=31), line='                                                  '
+Setting text: 51 lines, first line len=175, preview='│\xa0\xa0         │\xa0\xa0 ├── __init__.cpython-312.pyc                                                        '
+[gemini] EmulatedTerminal: using pyte none
+Added terminal 'gemini': gemini
+[Emulator] resize(cols=175, rows=51) → pyte screen is now 175x51
+Resized emulator from (120, 32) to 175x51
+Synced PTY winsize: requested=51x175 actual=(51, 175)
+cursor at (x=0, y=0), line='                                                  '
+Setting text: 51 lines, first line len=176, preview='▌                                                                                                   '
+Setting text: 1 lines, first line len=41, preview="Added terminal 'gemini' → gemini  [muted]"
+view.size = Size(width=175, height=51)
+view.region = Region(x=32, y=3, width=177, height=53)
+view.content_size = Size(width=175, height=51)
+view.container_size = Size(width=175, height=51)
+view.virtual_size = Size(width=177, height=53)
+Using content_region: 175x51
+cursor at (x=0, y=0), line='                                                  '
+Setting text: 51 lines, first line len=176, preview='▌                                                                                                   '
+cursor at (x=0, y=0), line='                                                  '
+Setting text: 51 lines, first line len=176, preview='▌                                                                                                   '
+cursor at (x=0, y=1), line='                                                  '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+cursor at (x=0, y=1), line='                                                  '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+cursor at (x=34, y=4), line='  ░░░███      ███     ░░░  ░███  █                '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+cursor at (x=69, y=6), line='     ███░    ░███    █████ ░███░░█    ░███ ░░░  ░█'
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+cursor at (x=25, y=9), line='░░░            ░░░░░░░░░                          '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+cursor at (x=0, y=20), line='                                                  '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+cursor at (x=0, y=20), line='                                                  '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+cursor at (x=0, y=20), line='                                                  '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+cursor at (x=0, y=21), line='                                                  '
+Setting text: 51 lines, first line len=175, preview='Loaded cached credentials.                                                                          '
+---- recent output ----
+[tree]     │   │   ├── test_term_emulator.cpython-312-pytest-8.4.2.pyc
+[tree]     │   │   ├── test_terminal_runner.cpython-312-pytest-8.4.2.pyc
+[tree]     │   │   └── test_term_view.cpython-312-pytest-8.4.2.pyc
+[tree]     │   ├── test_app_integration.py
+[tree]     │   ├── test_term_emulator.py
+[tree]     │   ├── test_terminal_runner.py
+[tree]     │   └── test_term_view.py
+[tree]     ├── integration
+[tree]     │   ├── test_pty_wrapper_simple.py
+[tree]     │   └── test_websocket_routing.py
+[tree]     └── unit
+[tree]         └── test_wrapper_client.py
+[tree] 23 directories, 116 files
+[gemini] Loaded cached credentials.
+[gemini] 2;Gemini - ActCLI-Bench
+[gemini]  ███            █████████  ██████████ ██████   ██████ █████ ██████   █████ █████
+[gemini] ░░░███         ███░░░░░███░░███░░░░░█░░██████ ██████ ░░███ ░░██████ ░░███ ░░███
+[gemini]   ░░░███      ███     ░░░  ░███  █[
+[gemini] 38;2;124;126;209m ░  ░███░█████░███  ░███  ░███░███ ░███  ░███
+[gemini]     ░░░███   ░███          ░██████    ░███░░███ ░███  ░███  ░███░░███░███  ░███
+[gemini]      ███░    ░███    █████ ░███░░█    ░███ ░░░  ░███  ░███  ░███ ░░██[3
+[gemini] 8;2;180;107;145m████  ░███
+[gemini]    ███░      ░░███  ░░███  ░███ ░   █ ░███      ░███  ░███  ░███  ░░█████  ░███
+[gemini]  ███░         ░░█████████  ██████████ █████     █████ █████ █████  ░░█████ █████
+[gemini] ░░░            ░░░░░░░░░ [38;2
+[gemini] ;110;132;214m ░░░░░░░░░░ ░░░░░     ░░░░░ ░░░░░ ░░░░░    ░░░░░ ░░░░░
+[gemini] Tips for getting started:
+[gemini] 1. Ask questions, edit files, or run commands.
+[gemini] 2. Be specific for the best results.
+[gemini] 3. /help for more information.
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │                                                                                                                                                            │
+[gemini] │ ⠋ Waiting for auth... (Press ESC or CTRL+C to cancel)                                                                                                      │
+[gemini] │                                                                                                                                                            │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │                                                                                                                                                            │
+[gemini] │ ⠙ Waiting for auth... (Press ESC or CTRL+C to cancel)                                                                                                      │
+[gemini] │                                                                                                                                                            │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │                                                                                                                                                            │
+[gemini] │ ⠹ Waiting for auth... (Press ESC or CTRL+C to cancel)                                                                                                      │
+[gemini] │                                                                                                                                                            │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini] ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                      no sandbox (see /docs)                        gemini-2.5-pro (100% context left)
+---- navigation tree rebuild history ----
+Total rebuilds: 3
+⚠️  WARNING: Multiple rebuilds detected!
+
+Rebuild events:
+  • 2025-10-22T11:18:50.913090Z - [4 sections]
+  • 2025-10-22T11:19:09.463024Z - [4 sections]
+  • 2025-10-22T11:21:11.269190Z - [4 sections]
