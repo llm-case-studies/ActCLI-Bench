@@ -1,0 +1,166 @@
+timestamp: 2025-10-22T21:14:47.322209Z
+versions:
+  actcli-bench: unknown
+  textual: unknown
+  pyte: none
+active_view: terminal
+active_terminal: bash
+writer_attached: True
+terminals:
+  - bash: muted=True cmd=bash emu=175x51 last_winsize=175x51
+    winsize_history:
+      • 17:08:24.499 view=175x51 emu=175x51 requested=51x175 actual=(51, 175)
+    recent_output_preview:
+      alex@msi-raider-linux: ~/Projects/ActCLI-Bench[01;32malex@msi-raider-linux[00m:[01;34m~/Projects/ActCLI-Bench[00m$ 
+    first_output_preview:
+      bash: /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory\n[?2004h]0;alex@msi-raider-linux: ~/Projects/ActCLI-Bench[01;32malex@msi-raider-linux[00m:[01;34m~/Projects/ActCLI-Bench[00m$ [K]0;alex@msi-raider-
+  - gemini: muted=True cmd=gemini emu=175x51 last_winsize=175x51
+    winsize_history:
+      • 17:09:07.940 view=175x51 emu=175x51 requested=51x175 actual=(51, 175)
+    recent_output_preview:
+      m (see /docs)[39m                        [38;2;203;166;247mgemini-2.5-pro [38;2;108;112;134m(99% context left)[39m\n
+    first_output_preview:
+      [?u[cLoaded cached credentials.\n[?7l]2;Gemini - ActCLI-Bench\n[38;2;71;150;228m [38;2;73;149;227m█[38;2;74;149;227m█[38;2;76;148;226m█[38;2;77;147;226m [38;2;79;146;225m [38;2;80;146;225m [38;2;82;145;224m [38;2;84;144;
+---- recent events ----
+Failed to start facilitator
+Facilitator start failed
+Added: bash cmd=bash [muted]
+Selected terminal: bash
+Selected terminal: bash
+Added: gemini cmd=gemini [muted]
+Selected terminal: gemini
+Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251022T211106Z.txt
+Selected terminal: bash
+---- recent errors ----
+(no errors)
+---- recent debug ----
+[text_with_cursor] calculated string index=0 for column=0
+[text_with_cursor] inserting cursor at idx=0
+[text_with_cursor] before='          '
+[text_with_cursor] after='▌              '
+Setting text: 51 lines, first line len=175, preview='alex@msi-raider-linux:~/Projects/ActCLI-Bench$ ls                                                   '
+[text_with_cursor] pyte cursor position: (x=47, y=2)
+[text_with_cursor] total lines in display: 51
+[text_with_cursor] line[2] length=175, content='alex@msi-raider-linux:~/Projects/ActCLI-Bench$                                  '
+[_index_from_column] target_column=47, line_len=175
+[_index_from_column] raw_line='alex@msi-raider-linux:~/Projects/ActCLI-Bench$                                                                                                                                 '
+[_index_from_column] found at index=47, char=' ', accumulated_width=46
+[text_with_cursor] calculated string index=47 for column=47
+[text_with_cursor] inserting cursor at idx=47
+[text_with_cursor] before='LI-Bench$           '
+[text_with_cursor] after='LI-Bench$ ▌              '
+Setting text: 51 lines, first line len=175, preview='alex@msi-raider-linux:~/Projects/ActCLI-Bench$ ls                                                   '
+view.size = Size(width=175, height=51)
+view.region = Region(x=32, y=4, width=177, height=53)
+view.content_size = Size(width=175, height=51)
+view.container_size = Size(width=175, height=51)
+view.virtual_size = Size(width=177, height=53)
+Using content_region: 175x51
+[text_with_cursor] pyte cursor position: (x=47, y=2)
+[text_with_cursor] total lines in display: 51
+[text_with_cursor] line[2] length=175, content='alex@msi-raider-linux:~/Projects/ActCLI-Bench$                                  '
+[_index_from_column] target_column=47, line_len=175
+[_index_from_column] raw_line='alex@msi-raider-linux:~/Projects/ActCLI-Bench$                                                                                                                                 '
+[_index_from_column] found at index=47, char=' ', accumulated_width=46
+[text_with_cursor] calculated string index=47 for column=47
+[text_with_cursor] inserting cursor at idx=47
+[text_with_cursor] before='LI-Bench$           '
+[text_with_cursor] after='LI-Bench$ ▌              '
+Setting text: 51 lines, first line len=175, preview='alex@msi-raider-linux:~/Projects/ActCLI-Bench$ ls                                                   '
+view.size = Size(width=175, height=51)
+view.region = Region(x=32, y=4, width=177, height=53)
+view.content_size = Size(width=175, height=51)
+view.container_size = Size(width=175, height=51)
+view.virtual_size = Size(width=177, height=53)
+Using content_region: 175x51
+[text_with_cursor] pyte cursor position: (x=47, y=2)
+[text_with_cursor] total lines in display: 51
+[text_with_cursor] line[2] length=175, content='alex@msi-raider-linux:~/Projects/ActCLI-Bench$                                  '
+[_index_from_column] target_column=47, line_len=175
+[_index_from_column] raw_line='alex@msi-raider-linux:~/Projects/ActCLI-Bench$                                                                                                                                 '
+[_index_from_column] found at index=47, char=' ', accumulated_width=46
+[text_with_cursor] calculated string index=47 for column=47
+[text_with_cursor] inserting cursor at idx=47
+[text_with_cursor] before='LI-Bench$           '
+[text_with_cursor] after='LI-Bench$ ▌              '
+Setting text: 51 lines, first line len=175, preview='alex@msi-raider-linux:~/Projects/ActCLI-Bench$ ls                                                   '
+---- recent output ----
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ > Not yet. Please                                                                                                                                          │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                        gemini-2.5-pro (99% context left)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ > Not yet. Please h                                                                                                                                        │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                        gemini-2.5-pro (99% context left)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ > Not yet. Please ho                                                                                                                                       │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                        gemini-2.5-pro (99% context left)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ > Not yet. Please hol                                                                                                                                      │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                        gemini-2.5-pro (99% context left)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ > Not yet. Please hold                                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                        gemini-2.5-pro (99% context left)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ > Not yet. Please hold.                                                                                                                                    │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                        gemini-2.5-pro (99% context left)
+[bash] 
+[bash] 
+[bash] 
+[bash] 
+[bash] 
+[bash] 
+[bash] 
+[bash] 
+[bash] 
+[bash] 
+[bash] 
+[bash] c
+[bash] l
+[bash] e
+[bash] a
+[bash] r
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ 
+[bash] l
+[bash] s
+[bash] archive  docs  INVENTORY.sha256.txt  LICENSE  pyproject.toml  README.md  src  tests
+[bash] 0;alex@msi-raider-linux: ~/Projects/ActCLI-Benchalex@msi-raider-linux:~/Projects/ActCLI-Bench$ 
+---- recent key events ----
+down char=None mods=
+down char=None mods=
+down char=None mods=
+down char=None mods=
+down char=None mods=
+down char=None mods=
+down char=None mods=
+down char=None mods=
+down char=None mods=
+down char=None mods=
+down char=None mods=
+c char='c' mods=
+l char='l' mods=
+e char='e' mods=
+a char='a' mods=
+r char='r' mods=
+enter char='\r' mods=
+l char='l' mods=
+s char='s' mods=
+enter char='\r' mods=
+---- navigation tree rebuild history ----
+Total rebuilds: 3
+⚠️  WARNING: Multiple rebuilds detected!
+
+Rebuild events:
+  • 2025-10-22T21:08:01.141673Z - [4 sections]
+  • 2025-10-22T21:08:24.535043Z - [4 sections]
+  • 2025-10-22T21:09:07.947786Z - [4 sections]
