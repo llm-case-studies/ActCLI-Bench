@@ -40,6 +40,37 @@ def _strip_ansi(text: str) -> str:
     return _ANSI_ESCAPE_PATTERN.sub('', text)
 
 
+def find_visual_cursor_from_reverse_video(screen):
+    """Find cursor position from reverse video attribute.
+
+    Modern AI CLIs (Gemini, Claude, Codex) use reverse video highlighting
+    (ESC[7m) to show where the cursor is visually, rather than sending
+    explicit cursor positioning codes.
+
+    Real terminals (xterm.js, iTerm2) render the highlighted character as
+    the cursor, ignoring the VT cursor position which is often at end of line.
+
+    Args:
+        screen: pyte.Screen object
+
+    Returns:
+        tuple[int, int]: (x, y) position of visual cursor, or VT cursor if
+                         no reverse video character found
+    """
+    # Scan screen for character with reverse video attribute
+    for y in range(screen.lines):
+        line = screen.buffer[y]
+        for x in range(screen.columns):
+            char = line.get(x)
+            if char and char.reverse:
+                # Found highlighted character - this is the visual cursor!
+                return (x, y)
+
+    # No reverse video found - fall back to VT cursor position
+    # This handles traditional terminals (bash, vim) that don't use reverse video
+    return (screen.cursor.x, screen.cursor.y)
+
+
 @dataclass
 class _NoopScreen:
     cols: int
@@ -118,6 +149,22 @@ class EmulatedTerminal:
                 return ""
         else:
             return self._screen.display_text()  # type: ignore
+
+    def get_visual_cursor_position(self):
+        """Get cursor position using visual cues (reverse video).
+
+        Modern AI CLIs use reverse video highlighting to indicate cursor position.
+        This method detects the highlighted character and returns its position,
+        falling back to the VT cursor for traditional terminals.
+
+        Returns:
+            tuple[int, int]: (x, y) cursor position
+        """
+        if self._use_pyte:
+            return find_visual_cursor_from_reverse_video(self._screen)
+        else:
+            # Noop screen doesn't have attributes
+            return (0, 0)
 
     def _index_from_column(self, line: str, column: int) -> int:
         """Return string index that corresponds to a visual column.
@@ -270,16 +317,21 @@ class EmulatedTerminal:
         try:
             # Obtain current display and cursor position
             lines = list(self._screen.display)  # type: ignore[attr-defined]
-            cx = getattr(self._screen, "cursor").x  # type: ignore[attr-defined]
-            cy = getattr(self._screen, "cursor").y  # type: ignore[attr-defined]
+            # Use visual cursor detection (checks reverse video attribute for AI CLIs)
+            cx, cy = self.get_visual_cursor_position()
 
             if self._debug_logger:
-                self._debug_logger(f"[text_with_cursor] pyte cursor position: (x={cx}, y={cy})")
+                # Also log VT cursor for comparison
+                vt_cx = getattr(self._screen, "cursor").x  # type: ignore[attr-defined]
+                vt_cy = getattr(self._screen, "cursor").y  # type: ignore[attr-defined]
+                self._debug_logger(f"[text_with_cursor] visual cursor position: (x={cx}, y={cy})")
+                if (cx, cy) != (vt_cx, vt_cy):
+                    self._debug_logger(f"[text_with_cursor] VT cursor differs: (x={vt_cx}, y={vt_cy})")
                 self._debug_logger(f"[text_with_cursor] total lines in display: {len(lines)}")
 
-            # SIMPLIFIED: Just trust pyte's cursor position
-            # The real terminal works because it trusts the cursor position from escape codes
-            # Pyte processes those codes correctly, so we should trust it too
+            # Use visual cursor detection: check reverse video attribute first (for AI CLIs),
+            # fall back to VT cursor position (for traditional terminals like bash/vim).
+            # This matches how real terminals (xterm.js, iTerm2) render the cursor.
 
             if 0 <= cy < len(lines):
                 line = lines[cy]
