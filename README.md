@@ -323,6 +323,8 @@ The snapshot includes:
 - **[Shell Framework Quick Reference](src/actcli/shell/README.md)** - Quick start and API overview
 - **[Wrapper README](docs/WRAPPER_README.md)** - CLI wrapper system documentation
 - **[Wrapper Testing Guide](docs/WRAPPER_TESTING_GUIDE.md)** - Testing the wrapper system
+- **[ActCLI-TE Tracking](docs/ACTCLI-TE_TRACKING.md)** - Cross-project coordination
+- **[Instrumentation Refactor Plan](docs/INSTRUMENTATION_REFACTOR.md)** - Upcoming logging/tooling changes
 
 ## Version History
 
