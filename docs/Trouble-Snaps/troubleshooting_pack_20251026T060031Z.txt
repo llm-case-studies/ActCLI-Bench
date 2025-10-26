@@ -1,0 +1,175 @@
+timestamp: 2025-10-26T06:00:31.523106Z
+versions:
+  actcli-bench: unknown
+  textual: unknown
+  pyte: none
+active_view: terminal
+active_terminal: codex
+writer_attached: True
+terminals:
+  - gemini: muted=True cmd=gemini emu=175x39 last_winsize=175x39
+    winsize_history:
+      • 01:55:20.417 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+    recent_output_preview:
+      m (see /docs)[39m                        [38;2;203;166;247mgemini-2.5-pro [38;2;108;112;134m(99% context left)[39m\n
+    first_output_preview:
+      [?u[cLoaded cached credentials.\n[?7l]2;Gemini - ActCLI-Bench\n[38;2;71;150;228m [38;2;73;149;227m█[38;2;74;149;227m█[38;2;76;148;226m█[38;2;77;147;226m [38;2;79;146;225m [38;2;80;146;225m [38;2;82;145;224m [38;2;84;144;
+  - Claude: muted=True cmd=Claude emu=175x39 last_winsize=175x39
+    winsize_history:
+      • 01:58:33.722 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+    recent_output_preview:
+      : /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory\nbash: line 1: Claude: command not found\n
+    first_output_preview:
+      /home/alex/.profile: line 29: /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory\nbash: line 1: Claude: command not found\n
+  - codex: muted=True cmd=codex emu=175x39 last_winsize=175x39
+    winsize_history:
+      • 01:59:42.881 view=175x39 emu=175x39 requested=39x175 actual=(39, 175)
+    recent_output_preview:
+      [?2004h[>7u[?1004h[6nError: The cursor position could not be read within a normal duration\n
+    first_output_preview:
+      [?2004h[>7u[?1004h[6nError: The cursor position could not be read within a normal duration\n
+---- recent events ----
+Failed to start facilitator
+Facilitator start failed
+Added: gemini cmd=gemini [muted]
+Troubleshooting pack saved → docs/Trouble-Snaps/troubleshooting_pack_20251026T055619Z.txt
+Selected terminal: gemini
+Added: Claude cmd=Claude [muted]
+Selected terminal: Claude
+Selected terminal: Claude
+Added: codex cmd=codex [muted]
+Selected terminal: codex
+---- recent errors ----
+(no errors)
+---- recent debug ----
+Setting text: 39 lines, first line len=176, preview='▌                                                                                                   '
+[text_with_cursor] pyte cursor position: (x=69, y=1)
+[text_with_cursor] total lines in display: 39
+[_find_input_line] No input box found, trusting pyte
+[text_with_cursor] falling back to VT cursor position
+[text_with_cursor] source=vt line[1] length=175, content='                                                                                '
+[text_with_cursor] line_bytes=b'                                                                                                                                                                               '
+[_index_from_column] target_column=69, line_len=175
+[_index_from_column] raw_line='                                                                                                                                                                               '
+[_index_from_column] found at index=69, char=' ', accumulated_width=68
+[text_with_cursor] calculated string index=69 for column=69
+[text_with_cursor] inserting cursor at idx=69
+[text_with_cursor] before='                    '
+[text_with_cursor] after='          ▌              '
+Setting text: 39 lines, first line len=175, preview='Error: The cursor position could not be read within a normal duration                               '
+Terminal 'codex' exited with code 1
+[text_with_cursor] pyte cursor position: (x=69, y=1)
+[text_with_cursor] total lines in display: 39
+[_find_input_line] No input box found, trusting pyte
+[text_with_cursor] falling back to VT cursor position
+[text_with_cursor] source=vt line[1] length=175, content='                                                                                '
+[text_with_cursor] line_bytes=b'                                                                                                                                                                               '
+[_index_from_column] target_column=69, line_len=175
+[_index_from_column] raw_line='                                                                                                                                                                               '
+[_index_from_column] found at index=69, char=' ', accumulated_width=68
+[text_with_cursor] calculated string index=69 for column=69
+[text_with_cursor] inserting cursor at idx=69
+[text_with_cursor] before='                    '
+[text_with_cursor] after='          ▌              '
+Setting text: 39 lines, first line len=175, preview='Error: The cursor position could not be read within a normal duration                               '
+view.size = Size(width=175, height=39)
+view.region = Region(x=32, y=4, width=177, height=41)
+view.content_size = Size(width=175, height=39)
+view.container_size = Size(width=175, height=39)
+view.virtual_size = Size(width=177, height=41)
+Using content_region: 175x39
+[text_with_cursor] pyte cursor position: (x=69, y=1)
+[text_with_cursor] total lines in display: 39
+[_find_input_line] No input box found, trusting pyte
+[text_with_cursor] falling back to VT cursor position
+[text_with_cursor] source=vt line[1] length=175, content='                                                                                '
+[text_with_cursor] line_bytes=b'                                                                                                                                                                               '
+[_index_from_column] target_column=69, line_len=175
+[_index_from_column] raw_line='                                                                                                                                                                               '
+[_index_from_column] found at index=69, char=' ', accumulated_width=68
+[text_with_cursor] calculated string index=69 for column=69
+[text_with_cursor] inserting cursor at idx=69
+[text_with_cursor] before='                    '
+[text_with_cursor] after='          ▌              '
+Setting text: 39 lines, first line len=175, preview='Error: The cursor position could not be read within a normal duration                               '
+---- recent output ----
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                       gemini-2.5-pro (100% context left)
+[gemini] ⠸ Just a moment, I'm tuning the algorithms... (esc to cancel, 1s)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                       gemini-2.5-pro (100% context left)
+[gemini] ⠼ Just a moment, I'm tuning the algorithms... (esc to cancel, 1s)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                       gemini-2.5-pro (100% context left)
+[gemini] ⠼ Just a moment, I'm tuning the algorithms... (esc to cancel, 2s)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                       gemini-2.5-pro (100% context left)
+[gemini] ⠴ Just a moment, I'm tuning the algorithms... (esc to cancel, 2s)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                       gemini-2.5-pro (100% context left)
+[gemini] ⠦ Just a moment, I'm tuning the algorithms... (esc to cancel, 2s)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                       gemini-2.5-pro (100% context left)
+[gemini] ⠦ Beginning Interaction Protocol (esc to cancel, 2s)
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                       gemini-2.5-pro (100% context left)
+[gemini] ✦ Hello! I'm ready to assist you.
+[gemini]  Using: 1 GEMINI.md file
+[gemini] ╭────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+[gemini] │ >   Type your message or @path/to/file                                                                                                                     │
+[gemini] ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+[gemini]  ~/Projects/ActCLI-Bench (feat/bench-emulator-rebased*)                       no sandbox (see /docs)                        gemini-2.5-pro (99% context left)
+[Claude] /home/alex/.profile: line 29: /home/alex/snap/code/176/.local/share/../bin/env: No such file or directory
+[Claude] bash: line 1: Claude: command not found
+[codex] Error: The cursor position could not be read within a normal duration
+---- recent key events ----
+l char='l' mods=
+l char='l' mods=
+o char='o' mods=
+exclamation_mark char='!' mods=
+space char=' ' mods=
+w char='W' mods=
+e char='e' mods=
+l char='l' mods=
+o char='o' mods=
+m char='m' mods=
+e char='e' mods=
+space char=' ' mods=
+a char='a' mods=
+b char='b' mods=
+o char='o' mods=
+a char='a' mods=
+r char='r' mods=
+d char='d' mods=
+exclamation_mark char='!' mods=
+enter char='\r' mods=
+---- navigation tree rebuild history ----
+Total rebuilds: 4
+⚠️  WARNING: Multiple rebuilds detected!
+
+Rebuild events:
+  • 2025-10-26T05:54:51.140931Z - [4 sections]
+  • 2025-10-26T05:55:20.422155Z - [4 sections]
+  • 2025-10-26T05:58:33.726317Z - [4 sections]
+  • 2025-10-26T05:59:42.889920Z - [4 sections]

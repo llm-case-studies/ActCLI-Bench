@@ -32,6 +32,15 @@ OutputCallback = Callable[[str], None]
 ExitCallback = Callable[[int], None]
 
 
+def _append_write_debug(path: str, name: str, data: str) -> None:
+    """Best-effort write-debug helper (for investigation only)."""
+    try:
+        with open(path, "a", encoding="utf-8") as fh:
+            fh.write(f"{name}: {repr(data)}\n")
+    except Exception:
+        pass
+
+
 @dataclass
 class TerminalRunner:
     name: str
@@ -49,6 +58,7 @@ class TerminalRunner:
     _post_output_resize_pending: bool = field(default=False, init=False, repr=False)
     _post_output_resize_done: bool = field(default=False, init=False, repr=False)
     _pending_scheduled_resize: Optional[threading.Timer] = field(default=None, init=False, repr=False)
+    debug_logger: Optional[Callable[[str], None]] = field(default=None, repr=False)
 
     def on_output(self, cb: OutputCallback) -> None:
         self._on_output = cb
@@ -56,6 +66,13 @@ class TerminalRunner:
     def on_exit(self, cb: ExitCallback) -> None:
         """Set callback for process exit (receives exit code)."""
         self._on_exit = cb
+
+    def _debug(self, message: str) -> None:
+        if self.debug_logger:
+            try:
+                self.debug_logger(f"[runner:{self.name}] {message}")
+            except Exception:
+                pass
 
     def set_winsize(self, rows: int, cols: int) -> None:
         """Set PTY window size and notify child process via SIGWINCH."""
@@ -233,6 +250,12 @@ class TerminalRunner:
         if self.master_fd is None:
             return
         try:
+            self._debug(f"write→pty {repr(data)}")
+            _append_write_debug(
+                "docs/Trouble-Snaps/write_debug.log",
+                self.name,
+                data,
+            )
             os.write(self.master_fd, data.encode())
         except Exception:
             pass

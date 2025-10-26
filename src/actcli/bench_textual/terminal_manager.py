@@ -88,7 +88,12 @@ class TerminalManager:
             return False
 
         # Create PTY runner
-        runner = TerminalRunner(name=name, command=command, muted=True)
+        runner = TerminalRunner(
+            name=name,
+            command=command,
+            muted=True,
+            debug_logger=self._debug_logger
+        )
 
         # Set output callback to capture terminal output
         def on_output(text: str):
