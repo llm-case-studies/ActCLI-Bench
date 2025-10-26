@@ -100,7 +100,7 @@ class EmulatedTerminal:
                     # Log cursor positioning codes if present
                     if b'\x1b[' in b or b'\x1bM' in b or b'\x1b' in b:
                         # Truncate for readability
-                        preview = repr(b[:200]) if len(b) > 200 else repr(b)
+                        preview = repr(b)  # FULL SEQUENCE - no truncation for investigation
                         self._debug_logger(f"[feed] Received escape sequences: {preview}")
 
                 self._stream.feed(b)  # type: ignore[attr-defined]
@@ -152,6 +152,38 @@ class EmulatedTerminal:
         if self._debug_logger:
             self._debug_logger(f"[_index_from_column] reached end, returning len={len(line)}, accumulated_width={width}")
         return len(line)
+
+    def _find_reverse_video_cursor(self, lines: list[str]) -> tuple[int, int]:
+        """Return (line, column) of the last reverse-video cell, if any."""
+
+        if not self._use_pyte:
+            return (-1, -1)
+
+        buffer = getattr(self._screen, "buffer", None)
+        if buffer is None:
+            return (-1, -1)
+
+        highlight: tuple[int, int] | None = None
+
+        for y, line in enumerate(lines):
+            row = buffer.get(y)
+            if not row:
+                continue
+
+            for x in sorted(row.keys()):
+                cell = row[x]
+                if getattr(cell, "reverse", False):
+                    highlight = (y, x)
+                    if self._debug_logger:
+                        char_repr = repr(getattr(cell, "data", ""))
+                        self._debug_logger(
+                            f"[reverse_video] highlight candidate at (x={x}, y={y}) char={char_repr}"
+                        )
+
+        if highlight is None:
+            return (-1, -1)
+
+        return highlight
 
     def _find_input_line(self, lines: list[str], cursor_y: int, cursor_x: int) -> tuple[int, int]:
         """Find the actual input line when cursor is misplaced.
@@ -277,14 +309,41 @@ class EmulatedTerminal:
                 self._debug_logger(f"[text_with_cursor] pyte cursor position: (x={cx}, y={cy})")
                 self._debug_logger(f"[text_with_cursor] total lines in display: {len(lines)}")
 
-            # SIMPLIFIED: Just trust pyte's cursor position
-            # The real terminal works because it trusts the cursor position from escape codes
-            # Pyte processes those codes correctly, so we should trust it too
+            target_source = "vt"
+            target_y = cy
+            target_x = cx
 
-            if 0 <= cy < len(lines):
-                line = lines[cy]
+            # 1) Prefer reverse-video highlight (Gemini/Claude visual cursor)
+            highlight_y, highlight_x = self._find_reverse_video_cursor(lines)
+            if highlight_y != -1 and highlight_x != -1:
+                target_y, target_x = highlight_y, highlight_x
+                target_source = "reverse-video"
                 if self._debug_logger:
-                    self._debug_logger(f"[text_with_cursor] line[{cy}] length={len(line)}, content={repr(line[:80])}")
+                    self._debug_logger(
+                        f"[text_with_cursor] using reverse-video cursor at (x={highlight_x}, y={highlight_y})"
+                    )
+            else:
+                # 2) Fall back to pattern matching heuristics
+                pattern_y, pattern_x = self._find_input_line(lines, cy, cx)
+                if pattern_y != -1 and pattern_x != -1:
+                    target_y, target_x = pattern_y, pattern_x
+                    target_source = "pattern"
+                    if self._debug_logger:
+                        self._debug_logger(
+                            f"[text_with_cursor] using pattern cursor at (x={pattern_x}, y={pattern_y})"
+                        )
+                else:
+                    if self._debug_logger:
+                        self._debug_logger(
+                            "[text_with_cursor] falling back to VT cursor position"
+                        )
+
+            if 0 <= target_y < len(lines):
+                line = lines[target_y]
+                if self._debug_logger:
+                    self._debug_logger(
+                        f"[text_with_cursor] source={target_source} line[{target_y}] length={len(line)}, content={repr(line[:80])}"
+                    )
                     # Log the full line in hex to see any hidden characters
                     line_bytes = line.encode('utf-8', errors='replace')
                     if len(line_bytes) > 200:
@@ -293,10 +352,12 @@ class EmulatedTerminal:
                         self._debug_logger(f"[text_with_cursor] line_bytes={line_bytes}")
 
                 # Map column to string index
-                idx = self._index_from_column(line, cx)
+                idx = self._index_from_column(line, target_x)
 
                 if self._debug_logger:
-                    self._debug_logger(f"[text_with_cursor] calculated string index={idx} for column={cx}")
+                    self._debug_logger(
+                        f"[text_with_cursor] calculated string index={idx} for column={target_x}"
+                    )
 
                 if idx >= len(line):
                     line = line + " "
@@ -311,7 +372,7 @@ class EmulatedTerminal:
                     self._debug_logger(f"[text_with_cursor] before={repr(line[max(0,idx-10):idx+10])}")
                     self._debug_logger(f"[text_with_cursor] after={repr(modified_line[max(0,idx-10):idx+15])}")
 
-                lines[cy] = modified_line
+                lines[target_y] = modified_line
             return "\n".join(lines)
         except Exception as e:
             if self._debug_logger:

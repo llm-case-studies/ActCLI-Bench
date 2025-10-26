@@ -1,13 +1,12 @@
 # Terminal Engine Roadmap
 
-## Short-Term (Patch pyte)
+## Short-Term (Visual Cursor Support)
 
-- Carry a minimal fork of `pyte` with the cursor-position fix so Textual users
-  have a reliable experience immediately.
-- Publish the fork as `pyte-0.8.2+actcli` (still LGPL) and document the
-  dependency in release notes.
-- Add regression fixtures to ensure the patched behavior stays intact while we
-  work on the long-term solution.
+- Detect reverse-video highlights emitted by Gemini/Claude and treat them as
+  the active cursor in ActCLI-Bench (implemented in `term_emulator.py`).
+- Guard the behaviour with automated tests (see `tests/unit/test_term_emulator_cursor.py`).
+- Keep the pyte fork plan on standby only if additional ANSI-level issues
+  surface that the hybrid approach cannot cover.
 
 ## Medium-Term (ActCLI-TE)
 
@@ -25,4 +24,3 @@
   (xterm.js front end) powered by the facilitator service.
 - Consolidate diagnostics and logging around the new engine to simplify
   troubleshooting across deployment modes.
-

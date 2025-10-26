@@ -1,8 +1,13 @@
-# Pyte Patch Plan
+# Pyte Patch Plan *(standby)*
 
-This document captures the short-term steps required to ship an ActCLI-flavoured
-`pyte` build (`pyte-0.8.2+actcli`) that fixes the Gemini/Claude cursor drift
-while we work on ActCLI-TE.
+> **Status:** After the reverse-video investigation (see `docs/INVESTIGATION_FINDINGS.md`)
+> we no longer need to patch pyte for cursor placement in Gemini/Claude. The
+> hybrid cursor detection now lives in ActCLI-Bench. Keep this playbook around
+> only if future ANSI-level bugs emerge that require an actual pyte fork.
+
+This document captures the contingency plan for shipping an ActCLI-flavoured
+`pyte` build (`pyte-0.8.2+actcli`) should we ever need to fix terminal
+semantics upstream while we work on ActCLI-TE.
 
 ## Goals
 
@@ -63,4 +68,3 @@ while we work on ActCLI-TE.
 - `docs/CURSOR_RESEARCH_FINDINGS.md`
 - `tests/pyte_cursor_investigation.py`
 - `docs/CURSOR_POSITIONING_RESEARCH.md`
-

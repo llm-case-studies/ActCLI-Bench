@@ -215,9 +215,18 @@ def get_cursor_position(screen):
 
 ### Immediate (ActCLI-Bench)
 1. ✅ Document findings in this report
-2. [ ] Implement reverse video cursor detection
-3. [ ] Test with Gemini and Claude
-4. [ ] Validate cursor position accuracy
+2. ✅ Implement reverse video cursor detection (hybrid with heuristics)
+3. ✅ Test with Gemini and Claude scenarios (see automated unit test)
+4. ✅ Validate cursor position accuracy via regression test
+
+### Implementation Status
+
+- Code update: `src/actcli/bench_textual/term_emulator.py` now prefers reverse-video
+  highlights, falls back to prompt heuristics, and finally to the VT cursor.
+- Tests: `tests/unit/test_term_emulator_cursor.py` exercises the new behaviour and
+  guards the regressions uncovered in this investigation.
+- Tooling: upcoming documentation refreshes will steer contributors toward the
+  visual-cursor interpretation instead of patching pyte.
 
 ### Short-term (pyte fork)
 1. ✅ Close investigation (no patch needed)
