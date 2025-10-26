@@ -293,6 +293,10 @@ class TerminalManager:
         state = self.terminals[name]
         emu = state.emulator
 
+        # Respond to Device Status Report requests (ESC[6n)
+        if "\x1b[6n" in text:
+            self._respond_to_dsr(name, state)
+
         # Feed to emulator
         emu.feed(text)
 
@@ -319,6 +323,27 @@ class TerminalManager:
         # Notify app.py if callback is set
         if self._on_output_callback:
             self._on_output_callback(name, text)
+
+    def _respond_to_dsr(self, name: str, state: TerminalState) -> None:
+        """Reply to Device Status Report (cursor position) requests."""
+
+        emu = state.emulator
+        if emu.mode != "pyte":
+            return
+
+        cursor = getattr(emu._screen, "cursor", None)  # type: ignore[attr-defined]
+        if cursor is None:
+            return
+
+        row = getattr(cursor, "y", 0) + 1
+        col = getattr(cursor, "x", 0) + 1
+        response = f"\x1b[{row};{col}R"
+
+        self._debug_logger(f"[{name}] DSR → responding with {repr(response)}")
+        try:
+            state.item.write(response)
+        except Exception:
+            pass
 
     def _strip_ansi(self, s: str) -> str:
         """Strip ANSI escape sequences from string.
