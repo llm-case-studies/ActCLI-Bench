@@ -288,6 +288,11 @@ In the bench UI:
 2. Select "Export troubleshooting pack"
 3. File saved to `docs/Trouble-Snaps/troubleshooting_pack_<timestamp>.txt`
 
+### Investigations & Postmortems
+
+- [Cursor & PTY improvements (Oct 2025)](docs/POSTMORTEM_CURSOR_PTY.md)
+
+
 The snapshot includes:
 - Version information
 - Active terminals and their state
