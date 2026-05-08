@@ -15,3 +15,7 @@ ActCLI-Bench sessions should not rediscover.
   `pytest` now lives in the repo's `test` extra, and validation checks
   should prefer Python standard-library probes over host-specific
   command-line dependencies when either works.
+- App integration tests currently try both `asyncio` and `trio`
+  backends on iMacDebian, but `trio` is not installed there. Future
+  validation requests should either install the full async test backend
+  set or explicitly run the supported `asyncio` backend.

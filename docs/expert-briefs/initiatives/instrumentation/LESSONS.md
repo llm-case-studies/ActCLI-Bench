@@ -11,3 +11,7 @@ Append initiative-specific lessons here as sprints close.
 - Declaring `pytest` as a `test` extra kept validation local to the
   repo environment and avoided system package installation on
   iMacDebian.
+- The probe responder sprint exposed a pre-existing app-integration
+  test dependency gap: asyncio variants pass, while trio variants fail
+  when `trio` is not installed. Treat this as validation-procedure
+  debt rather than a probe responder regression.

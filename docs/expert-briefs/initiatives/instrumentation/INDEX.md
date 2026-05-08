@@ -4,7 +4,7 @@
 
 | Sprint | Branch | Status | Coding host | Validation host |
 |---|---|---|---|---|
-| `2026-05-08_extract-probe-responder` | `feature/instrumentation/extract-probe-responder` | ready for Acer-HL | Acer-HL | iMacDebian |
+| none | - | - | - | - |
 
 ## Queued
 
@@ -18,3 +18,4 @@
 | Sprint | Branch | Verdict | Notes |
 |---|---|---|---|
 | `2026-05-08_extract-write-trace-logger` | `feature/instrumentation/extract-write-trace-logger` | PASS | `WriteTraceLogger` extracted and validated on iMacDebian |
+| `2026-05-08_extract-probe-responder` | `feature/instrumentation/extract-probe-responder` | PASS | `TerminalProbeResponder` extracted and validated on iMacDebian |

@@ -26,10 +26,10 @@ with focused tests and independent validation evidence.
 ## Roadmap
 
 1. `extract-write-trace-logger` - completed with PASS
-2. `extract-probe-responder` - active follow-up for DSR and future PTY
+2. `extract-probe-responder` - completed with PASS
    probe replies
-3. `extract-troubleshooting-pack-builder` - queued after the first two
-   helpers exist
+3. `extract-troubleshooting-pack-builder` - queued now that the first
+   two helpers exist
 4. `wire-config-toggles` - later config/CLI surface across helpers
 
 ## Initiative-Wide Non-Goals

@@ -46,8 +46,8 @@ Read first:
 - `AGENTS.md` if present locally
 - `docs/process/framework.md`
 - `docs/expert-briefs/initiatives/instrumentation/README.md`
-- `docs/expert-briefs/initiatives/instrumentation/active/2026-05-08_extract-probe-responder/README.md`
-- `docs/expert-briefs/initiatives/instrumentation/active/2026-05-08_extract-probe-responder/01-brief.md`
+- `docs/expert-briefs/initiatives/instrumentation/completed/2026-05/2026-05-08_extract-probe-responder/README.md`
+- `docs/expert-briefs/initiatives/instrumentation/completed/2026-05/2026-05-08_extract-probe-responder/01-brief.md`
 - `testing/initiatives/instrumentation/2026-05-08_extract-probe-responder/request.md`
 - `src/actcli/bench_textual/terminal_manager.py`
 - `src/actcli/bench_textual/instrumentation/write_trace_logger.py`
@@ -75,5 +75,5 @@ Before handoff:
    the expected `ESC[5;7R` response.
 4. Confirm `terminal_manager.py` no longer defines `_respond_to_dsr`.
 5. Fill
-   `docs/expert-briefs/initiatives/instrumentation/active/2026-05-08_extract-probe-responder/02-result-template.md`.
+   `docs/expert-briefs/initiatives/instrumentation/completed/2026-05/2026-05-08_extract-probe-responder/02-result-template.md`.
 6. Commit and push the branch.
