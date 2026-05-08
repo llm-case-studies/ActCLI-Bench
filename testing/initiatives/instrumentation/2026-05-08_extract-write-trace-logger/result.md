@@ -11,7 +11,7 @@
 
 - `python3 -m pytest tests/bench_textual/test_write_trace_logger.py -v`:
 - `python3 -m pytest tests/bench_textual/test_terminal_runner.py -q`:
-- hardcoded-path `rg` check:
+- hardcoded-path check:
 - `ACTCLI_WRITE_TRACE=1` direct write smoke:
 - `ACTCLI_WRITE_TRACE` unset direct write smoke, absent log:
 - `ACTCLI_WRITE_TRACE` unset direct write smoke, pre-existing log:

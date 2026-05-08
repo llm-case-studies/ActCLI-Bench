@@ -58,7 +58,9 @@ start fresh.
 ## Preflight
 
 ```bash
+if [ -d .venv ]; then . .venv/bin/activate; fi
 python3 --version
+python3 -m pip show pytest || python3 -m pip install -e '.[test]'
 python3 -m pip show pytest
 python3 -m pip show pyte
 python3 -m pip show textual
@@ -66,7 +68,10 @@ git diff origin/main...HEAD --stat
 git status --short
 ```
 
-Save as `evidence/01_preflight.txt`.
+Save as `evidence/01_preflight.txt`. Install `pytest` only into the
+active repo virtualenv or user environment used for this validation;
+do not install system packages. `ripgrep` is not required for this
+request.
 
 If `docs/Trouble-Snaps/write_debug.log` exists before validation,
 move it aside and restore it during cleanup:
@@ -90,11 +95,23 @@ python3 -m pytest tests/bench_textual/test_terminal_runner.py -q
 Save as `evidence/03_unit_tests_runner_regression.txt`.
 
 ```bash
-rg -n "docs/Trouble-Snaps/write_debug.log" src/actcli/bench_textual/terminal_runner.py
+python3 - <<'PY'
+from pathlib import Path
+
+path = Path("src/actcli/bench_textual/terminal_runner.py")
+needle = "docs/Trouble-Snaps/write_debug.log"
+matches = [
+    f"{line_no}:{line.rstrip()}"
+    for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+    if needle in line
+]
+print("\n".join(matches))
+raise SystemExit(1 if matches else 0)
+PY
 ```
 
 Save as `evidence/04_runner_no_path_string.txt`. Expected: empty
-output and exit code 1 from `rg` because there are no matches.
+output and exit code 0 because there are no matches.
 
 ## Run And Probe
 
