@@ -1,0 +1,990 @@
+...Failed to start facilitator: [Errno 2] No such file or directory: '/home/alex/Projects/ActCLI-Bench/.venv/bin/actcli-facilitator'
+.Failed to start facilitator: [Errno 2] No such file or directory: '/home/alex/Projects/ActCLI-Bench/.venv/bin/actcli-facilitator'
+.Failed to start facilitator: [Errno 2] No such file or directory: '/home/alex/Projects/ActCLI-Bench/.venv/bin/actcli-facilitator'
+.Failed to start facilitator: [Errno 2] No such file or directory: '/home/alex/Projects/ActCLI-Bench/.venv/bin/actcli-facilitator'
+.Failed to start facilitator: [Errno 2] No such file or directory: '/home/alex/Projects/ActCLI-Bench/.venv/bin/actcli-facilitator'
+.Failed to start facilitator: [Errno 2] No such file or directory: '/home/alex/Projects/ActCLI-Bench/.venv/bin/actcli-facilitator'
+.Failed to start facilitator: [Errno 2] No such file or directory: '/home/alex/Projects/ActCLI-Bench/.venv/bin/actcli-facilitator'
+.Failed to start facilitator: [Errno 2] No such file or directory: '/home/alex/Projects/ActCLI-Bench/.venv/bin/actcli-facilitator'
+.Failed to start facilitator: [Errno 2] No such file or directory: '/home/alex/Projects/ActCLI-Bench/.venv/bin/actcli-facilitator'
+.FFFFFFFFF                                                    [100%]
+=================================== FAILURES ===================================
+________________ TestAppInstantiation.test_app_can_mount[trio] _________________
+
+asynclib_name = 'trio'
+
+    def get_async_backend(asynclib_name: str | None = None) -> type[AsyncBackend]:
+        if asynclib_name is None:
+            asynclib_name = sniffio.current_async_library()
+    
+        # We use our own dict instead of sys.modules to get the already imported back-end
+        # class because the appropriate modules in sys.modules could potentially be only
+        # partially initialized
+        try:
+>           return loaded_backends[asynclib_name]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:162: KeyError
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_app_can_mount[trio]>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:43: in get_runner
+    asynclib = get_async_backend(backend_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:164: in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import array
+    import math
+    import os
+    import socket
+    import sys
+    import types
+    import weakref
+    from collections.abc import (
+        AsyncGenerator,
+        AsyncIterator,
+        Awaitable,
+        Callable,
+        Collection,
+        Coroutine,
+        Iterable,
+        Sequence,
+    )
+    from concurrent.futures import Future
+    from contextlib import AbstractContextManager
+    from dataclasses import dataclass
+    from functools import partial
+    from io import IOBase
+    from os import PathLike
+    from signal import Signals
+    from socket import AddressFamily, SocketKind
+    from types import TracebackType
+    from typing import (
+        IO,
+        TYPE_CHECKING,
+        Any,
+        Generic,
+        NoReturn,
+        TypeVar,
+        cast,
+        overload,
+    )
+    
+>   import trio.from_thread
+E   ModuleNotFoundError: No module named 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_backends/_trio.py:40: ModuleNotFoundError
+____________ TestThemeSwitching.test_default_theme_is_ledger[trio] _____________
+
+asynclib_name = 'trio'
+
+    def get_async_backend(asynclib_name: str | None = None) -> type[AsyncBackend]:
+        if asynclib_name is None:
+            asynclib_name = sniffio.current_async_library()
+    
+        # We use our own dict instead of sys.modules to get the already imported back-end
+        # class because the appropriate modules in sys.modules could potentially be only
+        # partially initialized
+        try:
+>           return loaded_backends[asynclib_name]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:162: KeyError
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_default_theme_is_ledger[trio]>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:43: in get_runner
+    asynclib = get_async_backend(backend_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:164: in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import array
+    import math
+    import os
+    import socket
+    import sys
+    import types
+    import weakref
+    from collections.abc import (
+        AsyncGenerator,
+        AsyncIterator,
+        Awaitable,
+        Callable,
+        Collection,
+        Coroutine,
+        Iterable,
+        Sequence,
+    )
+    from concurrent.futures import Future
+    from contextlib import AbstractContextManager
+    from dataclasses import dataclass
+    from functools import partial
+    from io import IOBase
+    from os import PathLike
+    from signal import Signals
+    from socket import AddressFamily, SocketKind
+    from types import TracebackType
+    from typing import (
+        IO,
+        TYPE_CHECKING,
+        Any,
+        Generic,
+        NoReturn,
+        TypeVar,
+        cast,
+        overload,
+    )
+    
+>   import trio.from_thread
+E   ModuleNotFoundError: No module named 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_backends/_trio.py:40: ModuleNotFoundError
+__________ TestThemeSwitching.test_can_switch_to_analyst_theme[trio] ___________
+
+asynclib_name = 'trio'
+
+    def get_async_backend(asynclib_name: str | None = None) -> type[AsyncBackend]:
+        if asynclib_name is None:
+            asynclib_name = sniffio.current_async_library()
+    
+        # We use our own dict instead of sys.modules to get the already imported back-end
+        # class because the appropriate modules in sys.modules could potentially be only
+        # partially initialized
+        try:
+>           return loaded_backends[asynclib_name]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:162: KeyError
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_can_switch_to_analyst_theme[trio]>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:43: in get_runner
+    asynclib = get_async_backend(backend_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:164: in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import array
+    import math
+    import os
+    import socket
+    import sys
+    import types
+    import weakref
+    from collections.abc import (
+        AsyncGenerator,
+        AsyncIterator,
+        Awaitable,
+        Callable,
+        Collection,
+        Coroutine,
+        Iterable,
+        Sequence,
+    )
+    from concurrent.futures import Future
+    from contextlib import AbstractContextManager
+    from dataclasses import dataclass
+    from functools import partial
+    from io import IOBase
+    from os import PathLike
+    from signal import Signals
+    from socket import AddressFamily, SocketKind
+    from types import TracebackType
+    from typing import (
+        IO,
+        TYPE_CHECKING,
+        Any,
+        Generic,
+        NoReturn,
+        TypeVar,
+        cast,
+        overload,
+    )
+    
+>   import trio.from_thread
+E   ModuleNotFoundError: No module named 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_backends/_trio.py:40: ModuleNotFoundError
+__________ TestThemeSwitching.test_can_switch_to_seminar_theme[trio] ___________
+
+asynclib_name = 'trio'
+
+    def get_async_backend(asynclib_name: str | None = None) -> type[AsyncBackend]:
+        if asynclib_name is None:
+            asynclib_name = sniffio.current_async_library()
+    
+        # We use our own dict instead of sys.modules to get the already imported back-end
+        # class because the appropriate modules in sys.modules could potentially be only
+        # partially initialized
+        try:
+>           return loaded_backends[asynclib_name]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:162: KeyError
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_can_switch_to_seminar_theme[trio]>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:43: in get_runner
+    asynclib = get_async_backend(backend_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:164: in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import array
+    import math
+    import os
+    import socket
+    import sys
+    import types
+    import weakref
+    from collections.abc import (
+        AsyncGenerator,
+        AsyncIterator,
+        Awaitable,
+        Callable,
+        Collection,
+        Coroutine,
+        Iterable,
+        Sequence,
+    )
+    from concurrent.futures import Future
+    from contextlib import AbstractContextManager
+    from dataclasses import dataclass
+    from functools import partial
+    from io import IOBase
+    from os import PathLike
+    from signal import Signals
+    from socket import AddressFamily, SocketKind
+    from types import TracebackType
+    from typing import (
+        IO,
+        TYPE_CHECKING,
+        Any,
+        Generic,
+        NoReturn,
+        TypeVar,
+        cast,
+        overload,
+    )
+    
+>   import trio.from_thread
+E   ModuleNotFoundError: No module named 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_backends/_trio.py:40: ModuleNotFoundError
+___________ TestNavigationTree.test_nav_tree_has_root_sections[trio] ___________
+
+asynclib_name = 'trio'
+
+    def get_async_backend(asynclib_name: str | None = None) -> type[AsyncBackend]:
+        if asynclib_name is None:
+            asynclib_name = sniffio.current_async_library()
+    
+        # We use our own dict instead of sys.modules to get the already imported back-end
+        # class because the appropriate modules in sys.modules could potentially be only
+        # partially initialized
+        try:
+>           return loaded_backends[asynclib_name]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:162: KeyError
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_nav_tree_has_root_sections[trio]>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:43: in get_runner
+    asynclib = get_async_backend(backend_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:164: in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import array
+    import math
+    import os
+    import socket
+    import sys
+    import types
+    import weakref
+    from collections.abc import (
+        AsyncGenerator,
+        AsyncIterator,
+        Awaitable,
+        Callable,
+        Collection,
+        Coroutine,
+        Iterable,
+        Sequence,
+    )
+    from concurrent.futures import Future
+    from contextlib import AbstractContextManager
+    from dataclasses import dataclass
+    from functools import partial
+    from io import IOBase
+    from os import PathLike
+    from signal import Signals
+    from socket import AddressFamily, SocketKind
+    from types import TracebackType
+    from typing import (
+        IO,
+        TYPE_CHECKING,
+        Any,
+        Generic,
+        NoReturn,
+        TypeVar,
+        cast,
+        overload,
+    )
+    
+>   import trio.from_thread
+E   ModuleNotFoundError: No module named 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_backends/_trio.py:40: ModuleNotFoundError
+_________ TestNavigationTree.test_terminals_section_has_add_node[trio] _________
+
+asynclib_name = 'trio'
+
+    def get_async_backend(asynclib_name: str | None = None) -> type[AsyncBackend]:
+        if asynclib_name is None:
+            asynclib_name = sniffio.current_async_library()
+    
+        # We use our own dict instead of sys.modules to get the already imported back-end
+        # class because the appropriate modules in sys.modules could potentially be only
+        # partially initialized
+        try:
+>           return loaded_backends[asynclib_name]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:162: KeyError
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_terminals_section_has_add_node[trio]>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:43: in get_runner
+    asynclib = get_async_backend(backend_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:164: in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import array
+    import math
+    import os
+    import socket
+    import sys
+    import types
+    import weakref
+    from collections.abc import (
+        AsyncGenerator,
+        AsyncIterator,
+        Awaitable,
+        Callable,
+        Collection,
+        Coroutine,
+        Iterable,
+        Sequence,
+    )
+    from concurrent.futures import Future
+    from contextlib import AbstractContextManager
+    from dataclasses import dataclass
+    from functools import partial
+    from io import IOBase
+    from os import PathLike
+    from signal import Signals
+    from socket import AddressFamily, SocketKind
+    from types import TracebackType
+    from typing import (
+        IO,
+        TYPE_CHECKING,
+        Any,
+        Generic,
+        NoReturn,
+        TypeVar,
+        cast,
+        overload,
+    )
+    
+>   import trio.from_thread
+E   ModuleNotFoundError: No module named 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_backends/_trio.py:40: ModuleNotFoundError
+_______________ TestControlPanel.test_control_input_exists[trio] _______________
+
+asynclib_name = 'trio'
+
+    def get_async_backend(asynclib_name: str | None = None) -> type[AsyncBackend]:
+        if asynclib_name is None:
+            asynclib_name = sniffio.current_async_library()
+    
+        # We use our own dict instead of sys.modules to get the already imported back-end
+        # class because the appropriate modules in sys.modules could potentially be only
+        # partially initialized
+        try:
+>           return loaded_backends[asynclib_name]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:162: KeyError
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_control_input_exists[trio]>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:43: in get_runner
+    asynclib = get_async_backend(backend_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:164: in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import array
+    import math
+    import os
+    import socket
+    import sys
+    import types
+    import weakref
+    from collections.abc import (
+        AsyncGenerator,
+        AsyncIterator,
+        Awaitable,
+        Callable,
+        Collection,
+        Coroutine,
+        Iterable,
+        Sequence,
+    )
+    from concurrent.futures import Future
+    from contextlib import AbstractContextManager
+    from dataclasses import dataclass
+    from functools import partial
+    from io import IOBase
+    from os import PathLike
+    from signal import Signals
+    from socket import AddressFamily, SocketKind
+    from types import TracebackType
+    from typing import (
+        IO,
+        TYPE_CHECKING,
+        Any,
+        Generic,
+        NoReturn,
+        TypeVar,
+        cast,
+        overload,
+    )
+    
+>   import trio.from_thread
+E   ModuleNotFoundError: No module named 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_backends/_trio.py:40: ModuleNotFoundError
+_____________ TestControlPanel.test_broadcast_button_exists[trio] ______________
+
+asynclib_name = 'trio'
+
+    def get_async_backend(asynclib_name: str | None = None) -> type[AsyncBackend]:
+        if asynclib_name is None:
+            asynclib_name = sniffio.current_async_library()
+    
+        # We use our own dict instead of sys.modules to get the already imported back-end
+        # class because the appropriate modules in sys.modules could potentially be only
+        # partially initialized
+        try:
+>           return loaded_backends[asynclib_name]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:162: KeyError
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_broadcast_button_exists[trio]>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:43: in get_runner
+    asynclib = get_async_backend(backend_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:164: in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import array
+    import math
+    import os
+    import socket
+    import sys
+    import types
+    import weakref
+    from collections.abc import (
+        AsyncGenerator,
+        AsyncIterator,
+        Awaitable,
+        Callable,
+        Collection,
+        Coroutine,
+        Iterable,
+        Sequence,
+    )
+    from concurrent.futures import Future
+    from contextlib import AbstractContextManager
+    from dataclasses import dataclass
+    from functools import partial
+    from io import IOBase
+    from os import PathLike
+    from signal import Signals
+    from socket import AddressFamily, SocketKind
+    from types import TracebackType
+    from typing import (
+        IO,
+        TYPE_CHECKING,
+        Any,
+        Generic,
+        NoReturn,
+        TypeVar,
+        cast,
+        overload,
+    )
+    
+>   import trio.from_thread
+E   ModuleNotFoundError: No module named 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_backends/_trio.py:40: ModuleNotFoundError
+_________________ TestStatusLine.test_status_line_exists[trio] _________________
+
+asynclib_name = 'trio'
+
+    def get_async_backend(asynclib_name: str | None = None) -> type[AsyncBackend]:
+        if asynclib_name is None:
+            asynclib_name = sniffio.current_async_library()
+    
+        # We use our own dict instead of sys.modules to get the already imported back-end
+        # class because the appropriate modules in sys.modules could potentially be only
+        # partially initialized
+        try:
+>           return loaded_backends[asynclib_name]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:162: KeyError
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_status_line_exists[trio]>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:184: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:141: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/pytest_plugin.py:43: in get_runner
+    asynclib = get_async_backend(backend_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.13/site-packages/anyio/_core/_eventloop.py:164: in get_async_backend
+    module = import_module(f"anyio._backends._{asynclib_name}")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import array
+    import math
+    import os
+    import socket
+    import sys
+    import types
+    import weakref
+    from collections.abc import (
+        AsyncGenerator,
+        AsyncIterator,
+        Awaitable,
+        Callable,
+        Collection,
+        Coroutine,
+        Iterable,
+        Sequence,
+    )
+    from concurrent.futures import Future
+    from contextlib import AbstractContextManager
+    from dataclasses import dataclass
+    from functools import partial
+    from io import IOBase
+    from os import PathLike
+    from signal import Signals
+    from socket import AddressFamily, SocketKind
+    from types import TracebackType
+    from typing import (
+        IO,
+        TYPE_CHECKING,
+        Any,
+        Generic,
+        NoReturn,
+        TypeVar,
+        cast,
+        overload,
+    )
+    
+>   import trio.from_thread
+E   ModuleNotFoundError: No module named 'trio'
+
+.venv/lib/python3.13/site-packages/anyio/_backends/_trio.py:40: ModuleNotFoundError
+=============================== warnings summary ===============================
+tests/bench_textual/test_app_integration.py::TestAppInstantiation::test_app_can_mount[asyncio]
+tests/bench_textual/test_app_integration.py::TestThemeSwitching::test_default_theme_is_ledger[asyncio]
+tests/bench_textual/test_app_integration.py::TestThemeSwitching::test_can_switch_to_analyst_theme[asyncio]
+tests/bench_textual/test_app_integration.py::TestThemeSwitching::test_can_switch_to_seminar_theme[asyncio]
+tests/bench_textual/test_app_integration.py::TestNavigationTree::test_nav_tree_has_root_sections[asyncio]
+tests/bench_textual/test_app_integration.py::TestNavigationTree::test_terminals_section_has_add_node[asyncio]
+tests/bench_textual/test_app_integration.py::TestControlPanel::test_control_input_exists[asyncio]
+tests/bench_textual/test_app_integration.py::TestControlPanel::test_broadcast_button_exists[asyncio]
+tests/bench_textual/test_app_integration.py::TestStatusLine::test_status_line_exists[asyncio]
+  /home/alex/Projects/ActCLI-Bench/src/actcli/shell/navigation_tree.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    "timestamp": datetime.utcnow().isoformat() + "Z",
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/bench_textual/test_app_integration.py::TestAppInstantiation::test_app_can_mount[trio]
+FAILED tests/bench_textual/test_app_integration.py::TestThemeSwitching::test_default_theme_is_ledger[trio]
+FAILED tests/bench_textual/test_app_integration.py::TestThemeSwitching::test_can_switch_to_analyst_theme[trio]
+FAILED tests/bench_textual/test_app_integration.py::TestThemeSwitching::test_can_switch_to_seminar_theme[trio]
+FAILED tests/bench_textual/test_app_integration.py::TestNavigationTree::test_nav_tree_has_root_sections[trio]
+FAILED tests/bench_textual/test_app_integration.py::TestNavigationTree::test_terminals_section_has_add_node[trio]
+FAILED tests/bench_textual/test_app_integration.py::TestControlPanel::test_control_input_exists[trio]
+FAILED tests/bench_textual/test_app_integration.py::TestControlPanel::test_broadcast_button_exists[trio]
+FAILED tests/bench_textual/test_app_integration.py::TestStatusLine::test_status_line_exists[trio]
+9 failed, 12 passed, 9 warnings in 2.31s

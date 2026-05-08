@@ -1,0 +1,52 @@
+Python 3.13.5
+Name: pytest
+Version: 9.0.3
+Summary: pytest: simple powerful testing with Python
+Home-page: https://docs.pytest.org/en/latest/
+Author: Holger Krekel, Bruno Oliveira, Ronny Pfannschmidt, Floris Bruynooghe, Brianna Laugher, Freya Bruhin, Others (See AUTHORS)
+Author-email: 
+License-Expression: MIT
+Location: /home/alex/Projects/ActCLI-Bench/.venv/lib/python3.13/site-packages
+Requires: iniconfig, packaging, pluggy, pygments
+Required-by: 
+Name: pyte
+Version: 0.8.2
+Summary: Simple VTXXX-compatible terminal emulator.
+Home-page: https://github.com/selectel/pyte
+Author: Sergei Lebedev
+Author-email: superbobry@gmail.com
+License: 
+Location: /home/alex/Projects/ActCLI-Bench/.venv/lib/python3.13/site-packages
+Requires: wcwidth
+Required-by: 
+Name: textual
+Version: 6.4.0
+Summary: Modern Text User Interface framework
+Home-page: https://github.com/Textualize/textual
+Author: Will McGugan
+Author-email: will@textualize.io
+License: MIT
+Location: /home/alex/Projects/ActCLI-Bench/.venv/lib/python3.13/site-packages
+Requires: markdown-it-py, mdit-py-plugins, platformdirs, pygments, rich, typing-extensions
+Required-by: 
+ docs/INSTRUMENTATION_REFACTOR.md                   |   2 +-
+ docs/expert-briefs/INDEX.md                        |   2 +-
+ .../initiatives/instrumentation/INDEX.md           |   3 +-
+ .../initiatives/instrumentation/README.md          |   2 +-
+ .../00-opencode-kickoff.md                         |  79 ++++++++
+ .../2026-05-08_extract-probe-responder/01-brief.md | 100 ++++++++++
+ .../02-result-template.md                          |  49 +++++
+ .../03-merge-note-template.md                      |  38 ++++
+ .../2026-05-08_extract-probe-responder/README.md   |  39 ++++
+ .../2026-05-08_extract-probe-responder/README.md   |  25 ---
+ .../bench_textual/instrumentation/__init__.py      |   2 +
+ .../instrumentation/probe_responder.py             |  43 +++++
+ src/actcli/bench_textual/terminal_manager.py       |  31 +--
+ .../evidence/.gitkeep                              |   1 +
+ .../2026-05-08_extract-probe-responder/request.md  | 211 +++++++++++++++++++++
+ .../2026-05-08_extract-probe-responder/result.md   |  41 ++++
+ testing/initiatives/instrumentation/INDEX.md       |   1 +
+ tests/bench_textual/test_probe_responder.py        |  91 +++++++++
+ .../test_terminal_manager_probe_responder.py       |  89 +++++++++
+ 19 files changed, 797 insertions(+), 52 deletions(-)
+?? evidence/

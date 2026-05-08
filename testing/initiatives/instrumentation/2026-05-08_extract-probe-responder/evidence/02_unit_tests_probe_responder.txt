@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.0.3, pluggy-1.6.0 -- /home/alex/Projects/ActCLI-Bench/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/alex/Projects/ActCLI-Bench
+configfile: pyproject.toml
+plugins: anyio-4.11.0
+collecting ... collected 12 items
+
+tests/bench_textual/test_probe_responder.py::TestTerminalProbeResponder::test_dsr_with_pyte_cursor_returns_correct_response PASSED [  8%]
+tests/bench_textual/test_probe_responder.py::TestTerminalProbeResponder::test_no_query_returns_none PASSED [ 16%]
+tests/bench_textual/test_probe_responder.py::TestTerminalProbeResponder::test_non_pyte_mode_returns_none PASSED [ 25%]
+tests/bench_textual/test_probe_responder.py::TestTerminalProbeResponder::test_missing_screen_returns_none PASSED [ 33%]
+tests/bench_textual/test_probe_responder.py::TestTerminalProbeResponder::test_missing_cursor_returns_none PASSED [ 41%]
+tests/bench_textual/test_probe_responder.py::TestTerminalProbeResponder::test_zero_based_cursor_converts_to_one_based PASSED [ 50%]
+tests/bench_textual/test_probe_responder.py::TestTerminalProbeResponder::test_malformed_emulator_does_not_raise PASSED [ 58%]
+tests/bench_textual/test_probe_responder.py::TestTerminalProbeResponder::test_no_emulator_does_not_raise PASSED [ 66%]
+tests/bench_textual/test_terminal_manager_probe_responder.py::test_manager_delegates_dsr_response_and_writes PASSED [ 75%]
+tests/bench_textual/test_terminal_manager_probe_responder.py::test_manager_no_write_when_no_query PASSED [ 83%]
+tests/bench_textual/test_terminal_manager_probe_responder.py::test_manager_no_write_when_non_pyte PASSED [ 91%]
+tests/bench_textual/test_terminal_manager_probe_responder.py::test_manager_no__respond_to_dsr_defined PASSED [100%]
+
+============================== 12 passed in 0.04s ==============================
