@@ -48,7 +48,7 @@ docs/process/
 
 | Role | Typical home | Owns |
 |---|---|---|
-| Orchestrator | host where the human drives, e.g. a Claude session on a primary workstation | sprint design, git ritual, paste-ready prompts |
+| Orchestrator | host where the human drives, whichever agent (Claude, Codex, etc.) is in front | sprint design, git ritual, paste-ready prompts |
 | Implementer | a coding agent on a chosen coding host | code/test/doc changes inside the brief's fence |
 | Validator | a tester on a separate host with no implementation conflict | independent rerun, evidence capture, verdict |
 
