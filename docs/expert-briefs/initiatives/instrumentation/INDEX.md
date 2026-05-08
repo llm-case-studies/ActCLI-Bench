@@ -4,13 +4,12 @@
 
 | Sprint | Branch | Status | Coding host | Validation host |
 |---|---|---|---|---|
-| none | - | - | - | - |
+| `2026-05-08_extract-troubleshooting-pack-builder` | `feature/instrumentation/extract-troubleshooting-pack-builder` | active | Acer-HL | iMacDebian |
 
 ## Queued
 
 | Sprint | Why queued | Depends on |
 |---|---|---|
-| `extract-troubleshooting-pack-builder` | Replace hardcoded troubleshooting paths with helper-driven collection | write tracer and probe responder merged |
 | `wire-config-toggles` | Expose consistent config/CLI switches for instrumentation | helper set stabilized |
 
 ## Completed
