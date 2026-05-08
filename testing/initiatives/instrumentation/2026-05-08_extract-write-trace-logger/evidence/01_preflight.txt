@@ -1,0 +1,35 @@
+Python 3.13.5
+pytest 9.0.3
+pyte 0.8.2
+textual 6.4.0
+---
+git diff origin/main...HEAD --stat:
+ docs/INSTRUMENTATION_REFACTOR.md                   |   2 +-
+ docs/expert-briefs/INDEX.md                        |  25 ++
+ docs/expert-briefs/LESSONS.md                      |  13 +
+ docs/expert-briefs/README.md                       |  39 +++
+ .../initiatives/instrumentation/INDEX.md           |  19 ++
+ .../initiatives/instrumentation/LESSONS.md         |  10 +
+ .../initiatives/instrumentation/README.md          |  40 +++
+ .../00-opencode-kickoff.md                         |  79 ++++++
+ .../01-brief.md                                    | 100 +++++++
+ .../02-result-template.md                          |  58 +++++
+ .../03-merge-note-template.md                      |  39 +++
+ .../README.md                                      |  34 +++
+ .../2026-05-08_extract-probe-responder/README.md   |  25 ++
+ pyproject.toml                                     |   1 +
+ .../bench_textual/instrumentation/__init__.py      |  13 +
+ .../instrumentation/write_trace_logger.py          |  73 ++++++
+ src/actcli/bench_textual/terminal_runner.py        |  20 +-
+ testing/initiatives/README.md                      |  17 ++
+ .../evidence/.gitkeep                              |   1 +
+ .../request.md                                     | 226 ++++++++++++++++
+ .../result.md                                      |  41 +++
+ testing/initiatives/instrumentation/INDEX.md       |   5 +
+ tests/bench_textual/test_write_trace_logger.py     | 287 +++++++++++++++++++++
+ 23 files changed, 1152 insertions(+), 15 deletions(-)
+---
+git status --short:
+ D docs/Trouble-Snaps/write_debug.log
+?? docs/Trouble-Snaps/write_debug.log.pre-test
+?? testing/initiatives/instrumentation/2026-05-08_extract-write-trace-logger/evidence/00_commit.txt

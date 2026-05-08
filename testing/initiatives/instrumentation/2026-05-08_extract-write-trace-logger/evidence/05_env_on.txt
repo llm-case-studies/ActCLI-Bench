@@ -1,0 +1,2 @@
+exists=True
+validator-cat: 'hello-validator\n'

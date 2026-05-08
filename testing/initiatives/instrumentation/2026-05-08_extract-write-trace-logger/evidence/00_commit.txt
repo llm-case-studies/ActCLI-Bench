@@ -1,0 +1,3 @@
+Product commit SHA: 76e03b39b0a8413a1e4deeaa966af3dad41c2a42
+Product branch: feature/instrumentation/extract-write-trace-logger
+Validation branch: validation/instrumentation/extract-write-trace-logger
