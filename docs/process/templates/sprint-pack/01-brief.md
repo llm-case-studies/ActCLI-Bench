@@ -36,7 +36,15 @@ Still out of scope:
 
 ## Acceptance Target
 
-- {{criterion 1 — runnable check}}
+Prefer mechanically checkable criteria where the answer is
+unambiguous (`grep` finds X, `git status` shows Y, an exit code, a
+diff against a fixture) over judgment calls. Examples:
+
+- `python -m pytest tests/path/test_thing.py -q` exits 0
+- `grep -n 'old_string' src/module.py` returns nothing (the rename
+  landed everywhere)
+- `git status --short` shows no generated changes under `docs/...`
+- {{criterion 1 — runnable check, ideally one line of shell}}
 - {{criterion 2}}
 - {{criterion 3}}
 
