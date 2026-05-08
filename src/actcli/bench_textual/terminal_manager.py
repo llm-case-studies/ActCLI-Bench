@@ -20,6 +20,7 @@ from typing import Dict, Optional, Callable, List
 import re
 from datetime import datetime
 
+from .instrumentation.probe_responder import TerminalProbeResponder
 from .terminal_runner import TerminalRunner
 from .term_emulator import EmulatedTerminal
 
@@ -72,6 +73,7 @@ class TerminalManager:
         self.max_scrollback_lines = max_scrollback_lines
         self._emulator_mode_logged: set[str] = set()
         self._on_output_callback = on_output_callback
+        self._probe_responder = TerminalProbeResponder()
 
     def add_terminal(self, name: str, command: List[str]) -> bool:
         """Create and start a new terminal.
@@ -295,7 +297,13 @@ class TerminalManager:
 
         # Respond to Device Status Report requests (ESC[6n)
         if "\x1b[6n" in text:
-            self._respond_to_dsr(name, state)
+            response = self._probe_responder.response_for_text(text, emu)
+            if response is not None:
+                self._debug_logger(f"[{name}] DSR → responding with {repr(response)}")
+                try:
+                    state.item.write(response)
+                except Exception:
+                    pass
 
         # Feed to emulator
         emu.feed(text)
@@ -323,27 +331,6 @@ class TerminalManager:
         # Notify app.py if callback is set
         if self._on_output_callback:
             self._on_output_callback(name, text)
-
-    def _respond_to_dsr(self, name: str, state: TerminalState) -> None:
-        """Reply to Device Status Report (cursor position) requests."""
-
-        emu = state.emulator
-        if emu.mode != "pyte":
-            return
-
-        cursor = getattr(emu._screen, "cursor", None)  # type: ignore[attr-defined]
-        if cursor is None:
-            return
-
-        row = getattr(cursor, "y", 0) + 1
-        col = getattr(cursor, "x", 0) + 1
-        response = f"\x1b[{row};{col}R"
-
-        self._debug_logger(f"[{name}] DSR → responding with {repr(response)}")
-        try:
-            state.item.write(response)
-        except Exception:
-            pass
 
     def _strip_ansi(self, s: str) -> str:
         """Strip ANSI escape sequences from string.

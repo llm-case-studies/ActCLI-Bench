@@ -23,7 +23,7 @@
 
 ## Bench Tasks
 - [x] Extract current write logging into `WriteTraceLogger` helper.
-- [ ] Wrap DSR reply logic in `TerminalProbeResponder` and use it in
+- [x] Wrap DSR reply logic in `TerminalProbeResponder` and use it in
       `TerminalManager`.
 - [ ] Update troubleshooting export to pull from the new helpers instead of
       hardcoded file paths.
