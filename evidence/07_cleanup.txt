@@ -1,0 +1,1 @@
+Cleanup status: only evidence/ directory is new. No generated docs/Trouble-Snaps/ files changed. No stray processes.

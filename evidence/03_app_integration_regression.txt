@@ -1,0 +1,5 @@
+All 12 integration tests passed.
+
+12 passed, 9 warnings in 1.76s
+
+(Note: "Failed to start facilitator" messages are expected in test-only environments where the facilitator binary is not installed.)

@@ -1,0 +1,36 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.5, pytest-9.0.3, pluggy-1.6.0 -- /home/alex/.venvs/actcli-python/bin/python
+rootdir: /home/alex/Projects/ActCLI-Bench
+configfile: pyproject.toml
+plugins: anyio-4.13.0
+collected 27 items
+
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_includes_expected_sections PASSED [  3%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_empty_terminals PASSED [  7%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_missing_nav_tree PASSED [ 11%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_with_nav_tree PASSED [ 14%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_with_multiple_rebuilds PASSED [ 18%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_no_key_events PASSED [ 22%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_missing_terminal_state PASSED [ 25%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_empty_log_buffers PASSED [ 29%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_without_first_output_preview PASSED [ 33%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderSnapshot::test_build_snapshot_missing_version_keys PASSED [ 37%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderExport::test_export_to_default_dir PASSED [ 40%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderExport::test_export_deterministic_filename PASSED [ 44%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderExport::test_export_with_snapshot_text PASSED [ 48%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderExport::test_export_creates_missing_dirs PASSED [ 51%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderExport::test_export_with_key_events PASSED [ 55%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderIncludeTrace::test_include_trace_with_missing_file PASSED [ 59%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderIncludeTrace::test_include_trace_with_existing_file PASSED [ 62%]
+tests/bench_textual/test_troubleshooting_pack_builder.py::TestTroubleshootingPackBuilderIncludeTrace::test_include_trace_false_skips_trace PASSED [ 66%]
+tests/bench_textual/test_diagnostics_manager.py::TestDiagnosticsManagerKeyEvents::test_record_key_event PASSED [ 70%]
+tests/bench_textual/test_diagnostics_manager.py::TestDiagnosticsManagerKeyEvents::test_record_key_event_trims_to_100 PASSED [ 74%]
+tests/bench_textual/test_diagnostics_manager.py::TestDiagnosticsManagerKeyEvents::test_record_key_event_with_modifiers PASSED [ 77%]
+tests/bench_textual/test_diagnostics_manager.py::TestDiagnosticsManagerDelegation::test_generate_snapshot_delegates_to_builder PASSED [ 81%]
+tests/bench_textual/test_diagnostics_manager.py::TestDiagnosticsManagerDelegation::test_update_troubleshooting_log_updates_buffer PASSED [ 85%]
+tests/bench_textual/test_diagnostics_manager.py::TestDiagnosticsManagerDelegation::test_export_to_file_delegates_to_builder PASSED [ 88%]
+tests/bench_textual/test_diagnostics_manager.py::TestDiagnosticsManagerDelegation::test_export_to_file_no_default_hardcoded_path PASSED [ 92%]
+tests/bench_textual/test_diagnostics_manager.py::TestDiagnosticsManagerDelegation::test_nav_tree_property_propagates_to_builder PASSED [ 96%]
+tests/bench_textual/test_diagnostics_manager.py::TestDiagnosticsManagerDelegation::test_key_events_in_snapshot PASSED [100%]
+
+======================= 27 passed, 22 warnings in 0.08s ========================

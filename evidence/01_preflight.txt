@@ -1,0 +1,45 @@
+=== Python Version Check ===
+3.13.5 (main, Jun 25 2025, 18:55:22) [GCC 14.2.0]
+
+=== Venv: /home/alex/.venvs/actcli-python ===
+VENV_EXISTS=yes
+
+=== pip install -e '.[textual,test]' ===
+Successfully installed actcli-bench-0.0.3 annotated-doc-0.0.4 annotated-types-0.7.0 anyio-4.13.0 certifi-2026.4.22 click-8.3.3 fastapi-0.136.1 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.13 iniconfig-2.3.0 linkify-it-py-2.1.0 markdown-it-py-4.2.0 mdit-py-plugins-0.6.0 mdurl-0.1.2 packaging-26.2 platformdirs-4.9.6 pluggy-1.6.0 pydantic-2.13.4 pydantic-core-2.46.4 pygments-2.20.0 pyte-0.8.2 pytest-9.0.3 rich-15.0.0 shellingham-1.5.4 starlette-1.0.0 textual-8.2.5 typer-0.25.1 typing-extensions-4.15.0 typing-inspection-0.4.2 uc-micro-py-2.0.0 uvicorn-0.46.0 wcwidth-0.7.0 websockets-16.0
+
+=== pip show pytest ===
+Name: pytest
+Version: 9.0.3
+
+=== pip show anyio ===
+Name: anyio
+Version: 4.13.0
+
+=== pip show pyte ===
+Name: pyte
+Version: 0.8.2
+
+=== pip show textual ===
+Name: textual
+Version: 8.2.5
+
+=== git diff origin/main...HEAD --stat ===
+ docs/INSTRUMENTATION_REFACTOR.md                   |   2 +-
+ .../initiatives/instrumentation/INDEX.md           |   3 +-
+ .../00-opencode-kickoff.md                         |  75 ++++
+ .../01-brief.md                                    | 110 ++++++
+ .../02-result-template.md                          |  46 +++
+ .../03-merge-note-template.md                      |  36 ++
+ .../README.md                                      |   7 +
+ src/actcli/bench_textual/diagnostics.py            | 189 ++--------
+ .../bench_textual/instrumentation/__init__.py      |   2 +
+ .../troubleshooting_pack_builder.py                | 163 ++++++++
+ .../evidence/.gitkeep                              |   1 +
+ .../request.md                                     | 235 ++++++++++++
+ .../result.md                                      |  38 ++
+ tests/bench_textual/test_diagnostics_manager.py    | 200 ++++++++++
+ .../test_troubleshooting_pack_builder.py           | 418 +++++++++++++++++++++
+ 15 files changed, 1364 insertions(+), 161 deletions(-)
+
+=== git status --short ===
+?? evidence/

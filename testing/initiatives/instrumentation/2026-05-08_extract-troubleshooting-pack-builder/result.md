@@ -2,25 +2,31 @@
 
 ## Verdict
 
-<!-- PASS, PASS with findings, FAIL, or BLOCKED -->
+PASS
 
 ## Product Commit Tested
 
-<!-- commit SHA from evidence/00_commit.txt -->
+ec6a8a95c4d58c8d5713267f76fd54aca36dd386
 
 ## Environment
 
-<!-- Python version, env path, key package versions. -->
+- Python 3.13.5
+- Venv: /home/alex/.venvs/actcli-python
+- pytest 9.0.3
+- anyio 4.13.0
+- pyte 0.8.2
+- textual 8.2.5
+- Host: iMacDebian
 
 ## Checks
 
 | Check | Result |
 |---|---|
-| Builder and diagnostics tests |  |
-| App integration regression |  |
-| Diagnostics hardcoded-path static check |  |
-| Direct builder export smoke |  |
-| No generated Trouble-Snaps changes |  |
+| Builder and diagnostics tests | 27 passed |
+| App integration regression | 12 passed |
+| Diagnostics hardcoded-path static check | No matches (exit 0) |
+| Direct builder export smoke | Produced expected pack file with all sections |
+| No generated Trouble-Snaps changes | No changes (clean) |
 
 ## Evidence Files
 
@@ -35,4 +41,4 @@
 
 ## Notes
 
-<!-- Findings, blockers, or host-safety notes. -->
+All checks passed. No findings or blockers.
