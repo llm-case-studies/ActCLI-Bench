@@ -25,7 +25,7 @@ with focused tests and independent validation evidence.
 
 ## Roadmap
 
-1. `extract-write-trace-logger` - active first sprint
+1. `extract-write-trace-logger` - completed with PASS
 2. `extract-probe-responder` - queued follow-up for DSR and future PTY
    probe replies
 3. `extract-troubleshooting-pack-builder` - queued after the first two

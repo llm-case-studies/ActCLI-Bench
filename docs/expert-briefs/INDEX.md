@@ -7,6 +7,7 @@ Cross-initiative table of work in flight. One row per initiative.
 - `planning` - folder exists, no active sprint issued yet
 - `active` - at least one sprint is ready for implementation or in
   implementation
+- `queued` - no active sprint; next sprint candidate is written down
 - `paused` - intentionally waiting on a host, dependency, or decision
 - `completed` - initiative goal met, no open sprints
 
@@ -14,7 +15,7 @@ Cross-initiative table of work in flight. One row per initiative.
 
 | Initiative | Status | Active sprint | Notes |
 |---|---|---|---|
-| `instrumentation` | active | `2026-05-08_extract-write-trace-logger` | First helper extraction; establishes the Acer-HL implementation and iMacDebian validation cadence |
+| `instrumentation` | queued | none | First helper extraction completed with PASS; next candidate is `2026-05-08_extract-probe-responder` |
 
 ## Cross-Cutting Concerns
 

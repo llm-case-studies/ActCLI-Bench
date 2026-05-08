@@ -4,7 +4,7 @@
 
 | Sprint | Branch | Status | Coding host | Validation host |
 |---|---|---|---|---|
-| `2026-05-08_extract-write-trace-logger` | `feature/instrumentation/extract-write-trace-logger` | ready for Acer-HL | Acer-HL | iMacDebian |
+| none | - | - | - | - |
 
 ## Queued
 
@@ -16,4 +16,6 @@
 
 ## Completed
 
-(none yet)
+| Sprint | Branch | Verdict | Notes |
+|---|---|---|---|
+| `2026-05-08_extract-write-trace-logger` | `feature/instrumentation/extract-write-trace-logger` | PASS | `WriteTraceLogger` extracted and validated on iMacDebian |

@@ -45,8 +45,8 @@ Read first:
 - `AGENTS.md` if present locally
 - `docs/process/framework.md`
 - `docs/expert-briefs/initiatives/instrumentation/README.md`
-- `docs/expert-briefs/initiatives/instrumentation/active/2026-05-08_extract-write-trace-logger/README.md`
-- `docs/expert-briefs/initiatives/instrumentation/active/2026-05-08_extract-write-trace-logger/01-brief.md`
+- `docs/expert-briefs/initiatives/instrumentation/completed/2026-05/2026-05-08_extract-write-trace-logger/README.md`
+- `docs/expert-briefs/initiatives/instrumentation/completed/2026-05/2026-05-08_extract-write-trace-logger/01-brief.md`
 - `testing/initiatives/instrumentation/2026-05-08_extract-write-trace-logger/request.md`
 - `src/actcli/bench_textual/terminal_runner.py`
 - `tests/bench_textual/test_terminal_runner.py`
@@ -75,5 +75,5 @@ Before handoff:
 4. Repeat with `ACTCLI_WRITE_TRACE` unset and confirm the log is not
    created or appended.
 5. Fill
-   `docs/expert-briefs/initiatives/instrumentation/active/2026-05-08_extract-write-trace-logger/02-result-template.md`.
+   `docs/expert-briefs/initiatives/instrumentation/completed/2026-05/2026-05-08_extract-write-trace-logger/02-result-template.md`.
 6. Commit and push the branch.

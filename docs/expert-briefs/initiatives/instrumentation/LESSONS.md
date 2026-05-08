@@ -8,3 +8,6 @@ Append initiative-specific lessons here as sprints close.
   troubleshooting notes and grep recipes assume that shape.
 - The first helper should prove the pattern without touching DSR,
   troubleshooting pack export, pyte behavior, or UI layout.
+- Declaring `pytest` as a `test` extra kept validation local to the
+  repo environment and avoided system package installation on
+  iMacDebian.

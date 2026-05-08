@@ -11,3 +11,7 @@ ActCLI-Bench sessions should not rediscover.
 - A smoke test of the current terminal runner appends to the tracked
   `docs/Trouble-Snaps/write_debug.log`, which is itself evidence for
   the first instrumentation sprint's env-var toggle.
+- Validation prompts should avoid assuming globally installed tools.
+  `pytest` now lives in the repo's `test` extra, and validation checks
+  should prefer Python standard-library probes over host-specific
+  command-line dependencies when either works.
