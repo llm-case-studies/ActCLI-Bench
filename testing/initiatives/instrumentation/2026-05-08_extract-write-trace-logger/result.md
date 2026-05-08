@@ -4,7 +4,7 @@
 - Product branch: feature/instrumentation/extract-write-trace-logger
 - Product commit SHA: 76e03b39b0a8413a1e4deeaa966af3dad41c2a42
 - Validation branch: validation/instrumentation/extract-write-trace-logger
-- Validation commit SHA: f2815d0
+- Validation commit SHA: a6a6a18
 - Verdict: `PASS`
 
 ## Checks Run
