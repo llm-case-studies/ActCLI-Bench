@@ -8,8 +8,8 @@ import pytest
 from textual.widgets import Tree, Input, Button, Static
 from src.actcli.bench_textual.app import BenchTextualApp
 
-# Configure pytest-anyio to handle async tests (asyncio backend only)
-pytestmark = pytest.mark.anyio(backend="asyncio")
+# Shared tests/conftest.py pins AnyIO tests to asyncio by default.
+pytestmark = pytest.mark.anyio
 
 
 class TestAppInstantiation:

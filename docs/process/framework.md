@@ -104,6 +104,20 @@ feature branch (unless dependency is explicit), or a machine branch.
 The third Android sprint in `iHomeNerd` exposed this clearly: even a
 good implementer can be made to fail by a bad branch base.
 
+## Environment Rule
+
+Host setup is part of the handoff contract. Sprint packs and validation
+requests should say which runtime environment to use when dependency setup is
+not obvious.
+
+Default to shared, user-level environments by stack. For ActCLI Python work,
+that means a reusable env such as `$HOME/.venvs/actcli-python`, refreshed from
+the repo's `pyproject.toml`. Do not mutate system Python for normal sprint
+work, and do not require every repo to create its own `.venv` unless
+dependencies genuinely conflict.
+
+See `environment.md` for the concrete Python and Node policy.
+
 ## Reviewer-First Rule
 
 Expert briefs are not assignments to be executed blindly. The useful

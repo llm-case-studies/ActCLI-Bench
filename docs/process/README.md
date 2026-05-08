@@ -29,6 +29,7 @@ the process is overkill — just commit and push.
 docs/process/
 ├── README.md            ← this file
 ├── framework.md         ← the rules: branches, hosts, sprint shape, closure
+├── environment.md       ← shared host environment policy
 ├── example.md           ← pointer to a real completed sprint for shape
 └── templates/
     ├── sprint-pack/     ← paste-ready files for a new sprint
@@ -89,6 +90,9 @@ implementer also marks their own work PASS.
 - **Branch base rule**: feature sprint branches must be cut from
   `origin/main` at handoff time. Don't start a new sprint from a stale
   local branch or a sibling feature branch.
+- **Environment rule**: use shared, user-level runtime environments by
+  stack unless a sprint explicitly needs tighter isolation. See
+  `environment.md`.
 - **Reviewer-first rule**: the brief asks the implementer for judgment
   on the approach. Pushback is a valid deliverable when the approach
   is flawed.
