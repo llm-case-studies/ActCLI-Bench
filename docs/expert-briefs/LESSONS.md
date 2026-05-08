@@ -19,3 +19,9 @@ ActCLI-Bench sessions should not rediscover.
   backends on iMacDebian, but `trio` is not installed there. Future
   validation requests should either install the full async test backend
   set or explicitly run the supported `asyncio` backend.
+- Shared user-level Python envs by stack are a good default for
+  validator hosts: they avoid mutating system Python without creating a
+  new `.venv` in every repo.
+- Evidence paths in validation requests should be full repo-relative
+  paths when the testing folder is nested; bare `evidence/...` is too
+  easy to interpret as repo-root.

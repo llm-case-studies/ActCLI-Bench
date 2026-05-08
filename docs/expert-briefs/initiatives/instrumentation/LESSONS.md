@@ -15,3 +15,9 @@ Append initiative-specific lessons here as sprints close.
   test dependency gap: asyncio variants pass, while trio variants fail
   when `trio` is not installed. Treat this as validation-procedure
   debt rather than a probe responder regression.
+- Shared user-level validation envs work well for this repo: iMacDebian
+  reused `/home/alex/.venvs/actcli-python` with Python 3.13.5 and
+  repo-declared extras instead of touching system Python.
+- Validation requests should avoid ambiguous `evidence/...` paths when
+  the testing folder is nested. Use full repo-relative paths or tell
+  the validator to `cd` into the sprint testing directory first.

@@ -15,7 +15,7 @@ Cross-initiative table of work in flight. One row per initiative.
 
 | Initiative | Status | Active sprint | Notes |
 |---|---|---|---|
-| `instrumentation` | queued | none | Write tracer and probe responder completed with PASS; next candidate is `extract-troubleshooting-pack-builder` |
+| `instrumentation` | queued | none | Write tracer, probe responder, and troubleshooting pack builder completed with PASS; next candidate is `wire-config-toggles` |
 
 ## Cross-Cutting Concerns
 
