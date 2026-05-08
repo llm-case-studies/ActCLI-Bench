@@ -2,7 +2,7 @@
 
 - Implementation host: `Acer-HL`
 - Working branch: `feature/instrumentation/extract-write-trace-logger`
-- Commit SHA: TBD (will fill after commit)
+- Commit SHA: `0b9c98e4d68d8f7fa34b1783d72e09ca890a39f4`
 
 ## Changes
 
