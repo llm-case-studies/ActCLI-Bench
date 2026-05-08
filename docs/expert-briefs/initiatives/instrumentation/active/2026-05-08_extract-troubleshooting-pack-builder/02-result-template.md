@@ -14,7 +14,7 @@ write-trace line inclusion is supported via a builder toggle.
 ## Product Commit
 
 - branch: `feature/instrumentation/extract-troubleshooting-pack-builder`
-- commit: (to be filled after push)
+- commit: 12a04eaea99f881526997122280bab8f2232a95d
 
 ## Checks Run
 
