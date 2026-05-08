@@ -27,18 +27,11 @@ from typing import Callable, List, Optional
 import shlex
 import time
 
+from .instrumentation.write_trace_logger import WriteTraceLogger
+
 
 OutputCallback = Callable[[str], None]
 ExitCallback = Callable[[int], None]
-
-
-def _append_write_debug(path: str, name: str, data: str) -> None:
-    """Best-effort write-debug helper (for investigation only)."""
-    try:
-        with open(path, "a", encoding="utf-8") as fh:
-            fh.write(f"{name}: {repr(data)}\n")
-    except Exception:
-        pass
 
 
 @dataclass
@@ -59,6 +52,9 @@ class TerminalRunner:
     _post_output_resize_done: bool = field(default=False, init=False, repr=False)
     _pending_scheduled_resize: Optional[threading.Timer] = field(default=None, init=False, repr=False)
     debug_logger: Optional[Callable[[str], None]] = field(default=None, repr=False)
+
+    def __post_init__(self) -> None:
+        self._write_tracer = WriteTraceLogger.from_env(self.name)
 
     def on_output(self, cb: OutputCallback) -> None:
         self._on_output = cb
@@ -251,11 +247,7 @@ class TerminalRunner:
             return
         try:
             self._debug(f"write→pty {repr(data)}")
-            _append_write_debug(
-                "docs/Trouble-Snaps/write_debug.log",
-                self.name,
-                data,
-            )
+            self._write_tracer.record(data)
             os.write(self.master_fd, data.encode())
         except Exception:
             pass

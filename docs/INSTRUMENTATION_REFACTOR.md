@@ -22,7 +22,7 @@
    - Configurable scope (basic vs. extended) to avoid bloated packs.
 
 ## Bench Tasks
-- [ ] Extract current write logging into `WriteTraceLogger` helper.
+- [x] Extract current write logging into `WriteTraceLogger` helper.
 - [ ] Wrap DSR reply logic in `TerminalProbeResponder` and use it in
       `TerminalManager`.
 - [ ] Update troubleshooting export to pull from the new helpers instead of
