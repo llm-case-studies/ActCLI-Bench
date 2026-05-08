@@ -15,7 +15,7 @@ Cross-initiative table of work in flight. One row per initiative.
 
 | Initiative | Status | Active sprint | Notes |
 |---|---|---|---|
-| `instrumentation` | queued | none | First helper extraction completed with PASS; next candidate is `2026-05-08_extract-probe-responder` |
+| `instrumentation` | active | `2026-05-08_extract-probe-responder` | Second helper extraction; builds on the completed write-trace sprint |
 
 ## Cross-Cutting Concerns
 
